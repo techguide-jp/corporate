@@ -1,0 +1,118 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*  */
+* {
+	line-height: 1.5;
+}
+#wrapper {
+	width: 100%;
+	height: auto;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+/* -----------------header_area------------------------ */
+
+header {
+	display: flex;
+	flex-wrap: wrap;
+	background: #5594ce;
+}
+
+/* ------------------g_nav------------------------ */
+
+#g_nav{
+	margin: auto;
+	padding: 2em;
+	width: 80%;
+}
+#g_nav ul {
+	display: flex;
+	flex: wrap;
+	justify-content: center;
+}
+#g_nav ul li {
+	width: 20%;
+	padding-right: 1em;
+	text-align: center;
+}
+#g_nav ul li a {
+	padding-right: 1em;
+	color: #fff;
+}
+
+/* --------------------main_contents---------------------- */
+
+main {
+	width: 100%;
+}
+h3 {
+	font-size: 1.5em;
+	text-align: center;
+	padding: 1em;
+}
+/* 事業内容 */
+.contents {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+}
+.contents_txt {
+	width: 60%;
+}
+.img {
+	width: 20%;
+}
+/*  */
+
+
+/* 会社概要 */
+.campany {
+	background: #f5f7fc;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+/* アクセス */
+#access_area {
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+.access {
+	margin-top: 5em;
+}
+.access dt {
+	margin: 1em 0;
+}
+.access dd {
+	margin: 1em 0;
+}
+#access_area iframe {
+	margin: 0 0 2em 2em;
+}
+
+/* ------------------footer_area----------------------- */
+
+footer {
+	background: #5594ce;
+	color: #fff;
+}
+footer ul {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	padding: 1em;
+}
+footer ul li {
+	width: 20%;
+	text-align: center;
+}
+footer ul li a {
+	color: #fff;
+}
+footer p {
+	text-align: center;
+	padding: 10px 0;
+}
