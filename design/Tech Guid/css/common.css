@@ -2,28 +2,44 @@
 /* CSS Document */
 
 /*  */
+html {
+	scroll-behavior: smooth;
+}
 * {
 	line-height: 1.5;
+}
+body {
+	max-width: 1280px;
+    margin: 0 auto;
 }
 #wrapper {
 	width: 100%;
 	height: auto;
-    max-width: 1280px;
-    margin: 0 auto;
+}
+img {
+	width: 100%;
+	height: auto;
 }
 /* -----------------header_area------------------------ */
 
 header {
 	display: flex;
 	flex-wrap: wrap;
-	background: #5594ce;
 }
 
 /* ------------------g_nav------------------------ */
 
+.hamburger-menu {
+    width: 80%;
+    margin: auto;
+}
+.hamburger-menu input {
+	display: none;
+}
+
 #g_nav{
 	margin: auto;
-	padding: 2em;
+	padding: 2em 0;
 	width: 80%;
 }
 #g_nav ul {
@@ -38,8 +54,11 @@ header {
 }
 #g_nav ul li a {
 	padding-right: 1em;
-	color: #fff;
+	color: #000;
+	display: grid;
+	grid-template-rows: auto;
 }
+
 
 /* --------------------main_contents---------------------- */
 
@@ -54,24 +73,48 @@ h3 {
 /* 事業内容 */
 .contents {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	width: 100%;
+	margin: 2em 0;
 }
 .contents_txt {
-	width: 60%;
+	width: 50%;
+	padding: 10px 2em;
 }
 .img {
-	width: 20%;
+	margin: auto;
+	width: 40%;
 }
+.contents_2 {
+	display: flex;
+    flex-direction: row-reverse;
+	margin: 2em 0;
+}
+
 /*  */
 
 
 /* 会社概要 */
-.campany {
+.company_area {
 	background: #f5f7fc;
 	border-top: 1px solid #000;
 	border-bottom: 1px solid #000;
 }
+.company {
+    margin: 0 auto 40px;
+    max-width: 780px;
+}
+.company th {
+	text-align: left;
+    padding: 10px;
+    width: 160px;
+}
+.company tr {
+	border-top: #d5d5d5 solid 1px;
+	display: block;
+	padding: 24px 20px;
+}
+
 /* アクセス */
 #access_area {
 	display: flex;
@@ -80,7 +123,8 @@ h3 {
     width: 100%;
 }
 .access {
-	margin-top: 5em;
+	width: 40%;
+	margin: 5em 0 0 3em;
 }
 .access dt {
 	margin: 1em 0;
@@ -88,18 +132,20 @@ h3 {
 .access dd {
 	margin: 1em 0;
 }
+.map {
+	width: 45%;
+}
 #access_area iframe {
 	margin: 0 0 2em 2em;
 }
 
 /* ------------------footer_area----------------------- */
 
-footer {
-	background: #5594ce;
-	color: #fff;
+footer　small {
+	color: #000;
 }
 footer ul {
-	width: 100%;
+	width: 95%;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -110,9 +156,153 @@ footer ul li {
 	text-align: center;
 }
 footer ul li a {
-	color: #fff;
+	color: #000;
+	display: grid;
+    grid-template-rows: auto;
 }
 footer p {
 	text-align: center;
 	padding: 10px 0;
+}
+
+
+/***追従するトップへ戻るボタン***/
+#page-top {
+	position: fixed;
+	right: 20px;
+	bottom: 40px;
+	font-size: 1.2rem;
+	line-height: 2rem;
+	background: rgba(221,241,243,0.3);
+	color: rgba(3, 3, 3, 0.5);
+	padding: 10px;
+	border-radius: 50%;
+	box-shadow: 0 2px 10px -6px rgba(0,0,0,.5), 0 3px 10px -4px rgba(0,0,0,.2);
+}
+
+
+/* ---------ホバー設定----------- */
+#g_nav ul li a:hover,
+footer ul li a:hover {
+	color: #5594ce;
+	opacity: 1;
+	text-shadow: 1px 1px 3px #5594ce;
+}
+
+
+/* ----------レスポンシブ----------- */
+
+@media screen and (max-width: 767px){
+	
+	img {
+		width: 100%;
+		height: auto;
+	}
+	.hamburger-menu span {
+		display: block;
+		text-align: center;
+	}
+	#menu-btn-check:checked ~ nav {
+		left: 0;/*メニューを画面内へ*/
+	}
+	.menu-btn {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		width: 60px;
+		line-height: 4;
+		opacity: 0.8;
+		text-align: center;
+		cursor: pointer;
+		color: #fff;
+		display: flex;
+		height: 60px;
+		justify-content: center;
+		align-items: center;
+		z-index: 90;
+		background-color: #3584bb;
+	}
+	.menu-btn span,
+	.menu-btn span:before,
+	.menu-btn span:after {
+		content: '';
+		display: block;
+		height: 3px;
+		width: 25px;
+		border-radius: 3px;
+		background-color: #ffffff;
+		position: absolute;
+	}
+	.menu-btn span:before {
+		bottom: 8px;
+	}
+	.menu-btn span:after {
+		top: 8px;
+	}
+	#menu-btn-check:checked ~ .menu-btn span {
+		background-color: rgba(255, 255, 255, 0);/*メニューオープン時は真ん中の線を透明にする*/
+	}
+	#menu-btn-check:checked ~ .menu-btn span::before {
+		bottom: 0;
+		transform: rotate(45deg);
+	}
+	#menu-btn-check:checked ~ .menu-btn span::after {
+		top: 0;
+		transform: rotate(-45deg);
+	}
+	#g_nav {
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 100%;/*leftの値を変更してメニューを画面外へ 初期調整時は０にしてた*/
+		background:  #f5f7fc;
+		width: 100%;
+		z-index: 1;
+	}
+
+	#g_nav ul {
+		display: block;
+		margin: 5em auto;
+	}
+	#g_nav ul li {
+		margin-bottom: 8%;
+		font-size: 120%;
+		font-weight: bold;
+		width: 100%;
+	}
+	#g_nav ul li a:checked {
+		left: 0;
+	}
+	#g_nav ul li a {
+		box-sizing: border-box;
+	}
+	.img {
+		width: 50%;
+	}
+	.access {
+		margin: auto;
+		width: 100%;
+	}
+	.map {
+		width: 100%;
+	}
+	#access_area {
+		display: block;
+	}
+	#access_area iframe {
+		margin: auto;
+	}
+	footer ul {
+		display: block;
+		padding: 0;
+	}
+	footer ul li {
+		width: 100%;
+		text-align: center;
+	}
+	
+	
+	
+	
+	
 }
