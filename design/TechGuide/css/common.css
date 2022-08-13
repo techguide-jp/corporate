@@ -32,6 +32,10 @@ header {
 
 #logo {
 	margin: auto;
+	font-size: 2em;
+}
+#logo a {
+	color: #000;
 }
 
 /* ------------------g_nav------------------------ */
@@ -84,25 +88,28 @@ main {
 }
 
 .mV_txt {
-	width: 45%;
-	font-size: 3.5vmin;
-	position: absolute;
-	top: 30%;
-	right: 10%;
-	z-index: 1;
-	letter-spacing: 10px;
-	font-family: "Times New Roman", Times, "serif";
+    width: 45%;
+    font-size: 3vmin;
+    position: absolute;
+    top: 25%;
+    right: 10%;
+    z-index: 1;
+    letter-spacing: 20px;
+    font-family: "Times New Roman", Times, "serif";
+    font-weight: bold;
 }
 
 .name {
 	font-size: 1.5em;
+	text-shadow: 1px 2px 2px #fff;
+	backdrop-filter: blur(1px);
 }
 
 .mV_txt i {
-	font-size: 8vmin;
-	font-weight: bold;
-	color: blue;
-	text-shadow: 7px 7px 7px rgb(0, 0, 0, 0.4);
+    font-size: 15vmin;
+    font-weight: bold;
+    color: #0096ff;
+    text-shadow: 5px 5px 5px rgb(255 255 255 / 80%);
 }
 
 #thought_area {
