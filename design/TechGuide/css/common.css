@@ -442,12 +442,18 @@ footer ul li a:hover {
 		margin: auto;
 	}
 	
+	#thought_title {
+		margin-top: 1em;
+	}
+	
 	.contents {
 		display: block;
+		margin: 0 auto 2em;
 	}
 	
 	.contents_2 {
 		display: block;
+		margin: 0 auto 2em;
 	}
 	
 	.contents_txt {
