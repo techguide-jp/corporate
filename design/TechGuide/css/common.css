@@ -141,6 +141,9 @@ h3 {
 }
 
 /* 事業内容 */
+h4 {
+	font-size: 1.25rem;
+}
 .contents {
 	display: flex;
 	flex-wrap: nowrap;
@@ -311,9 +314,10 @@ footer ul li a:hover {
 	}
 
 	#logo {
-		width: 50%;
+		width: 45%;
 		height: auto;
-		margin: 0 10px;
+		margin: 1rem 0.5rem;
+		font-size: 1.5rem;
 	}
 
 
@@ -418,11 +422,12 @@ footer ul li a:hover {
 	/* -----------メインコンテンツ----------- */
 
 	.mV_txt {
-		font-size: 2vmin;
-		top: 32%;
-		right: 20%;
+		font-size: 4vmin;
+		top: 25%;
+		right: 5%;
+		width: 65%;
+		letter-spacing: 5px;
 	}
-
 	.name {
 		font-size: 1em;
 	}
