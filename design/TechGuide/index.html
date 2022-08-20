@@ -1,21 +1,30 @@
 <!doctype html>
-<html lang="ja" dir="ltr">
+<html lang="ja" dir="ltr" prefix="og: http://ogp.me/ns#">
 
-<head>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<meta name="description" content="ITプログラミング会社のサイトです。">
-	<title>Tech Guide合同会社</title>
+	<meta name="description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITの導入やサポート・コンサルを行います。わかりやすく、使いやすく、家計に優しく。効果的にビジネスを加速させましょう。">
+
+	<!--Facebook-->
+	<meta property="og:url" content="https://techguide.jp">
+	<meta property="og:title" content="Tech Guide合同会社">
+	<meta property="og:description" content="IT・プログラミングの講師やサポートなどを行っている、東京都新宿区のITプログラミングの会社です">
+	<meta property="og:type" content="Website">
+	<meta property="og:image" content="サムネイルとして表示したい画像パス">
+
+	<title>TechGuide合同会社</title>
+	<script type="text/javascript" src="js/ga.js"></script>
 	<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript" src="js/closed.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 	<link rel="stylesheet" href="css/reset.css">
 	<link href="css/common.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript" src="js/common.js"></script>
 </head>
 
 <body>
 	<header id="top">
-		<h1 id="logo"><a href="index.html">TECH GUIDE</a></h1>
+		<h1 id="logo"><a href="index.html">TechGuide</a></h1>
 		<div class="hamburger-menu">
 			<input type="checkbox" value="#" id="menu-btn-check">
 			<label for="menu-btn-check" class="menu-btn"><span></span></label>
@@ -47,12 +56,12 @@
 	</header>
 	<main>
 		<div class="mainV">
-			<p><img src="images/mainVisual_3.png" width="1280" height="680" alt="Tech Guide" />
+			<div><img src="images/mainVisual_3.png" alt="Tech Guide" />
 				<ul class="mV_txt">
 					<li class="name"><i>IT</i>をより身近に</li>
 					<li class="name"><i>IT</i>とよりフレンドリーに</li>
 				</ul>
-			</p>
+			</div>
 		</div>
 		<div id="wrapper">
 			<div id="thought_area" class="scroll-fade-up">
@@ -86,8 +95,8 @@
 						<h4>IT教育</h4>
 						<ul>
 							<li>今後より必要性を増すＩＴ技術者の育成に協力いたします。</li>
-							<li>RailsやPythonなどのプログラミング技術の技術指導・教育</li>
-							<li>若手エンジニアへのスキルアップ研修・カウンセリング</li>
+							<li>-RailsやPythonなどのプログラミング技術の技術指導・教育</li>
+							<li>-若手エンジニアへのスキルアップ研修・カウンセリング</li>
 						</ul>
 					</section>
 					<p class="img"><img src="images/it-nurturing.jpeg" alt="勉強会写真"></p>
@@ -98,9 +107,9 @@
 						<h4>ITコンサルティング</h4>
 						<ul>
 							<li>カウンセリング・ヒアリングを行い、貴社にとってより効果的なＩＴ活用のための提案をいたします。</li>
-							<li>ＩＴツール・システムの導入提案</li>
-							<li>会計、決済、EC、インフラ、サーバー、ドメイン、メール、クラウドなど</li>
-							<li>システム構成の提案</li>
+							<li>-ＩＴツール・システムの導入提案</li>
+							<li>-会計、決済、EC、インフラ、サーバー、ドメイン、メール、クラウドなど</li>
+							<li>-システム構成の提案</li>
 						</ul>
 					</section>
 					<p class="img"><img src="images/consulting.jpeg" alt="コンサルティング画像"></p>
@@ -111,19 +120,29 @@
 						<h4>ITサポート</h4>
 						<ul>
 							<li>今よりさらにＩＴ活用ができるようサポートをいたします。</li>
-							<li>ITツールの使い方サポート</li>
-							<li> よくある悩み</li>
-							<li>ツールを導入したはいいけど活用しきれていない・使い方がわからない</li>
-							<li>顧客から利用を提案されたけどよくわかっていない</li>
-							<li>外注先とのコミュニケーションサポート</li>
-							<li>よくある悩み</li>
-							<li>見積もりを出したもらったが妥当なのかわからない</li>
-							<li>どんな所に外注したら良いかわからない</li>
-							<li>依頼先から質問が来たが何を言ってるかわからない</li>
-							<li>ＩＴツールの選定</li>
-							<li>よくある悩み</li>
-							<li>ツールを導入したいが似たようなものがたくさんあってどれが良いのかわからない</li>
-							<li>今使っているものより良いものがある（安くなる）なら移行したい
+							<li>-ITツールの使い方サポート</li>
+							<li>
+								<ul>【よくある悩み】</ul>
+									<li>・ツールを導入したはいいけど活用しきれていない・使い方がわからない</li>
+									<li>・顧客から利用を提案されたけどよくわかっていない</li>
+							</li>
+
+							<br>
+							<li>-外注先とのコミュニケーションサポート</li>
+							<li>
+								<ul>【よくある悩み】</ul>
+									<li>・見積もりを出したもらったが妥当なのかわからない</li>
+									<li>・どんな所に外注したら良いかわからない</li>
+									<li>・依頼先から質問が来たが何を言ってるかわからない</li>
+							</li>
+
+							<br>
+							<li>-ＩＴツールの選定</li>
+							<li>
+								<ul>【よくある悩み】</ul>
+								<li>・ツールを導入したいが似たようなものが沢山あってどれが良いのかわからない</li>
+								<li>・今使っているものより良いものがある（安くなる）なら移行したい
+								</li>
 							</li>
 						</ul>
 					</section>
@@ -179,6 +198,7 @@
 							width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
 					</div>
 				</div>
+			</section>
 		</div>
 	</main>
 	<footer>
