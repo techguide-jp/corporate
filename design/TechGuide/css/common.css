@@ -33,6 +33,7 @@ header {
 #logo {
 	margin: auto;
 	font-size: 2em;
+	font-weight: bold;
 }
 #logo a {
 	color: #000;
