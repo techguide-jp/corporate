@@ -118,13 +118,13 @@ main {
 }
 
 #thought_area {
-	width: 50%;
+	width: 60%;
 	margin: 2em auto;
 }
 
 h1 {
 	width: 100%;
-	padding: 1rem;
+	margin: 1rem 0;
 	font-size: 2rem;
 	text-align: center;
 }
@@ -152,7 +152,7 @@ h3 {
 	padding: 1rem 2rem;
     margin: 1rem 0;
     font-weight: bold;
-    border: #ff0 solid;
+    border: #ffa500 solid;
 }
 
 .thought_list li {
@@ -176,7 +176,6 @@ h3 {
     padding: 10px 0;
     display: flex;
     flex-wrap: wrap;
-	margin-left: 1rem;
 }
 
 .contents_txt2 {
@@ -186,8 +185,8 @@ h3 {
 }
 
 .contents_txt_list {
-	width: 50%;
-	margin-bottom: 2rem;
+	width: 45%;
+	margin: 0 1rem;
 }
 
 .img {
@@ -203,7 +202,7 @@ h3 {
 
 .contents_title2 {
 	width: 40%;
-    margin: 0 0 0 39rem;
+    margin: 0 0 0 53%;
 }
 
 .list {
@@ -352,7 +351,7 @@ footer ul li a:hover {
 
 @media screen and (max-width: 767px) {
 
-	img {
+	.img {
 		width: 100%;
 		height: auto;
 	}
@@ -364,6 +363,20 @@ footer ul li a:hover {
 		font-size: 1.5rem;
 	}
 
+	h1 {
+		margin: 1rem 0;
+		font-size: 1.5rem;
+	}
+	
+	h2 {
+		margin-left: 1rem;
+		font-size: 1.25rem;
+	}
+	
+	h3 {
+		margin: 0 1rem;
+		font-size: 1rem;
+	}
 
 	/* ---------ハンバーガーメニュー----------- */
 
@@ -472,10 +485,10 @@ footer ul li a:hover {
 		width: 65%;
 		letter-spacing: 5px;
 	}
+	
 	.name {
 		font-size: 1em;
 	}
-
 
 	.mV_txt i {
 		font-size: 2em;
@@ -501,14 +514,26 @@ footer ul li a:hover {
 	}
 	
 	.contents_txt {
-		width: 80%;
+		width: 90%;
 		margin: auto;
+		display: block;
 	}
 	
-	.img {
-		width: 80%;
+	.contents_txt2 {
+		display: block;
+		padding: 0 1rem;
 	}
 	
+	.contents_txt_list {
+		width: 100%;
+		margin: 0;
+	}
+	
+	.contents_title2 {
+		width: 100%;
+		margin: 0;
+	}
+		
 	.company {
 		margin: auto;
 	}
