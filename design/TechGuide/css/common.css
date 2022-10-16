@@ -89,14 +89,14 @@ main {
 }
 
 .mV_txt {
-    width: 50%;
+    width: 60%;
     font-size: 3vmin;
     position: absolute;
-    top: 30%;
-    right: 15%;
+    top: 27%;
+    right: 10%;
     z-index: 1;
     letter-spacing: 20px;
-    font-family: "M PLUS Rounded 1c","コーポレート・ロゴ ver2 Medium";
+    font-family: 'Kosugi Maru', sans-serif;
     font-weight: bold;
 }
 
