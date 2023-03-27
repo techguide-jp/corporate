@@ -23,6 +23,7 @@
 	<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript" src="js/closed.js"></script>
 	<script type="text/javascript" src="js/ga.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css">
 	<link rel="stylesheet" href="css/reset.css">
 	<link href="css/common.css" rel="stylesheet" type="text/css">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,6 +53,11 @@
 					<li><a href="#access">
 							<span class="en">ACCESS</span>
 							<span class="ja">アクセス</span>
+						</a>
+					</li>
+					<li><a href="event2.html">
+							<span class="en">EVENT</span>
+							<span class="ja">イベント</span>
 						</a>
 					</li>
 					<li><a href="contact/index.html">
@@ -171,7 +177,7 @@
 							<article class="contents_txt">
 							<div class="contents_txt_list">
 								<ul class="list">
-                                    <li>現場でうまくいかない・ストレスが溜まる事が多い</li>
+									<li>現場でうまくいかない・ストレスが溜まる事が多い</li>
 									<li>プログラミングスクールは卒業したけど思ったより実力が付いていない</li>
 									<li>今の会社だとこれ以上のスキルアップが難しい</li>
 									<li>転職したいけど自信が無い</li>
@@ -233,7 +239,8 @@
 			</section>
 		</div>
 	</main>
-	<footer>
+	<footer class="bg-gray-600 text-white">
+		<div class="container mx-auto py-4 px-8">
 		<p id="page-top"><a href="#top">TOP</a></p>
 		<ul>
 			<li><a href="">
@@ -251,13 +258,22 @@
 					<span class="ja">アクセス</span>
 				</a>
 			</li>
+			<li><a href="event2.html">
+					<span class="en">EVENT</span>
+					<span class="ja">イベント</span>
+				</a>
+			</li>
 			<li><a href="contact/index.html">
 					<span class="en">CONTACT</span>
 					<span class="ja">お問い合わせ</span>
 				</a>
 			</li>
 		</ul>
-		<p><small>copyright © 2021 Tech Guide LLC All rights reserved.</small></p>
+		<p class="text-center">Copyright ©
+		<script>
+			document.write(new Date().getFullYear());
+		</script> TechGuide LLC.</p>
+		</div>
 	</footer>
 	<!-- wrapper -->
 </body>
