@@ -5,28 +5,28 @@ async function fetchProfiles() {
 }
 
 function createLinkElement(link) {
-  const a = document.createElement("a");
-  a.href = link.url;
-  a.target = "_blank";
-  a.rel = "noopener noreferrer";
-  a.className = "mx-2";
+  const linkElement = document.createElement("a");
+  linkElement.href = link.url;
+  linkElement.target = "_blank";
+  linkElement.rel = "noopener noreferrer";
+  linkElement.className = "mx-2";
 
   const icons = {
-    instagram: "fab fa-lg fa-instagram text-pink-500 hover:text-pink-700",
-    twitter: "fab fa-lg fa-twitter text-blue-500 hover:text-blue-700",
-    facebook: "fab fa-lg fa-facebook text-indigo-600 hover:text-indigo-800",
-    youtube: "fab fa-lg fa-youtube text-red-500 hover:text-red-700"
+    instagram: "fab fa-2x fa-instagram text-pink-500 hover:text-pink-700",
+    twitter: "fab fa-2x fa-twitter text-blue-500 hover:text-blue-700",
+    facebook: "fab fa-2x fa-facebook text-indigo-600 hover:text-indigo-800",
+    youtube: "fab fa-2x fa-youtube text-red-500 hover:text-red-700",
+    tiktok: "fab fa-2x fa-tiktok text-black hover:text-gray-700",
   };
 
   if (icons.hasOwnProperty(link.type)) {
-    const i = document.createElement("i");
-    i.className = icons[link.type];
-    a.appendChild(i);
+    linkElement.innerHTML = `<i class="${icons[link.type]}"></i>`;
   } else {
-    a.textContent = link.type;
+    linkElement.className = "text-xl ml-4 hover:text-gray-700";
+    linkElement.textContent = link.type;
   }
 
-  return a;
+  return linkElement;
 }
 
 function createProfileElement(profile) {
