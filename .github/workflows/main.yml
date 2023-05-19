@@ -20,3 +20,6 @@ jobs:
       - name:  S3 sync
         working-directory: design/TechGuide
         run: aws s3 sync . s3://techguide.jp --delete --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --include "design/TechGuide/*"
+      - name:  S3 sync events
+        working-directory: events
+        run: aws s3 sync . s3://techguide.jp --delete --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --include "events/*"
