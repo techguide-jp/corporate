@@ -2,7 +2,7 @@ require 'open-uri'
 require 'nokogiri'
 
 # URLを設定
-url = 'https://techguide.connpass.com/event/'
+url = 'https://techguide.connpass.com/event/?page=2'
 
 # URLからHTMLを取得
 html = open(url)
