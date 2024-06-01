@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.common-list-item {
+    @apply py-2 px-4 border-b border-gray-300 bg-gray-100 italic relative pl-8 list-none;
+}
+
+.common-list-item::before {
+    content: '✔';
+    position: absolute;
+    left: 0.5rem; /* 左側の位置を調整 */
+    top: 50%;
+    transform: translateY(-50%);
+    color: green; /* チェックマークの色を変更 */
+}
+h1#thought_title {
+    @apply mt-4 w-full text-white text-5xl font-bold font-serif text-center bg-gray-800 p-5 shadow-lg;
+}
+h3.subtitle {
+    @apply text-2xl text-red-500 pb-3;
+}

@@ -1,5 +1,3 @@
-
-
 $(function () {
   const fade_bottom = 100; // 画面下からどの位置でフェードさせるか(px)
   const fade_move = 200; // どのぐらい要素を動かすか(px)
@@ -7,8 +5,8 @@ $(function () {
   // フェード前のcssを定義
   $(".scroll-fade-up").css({
     opacity: 0,
-    transform: "translateY(" + fade_move + "px)",
-    transition: fade_time + "ms",
+    transform: `translateY(${fade_move}px)`,
+    transition: `${fade_time}ms`,
   });
   // スクロールまたはロードするたびに実行
   $(window).on("scroll load", function () {
