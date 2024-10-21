@@ -47,7 +47,7 @@ status:
 # ターゲット: コンテナに入る
 .PHONY: exec
 exec:
-	@docker-compose exec web /bin/sh
+	@docker-compose exec web sh -c "cd /usr/share/nginx/html && sh"
 
 # ターゲット: アクセスURLを表示
 .PHONY: url
