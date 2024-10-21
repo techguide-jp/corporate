@@ -4,14 +4,4 @@ services:
     ports:
       - '${PORT}:80'
     volumes:
-      - html_data:/usr/share/nginx/html
-
-volumes:
-  html_data:
-
-x-mutagen:
-  sync:
-    htmlsync:
-      alpha: ./TechGuide/
-      beta: volume://html_data
-      mode: 'two-way-resolved'
+      - ./TechGuide/:/usr/share/nginx/html

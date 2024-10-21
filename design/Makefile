@@ -15,9 +15,9 @@ export PORT := $(FIND_AVAILABLE_PORT)
 
 # ターゲット: 起動
 .PHONY: up
-up:
+up: build
 	@echo "使用するポート: $(PORT)"
-	@mutagen-compose up -d
+	@docker-compose up -d
 	@PORT_NUMBER=$$(docker-compose port web 80 | awk -F: '{print $$2}') && \
 	if [ -n "$$PORT_NUMBER" ]; then \
 		echo "アクセス用URL: http://localhost:$$PORT_NUMBER"; \
@@ -28,7 +28,7 @@ up:
 # ターゲット: 停止
 .PHONY: down
 down:
-	@mutagen-compose down
+	@docker-compose down
 
 # ターゲット: 再起動
 .PHONY: restart
@@ -37,12 +37,12 @@ restart: down up
 # ターゲット: ログ表示
 .PHONY: logs
 logs:
-	@mutagen-compose logs -f
+	@docker-compose logs -f
 
 # ターゲット: 状態確認
 .PHONY: status
 status:
-	@mutagen-compose ps
+	@docker-compose ps
 
 # ターゲット: コンテナに入る
 .PHONY: exec
@@ -59,13 +59,19 @@ url:
 		echo "コンテナが起動していないか、ポートが見つかりません。"; \
 	fi
 
-# ターゲット: ヘルプ
+# ターゲット: ビルド
+.PHONY: build
+build:
+	@docker-compose build
+
+# ターゲット: ヘルプの修正
 .PHONY: help
 help:
 	@echo "使用可能なコマンド:"
 	@echo "  make up      - コンテナを起動し、アクセス用URLを表示します。"
 	@echo "  make down    - コンテナを停止します。"
 	@echo "  make restart - コンテナを再起動します。"
+	@echo "  make build   - Docker イメージをビルドします。"
 	@echo "  make logs    - コンテナのログを表示します。"
 	@echo "  make status  - コンテナの状態を表示します。"
 	@echo "  make exec    - コンテナ内のシェルに入ります。"
