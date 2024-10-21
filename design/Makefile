@@ -18,7 +18,7 @@ export PORT := $(FIND_AVAILABLE_PORT)
 up: build
 	@echo "使用するポート: $(PORT)"
 	@docker-compose up -d
-	@PORT_NUMBER=$$(docker-compose port web 80 | awk -F: '{print $$2}') && \
+	@PORT_NUMBER=$$(docker-compose port nginx 80 | awk -F: '{print $$2}') && \
 	if [ -n "$$PORT_NUMBER" ]; then \
 		echo "アクセス用URL: http://localhost:$$PORT_NUMBER"; \
 	else \
@@ -47,12 +47,12 @@ status:
 # ターゲット: コンテナに入る
 .PHONY: exec
 exec:
-	@docker-compose exec web sh -c "cd /usr/share/nginx/html && sh"
+	@docker-compose exec nginx sh -c "cd /usr/share/nginx/html && sh"
 
 # ターゲット: アクセスURLを表示
 .PHONY: url
 url:
-	@PORT_NUMBER=$$(docker-compose port web 80 | awk -F: '{print $$2}') && \
+	@PORT_NUMBER=$$(docker-compose port nginx 80 | awk -F: '{print $$2}') && \
 	if [ -n "$$PORT_NUMBER" ]; then \
 		echo "アクセス用URL: http://localhost:$$PORT_NUMBER"; \
 	else \

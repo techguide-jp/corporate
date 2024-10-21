@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr" prefix="og: http://ogp.me/ns#">
+    <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITサポート・エンジニア採用コンサル・エンジニア教育を行います。人とITとがより仲良くなる事を通じて、効果的にビジネスを加速させましょう！!">
+
+        <!--Facebook-->
+        <meta property="og:url" content="https://techguide.jp/">
+        <meta property="og:title" content="TechGuide合同会社">
+        <meta property="og:description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITサポート・エンジニア採用コンサル・エンジニア教育を行います。人とITとがより仲良くなる事を通じて、効果的にビジネスを加速させましょう！!">
+        <meta property="og:type" content="Website">
+        <!-- <meta property="og:image" content="サムネイルとして表示したい画像パス">-->
+
+        <!--Twitter-->
+        <meta name="twitter:site" content="@tashua314" />
+        <meta name="twitter:title" content="TechGuide合同会社">
+        <meta name="twitter:description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITサポート・エンジニア採用コンサル・エンジニア教育を行います。人とITとがより仲良くなる事を通じて、効果的にビジネスを加速させましょう！!">
+        <!--<meta name="twitter:image" content="サムネイルとして表示したい画像パス">-->
+
+        <title>TechGuide合同会社 - イベント</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.7/dist/tailwind.min.css">
+        <link rel="stylesheet" href="css/event.css" type="text/css">
+        <link rel="stylesheet" href="css/reset.css" type="text/css">
+        <link rel="stylesheet" href="css/common.css" type="text/css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+        <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript" src="js/closed.js"></script>
+        <script type="text/javascript" src="js/ga.js"></script>
+        <script type="text/javascript" src="js/common.js"></script>
+    </head>
+    <body class="bg-gray-100">
+        <header id="top">
+            <div id="logo"><a href="index.html">Tech Guide</a></div>
+            <div class="hamburger-menu">
+                <input type="checkbox" value="#" id="menu-btn-check">
+                <label for="menu-btn-check" class="menu-btn"><span></span></label>
+                <nav id="g_nav">
+                    <ul>
+                        <li><a href="index.html#service">
+                                <span class="en">SERVICE</span>
+                                <span class="ja">事業内容</span>
+                            </a>
+                        </li>
+                        <li><a href="index.html#company">
+                                <span class="en">COMPANY</span>
+                                <span class="ja">会社概要</span>
+                            </a>
+                        </li>
+                        <li><a href="index.html#access">
+                                <span class="en">ACCESS</span>
+                                <span class="ja">アクセス</span>
+                            </a>
+                        </li>
+                        <li><a href="#">
+                                <span class="en">EVENT</span>
+                                <span class="ja">イベント</span>
+                            </a>
+                        </li>
+                        <li><a href="contact/index.html">
+                                <span class="en">CONTACT</span>
+                                <span class="ja">お問い合わせ</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main class="container mx-auto py-8 px-4 md:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <%= events %>
+            </div>
+        </main>
+        <footer class="bg-gray-600 text-white">
+            <div class="container mx-auto py-4 px-8">
+                <p class="text-center">Copyright ©
+                <script>
+                    document.write(new Date().getFullYear());
+                </script> TechGuide LLC.</p>
+            </div>
+        </footer>
+    </body>
+</html>

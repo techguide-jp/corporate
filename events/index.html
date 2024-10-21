@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Redirect Event</title>
+        <script>
+            window.onload = function() {
+                // キーワードと対応するURLのマッピング
+                var eventToUrl = {
+                    '20230522_talk_seminar': 'https://forms.gle/3TUbGDBYAHLrJBiq9',
+                    // 他のイベントをここに追加
+                };
+
+                var params = new URLSearchParams(window.location.search);
+                var eventKeyword = params.get('event');
+
+                if (eventKeyword && eventToUrl[eventKeyword]) {
+                    // キーワードに対応するURLにリダイレクト
+                    window.location.href = eventToUrl[eventKeyword];
+                } else {
+                    // キーワードが設定されていない、またはマッピングが存在しない場合はホームページにリダイレクト
+                    window.location.href = '/';
+                }
+            };
+        </script>
+    </head>
+    <body>
+        Redirecting...
+    </body>
+</html>
+

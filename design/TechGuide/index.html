@@ -4,19 +4,19 @@
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<meta name="description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITの導入やサポート・コンサルを行います。わかりやすく、使いやすく、導入しやすく。効果的にビジネスを加速させましょう！">
+	<meta name="description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITサポート・エンジニア採用コンサル・エンジニア教育を行います。人とITとがより仲良くなる事を通じて、効果的にビジネスを加速させましょう！!">
 
 	<!--Facebook-->
 	<meta property="og:url" content="https://techguide.jp/">
 	<meta property="og:title" content="TechGuide合同会社">
-	<meta property="og:description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITの導入やサポート・コンサルを行います。わかりやすく、使いやすく、導入しやすく。効果的にビジネスを加速させましょう！!">
+	<meta property="og:description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITサポート・エンジニア採用コンサル・エンジニア教育を行います。人とITとがより仲良くなる事を通じて、効果的にビジネスを加速させましょう！!">
 	<meta property="og:type" content="Website">
 	<!-- <meta property="og:image" content="サムネイルとして表示したい画像パス">-->
 
 	<!--Twitter-->
 	<meta name="twitter:site" content="@tashua314" />
 	<meta name="twitter:title" content="TechGuide合同会社">
-	<meta name="twitter:description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITの導入やサポート・コンサルを行います。わかりやすく、使いやすく、導入しやすく。効果的にビジネスを加速させましょう！">
+	<meta name="twitter:description" content="「ITをもっと身近に」をテーマに、中小企業・個人事業主様へのITサポート・エンジニア採用コンサル・エンジニア教育を行います。人とITとがより仲良くなる事を通じて、効果的にビジネスを加速させましょう！!">
 	<!--<meta name="twitter:image" content="サムネイルとして表示したい画像パス">-->
 
 	<title>TechGuide合同会社</title>
@@ -24,11 +24,69 @@
 	<script type="text/javascript" src="js/closed.js"></script>
 	<script type="text/javascript" src="js/ga.js"></script>
 	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/output.css">
 	<link href="css/common.css" rel="stylesheet" type="text/css">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+	<style>
+		.tablinks {
+			background-color: #ddd;
+			color: black;
+			padding: 10px 15px;
+			border: none;
+			cursor: pointer;
+			transition: 0.3s;
+			font-size: 17px;
+		}
+	
+		.tablinks:hover {
+			background-color: #bbb;
+		}
+	
+		.tablinks.active {
+			background-color: #4CAF50;
+			color: white;
+		}
+	
+		.tabcontent {
+			padding: 15px 20px;
+			border: 1px solid #ccc;
+		}
+	</style>
 	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript">
+		function openContent(evt, contentName) {
+			var i, tabcontent, tablinks;
+
+			// 全てのタブコンテンツを非表示にする
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			// 全てのタブリンクを非アクティブにする
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			// 選択されたタブコンテンツを表示し、タブリンクをアクティブにする
+			document.getElementById(contentName).style.display = "block";
+			evt.currentTarget.className += " active";
+
+			// クリックアクションをGAに送信
+			gtag('event', 'click', {
+				'event_category': 'tab',
+				'event_label': contentName
+			});
+		}
+
+		// デフォルトのタブを開く
+		window.onload = function () {
+			document.getElementById("defaultOpen").click();
+		};
+	</script>
 </head>
 
 <body>
@@ -57,6 +115,10 @@
 					<li><a href="https://speakerdeck.com/tashua314" target="_blank">
 							<span class="en">PRESENTATION</span>
 							<span class="ja">発表資料</span>
+					</li>
+					<li><a href="event.html">
+							<span class="en">EVENT</span>
+							<span class="ja">イベント</span>
 						</a>
 					</li>
 					<li><a href="contact/index.html">
@@ -70,12 +132,11 @@
 	</header>
 	<main>
 		<div class="mainV">
-			<div><img src="images/mainVisual_4.png" alt="Tech Guide" />
-				<ul class="mV_txt">
-					<li class="name"><i>IT</i>をより<span class="iro">身近</span>に</li>
-					<li class="name"><i>IT</i>とより<span class="iro">フレンドリー</span>に</li>
-				</ul>
-			</div>
+			<img src="images/mainVisual_4.png" alt="Tech Guide" />
+			<ul class="mV_txt">
+				<li class="name"><i>IT</i>をより<i>身近</i>に</li>
+				<li class="name"><i>IT</i>とより<i>フレンドリー</i>に</li>
+			</ul>
 		</div>
 		<div id="wrapper">
 			<div id="thought_area" class="scroll-fade-up">
@@ -84,37 +145,37 @@
 					<section class="thought_box">
 						<p>長くＩＴ業界に関わっていく中で、数多くの業種業態の事業が抱える様々な問題を解決できる可能性を秘めたＩＴ技術に大きな魅力を感じていた。<br>
 						その一方で、<br>
-						<ul class="thought_list">
-							<li>ＩＴ活用ができている企業とできていない企業の２極化</li>
-							<li>エンジニア需要に供給が追いついてない</li>
+						<ul class="list-none thought_list">
+							<li class="common-list-item">ＩＴ活用ができている企業とできていない企業の２極化</li>
+							<li class="common-list-item">エンジニア需要に供給が追いついてない</li>
 						</ul>
 						という問題が大きく取り上げられるようになってきた。</p>
 					</section>
 					<section class="thought_box">
-						<h2>【ＩＴ活用ができている企業とできていない企業の２極化】</h2>
-						<p>様々なITサービスを自由に活用していたり、自社が求めるシステム像が明確化できていて的確に委託ないし自社開発できるような、ＩＴ技術に関する知見をある程度持ち合わせていて良し悪しの判断も自身で付けられる会社はたしかに存在する。<br>
-						そのような企業は、新しい技術が出てきても自身でどんどんキャッチアップして適応していく事ができる。</p>
+						<h3 class="subtitle">【ＩＴ活用ができている企業とできていない企業の２極化】</h3>
+						<p>様々なITサービスを自由に活用していたり、自社が求めるシステム像が明確化できていて的確に委託ないし自社開発できるような、ＩＴ技術に関する知見をある程度持ち合わせていて良し悪しの判断も自身で付けられる会社はたしかに存在する。<br><br>
+						そのような企業は、新しい技術が出てきても自身でどんどんキャッチアップして適応していく事ができる。</p><br>
 
-						<p>一方で、そもそもＩＴで何がどうなるのかがわかっていなかったり、通常業務で手一杯でそのような新しい事にチャレンジする体力も時間も無い企業も多い。<br>
+						<p>一方で、そもそもＩＴで何がどうなるのかがわかっていなかったり、通常業務で手一杯でそのような新しい事にチャレンジする体力も時間も無い企業も多い。<br><br>
 						そのような企業はどんどん時代から取り残されていき、人材の流動性も落ちて後継者も見つからず、廃業に追い込まれてしまう所も少なくない。
 						</p>
 					</section>
 					<section class="thought_box">
-						<h2>【エンジニア需要に供給が追いついてない】</h2>
-						<p>ＩＴ技術の活用の幅が広がったことでエンジニア需要も増え、プログラミングスクールや他業種から転職する人も増えてきた。<br>
-						その一方で、会社が求めるスキルにマッチする人材が増えたわけでもない場合も多い。<br>
-						また、プログラミングスクールを卒業したけど自身の希望にマッチする企業に就職できないという事例も多い。<br>
-						このように、会社側は求める人材に出会えず、エンジニア側も求める企業に出会えないというミスマッチが起こっている。</p>
-						<p>私自身の周りでもこの２点の問題で悩まれている経営者やエンジニアが多くおり、いちエンジニアとして開発業務に携わるだけでなくこのような社会問題に対してアプローチしていきたいと思った。<br>
+						<h3 class="subtitle">【エンジニア需要に供給が追いついてない】</h3>
+						<p>ＩＴ技術の活用の幅が広がったことでエンジニア需要も増え、プログラミングスクールや他業種から転職する人も増えてきた。<br><br>
+						その一方で、会社が求めるスキルにマッチする人材が増えたわけでもない場合も多い。<br><br>
+						また、プログラミングスクールを卒業したけど自身の希望にマッチする企業に就職できないという事例も多い。<br><br>
+						このように、会社側は求める人材に出会えず、エンジニア側も求める企業に出会えないというミスマッチが起こっている。</p><br><br>
+						<p>私自身の周りでもこの２点の問題で悩まれている経営者やエンジニアが多くおり、いちエンジニアとして開発業務に携わるだけでなくこのような社会問題に対してアプローチしていきたいと思った。<br><br>
 						このような社会問題への解決を目的として創業を決意。</p>
 					</section>
 				</article>
 				<article class="mission">
-					<h1 id="thought_title_1">ミッション</h1>
+					<h1 id="thought_title">ミッション</h1>
 					<section class="thought_box">
-						<ul class="missuon_list">
-							<li>中小企業向け：企業の価値観に重きを置いたアプローチにより、企業の発展・価値向上に貢献する</li>
-							<li>エンジニア向け：より高度で実践的な経験を通じ、多くのエンジニアの戦力アップに貢献する</li>
+						<ul class="list-none missuon_list">
+							<li>中小企業向け：より人に寄り添った、幸せを生み出すＩＴとの関わりを増やす</li>
+							<li>エンジニア向け：より人の気持ちを汲み取れる人を増やすことで、エンジニアの戦力アップに貢献する</li>
 						</ul>
 					</section>
 				</article>
@@ -122,72 +183,120 @@
 
 			<article class="service_area scroll-fade-up">
 				<h1 id="service">事業内容</h1>
-				<div class="contents">
-					<section>
-						<h2>企業向け</h2>
-						<section>
-							<h3 class="contents_title">【ITコンサルティング・サポート・受託開発】</h3>
-							<article class="contents_txt">
-							<div class="contents_txt_list">
-								<ul class="list">
-									<li>ＩＴをもっと活用したいけど何を導入すればよいかよくわからない</li>
-									<li>危機感を抱いているけどＩＴでどう変わるかがわからない</li>
-									<li>今使っているもの・提案を受けているものが妥当かどうかわからない</li>
-									<li>導入しているものがうまく使えていない</li>
-								</ul>
-								このようなことはありませんか？<br>
-								ご状況や業務内容・優先とすること・社員の方々の思いも含めトータル的に見てより貴社にマッチしたご提案をいたします。<br>
-								世には様々なサービスが出ているため、「ベストな選択＝貴社に合わせた開発」とは限りません。<br>
-								既存のサービスやその組み合わせによって解決することも多分にあり、コストも抑えられます。<br>
-								そのような様々なアプローチの中から、「貴社にとってどんな形がより理想的か」を一緒に考えさせてください。
-							</div>
-								<p class="img"><img src="images/consulting.jpeg" alt="ITコンサル・サポート"/></p>
-							</article>
-						</section>
-						<section class="contents_area">
-							<h3 class="contents_title2">【IT教育・技術指導・採用支援】</h3>
-							<article class="contents_txt2">
-							<div class="contents_txt_list">
-								<ul class="list">
-									<li>社内に知見が少なく、不安がある</li>
-									<li>内製化に切り替えたいがどうすれば良いかわからない</li>
-									<li>エンジニアを採用したいが、どうしたら自社に合ったエンジニアにアプローチできるかわからない</li>
-									<li>知見のある方が辞めてしまってどうしようもない</li>
-								</ul>
-								このようなことはありませんか？<br>
-								自社に合ったエンジニアの採用や環境の構築は中々難しいですよね。<br>
-
-								とりあえず今のままでなんとかなっているから後回し後回しになってしまっている場合も多いかと思います。<br>
-
-								とりあえず重い腰を上げ、一度ご相談いただけませんか？
-							</div>
-						<p class="img"><img src="images/it-nurturing.jpeg" alt="勉強会写真"></p>		</article>
-					</section>
-					</section>
-				</div>
-
-				<div class="contents">
-					<section>
-						<h2>エンジニア向け</h2>
-						<section class="contents_area">
-							<h3 class="contents_title">【スキルアップ・副業支援】</h3>
-							<article class="contents_txt">
-							<div class="contents_txt_list">
-								<ul class="list">
-									<li>プログラミングスクールは卒業したけど思ったより実力が付いていない</li>
-									<li>今の会社だとこれ以上のスキルアップが難しい</li>
-									<li>転職したいけど自信が無い</li>
-									<li>もっと稼げるエンジニアになりたい</li>
-								</ul>
-								このようなことはありませんか？<br>
-								エンジニアとしてどうスキルアップをしていくのか・どう稼ぎを増やしていくのか、中々難しいですよね。<br>
-								あなたが望む道にもう一歩近づくお手伝いができるかもしれません。<br>
-								一度ご相談ください。
-							</div>
-						<p class="img"><img src="images/support.jpg" alt="サポートしている画像"></p>
-							</article>
-					</section>
-					</section>
+				<div class="tab">
+					<div class="tab_btns">
+						<button class="tablinks" onclick="openContent(event, 'Business')" id="defaultOpen">企業向け</button>
+						<button class="tablinks" onclick="openContent(event, 'Engineer')">エンジニア向け</button>
+						<button class="tablinks" onclick="openContent(event, 'Release')">リリースサービス</button>
+					</div>
+					<div class="panel_area">
+						<div id="Business" class="tabcontent">
+							<section>
+								<h2 class="bg-orange-500 text-white p-3 rounded">企業向け</h2>
+								<section class="contents_area">
+									<h3 class="subtitle">【ITコンサルティング・サポート・受託開発】</h3>
+									<article class="contents_txt">
+										<div class="contents_txt_list">
+											<ul class="list-none pb-3">
+												<li class="common-list-item">ChatGPTってなに？何が嬉しいの？</li>
+												<li class="common-list-item">ＩＴをもっと活用したいけど何を導入すればよいかよくわからない</li>
+												<li class="common-list-item">危機感を抱いているけどＩＴでどう変わるかがわからない</li>
+												<li class="common-list-item">今使っているもの・提案を受けているものが妥当かどうかわからない</li>
+												<li class="common-list-item">導入しているものがうまく使えていない</li>
+											</ul>
+											このようなことはありませんか？<br>
+											ご状況や業務内容・優先とすること・社員の方々の思いも含めトータル的に見てより貴社にマッチしたご提案をいたします。<br>
+											世には様々なサービスが出ているため、<b>「人気なサービス＝貴社に合ったもの」</b>とは限りません。<br><br>
+											既存のサービスやその組み合わせによって解決することも多分にあり、コストも抑えられます。<br>
+											そのような様々なアプローチの中から、<b>「貴社にとってどんな形がより理想的か」</b>を一緒に考えさせてください。
+										</div>
+										<p class="img"><img src="images/consulting.jpeg" alt="ITコンサル・サポート"/></p>
+									</article>
+								</section>
+								<section class="contents_area">
+									<h3 class="contents_title2 subtitle">【IT教育・技術指導・採用支援】</h3>
+									<article class="contents_txt2">
+										<div class="contents_txt_list">
+											<ul class="list-none pb-3">
+												<li class="common-list-item">最初のエンジニアを雇用したい</li>
+												<li class="common-list-item">社内に知見が少なく、不安がある</li>
+												<li class="common-list-item">内製化に切り替えたいがどうすれば良いかわからない</li>
+												<li class="common-list-item">エンジニアを採用したいが、どうしたら自社に合ったエンジニアにアプローチできるかわからない</li>
+												<li class="common-list-item">知見のある方が辞めてしまってどうしようもない</li>
+											</ul>
+											自社に合ったエンジニアの採用や環境の構築は中々難しいですよね。<br>
+											とりあえず今のままでなんとかなっているから後回し後回しになってしまっている場合も多いかと思います。<br>
+											エンジニアの方々にも、自分のスキルアップをどうすればいいかわからない、という方も多いです。<br>
+											より良い環境を作るために、一度ご相談ください。<br>
+										</div>
+										<p class="img"><img src="images/it-nurturing.jpeg" alt="勉強会写真"></p>
+									</article>
+								</section>
+							</section>
+						</div>
+						<div id="Engineer" class="tabcontent">
+							<section>
+								<h2 class="bg-orange-500 text-white p-3 rounded">エンジニア向け</h2>
+								<section class="contents_area">
+									<h3 class="subtitle">【スキルアップ・副業支援】</h3>
+									<article class="contents_txt">
+										<div class="contents_txt_list">
+											<ul class="list-none pb-3">
+												<li class="common-list-item">現場でうまくいかない・ストレスが溜まる事が多い</li>
+												<li class="common-list-item">プログラミングスクールは卒業したけど思ったより実力が付いていない</li>
+												<li class="common-list-item">今の会社だとこれ以上のスキルアップが難しい</li>
+												<li class="common-list-item">転職したいけど自信が無い</li>
+												<li class="common-list-item">もっと稼げるエンジニアになりたい</li>
+											</ul>
+											エンジニアとしてどうスキルアップをしていくのか・どう稼ぎを増やしていくのか、中々難しいですよね。<br><br>
+											私自身もエンジニアとして様々な経験をしてきました。<br>
+											その経験を活かして、エンジニアの方々のスキルアップや副業支援を行っています。<br><br>
+											エンジニアとしてのキャリアを考える上で、一度ご相談ください。<br>
+										</div>
+										<p class="img"><img src="images/support.jpg" alt="サポートしている画像"></p>
+									</article>
+								</section>
+								<section class="contents_area">
+									<h3 class="contents_title2 subtitle"><a href="https://love.techguide.jp/line" target="_blank">【恋愛コンサル】</a></h3>
+									<article class="contents_txt2">
+										<div class="contents_txt_list">
+											<ul class="list-none pb-3">
+												<li class="common-list-item">恋愛に自信がない</li>
+												<li class="common-list-item">異性とどう仲良くなればいいか分からない</li>
+												<li class="common-list-item">出逢いが無さすぎてやばい</li>
+												<li class="common-list-item">仕事と恋愛のバランスが取れない</li>
+											</ul>
+											パソコンに向かってばかりいてコミュニケーションが苦手になってしまったり、仕事が忙しくて出逢いが無い、などエンジニアの方々にも多い悩みです。<br>
+											恋愛がうまくいかないと仕事にも影響が出てしまいます。<br>
+											仕事でさらに活躍するためにも恋愛の悩みを解決しませんか？<br><br>
+											<a href="https://love.techguide.jp/line" target="_blank" class="btn-link">詳細を見る</a>
+										</div>
+										<p class="img"><a href="https://love.techguide.jp/line" target="_blank">
+											<img src="images/love.jpg" alt="恋愛コンサル画像"></a></p>
+									</article>
+								</section>
+							</section>
+						</div>
+						<div id="Release" class="tabcontent">
+							<section>
+								<h2 class="bg-orange-500 text-white p-3 rounded">リリースサービス</h2>
+								<section class="contents_area">
+									<h3 class="subtitle"><a href="https://www.koi-tre.com/" target="_blank">【Koi-Tre】恋愛力アップツール</a></h3>
+									<article class="contents_txt">
+										<div class="contents_txt_list">
+											生成AIを使った恋愛力アップツールです。<br>
+											コミュニケーションを改善するためのツールとして、恋愛に限らずビジネスにも活用できます。<br>
+											あなたのセリフに対してAIが採点し、改善点を提案してくれます。<br>
+											恋愛に自信がない方、コミュニケーションが苦手な方、ビジネスでのプレゼンテーションが苦手な方におすすめです。<br><br>
+											<a href="https://www.koi-tre.com/" target="_blank"  class="btn-link">詳細を見る</a>
+										</div>
+										<p class="img"><a href="https://www.koi-tre.com/" target="_blank">
+											<img src="images/koitre.png" alt="Koi-Tre"></a></p>
+									</article>
+								</section>
+							</section>
+						</div>
+					</div>
 				</div>
 			</article>
 
@@ -208,10 +317,6 @@
 					<tr>
 						<th>創業</th>
 						<td>2021年4月12日</td>
-					</tr>
-					<tr>
-						<th>資本金</th>
-						<td>10万円</td>
 					</tr>
 					<tr>
 						<th>代表</th>
@@ -239,7 +344,8 @@
 			</section>
 		</div>
 	</main>
-	<footer>
+	<footer class="bg-gray-600 text-white">
+		<div class="container mx-auto py-4 px-8">
 		<p id="page-top"><a href="#top">TOP</a></p>
 		<ul>
 			<li><a href="">
@@ -257,13 +363,22 @@
 					<span class="ja">アクセス</span>
 				</a>
 			</li>
+			<li><a href="event.html">
+					<span class="en">EVENT</span>
+					<span class="ja">イベント</span>
+				</a>
+			</li>
 			<li><a href="contact/index.html">
 					<span class="en">CONTACT</span>
 					<span class="ja">お問い合わせ</span>
 				</a>
 			</li>
 		</ul>
-		<p><small>copyright © 2021 Tech Guide LLC All rights reserved.</small></p>
+		<p class="text-center">Copyright ©
+		<script>
+			document.write(new Date().getFullYear());
+		</script> TechGuide LLC.</p>
+		</div>
 	</footer>
 	<!-- wrapper -->
 </body>

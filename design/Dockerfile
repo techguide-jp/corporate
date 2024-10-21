@@ -1,13 +1,18 @@
-FROM nginx:alpine
+# Node.jsの公式イメージから
+FROM node:20
 
-# パーミッション修正スクリプトをコンテナにコピー
-COPY set-permissions.sh /usr/local/bin/set-permissions.sh
+# アプリケーションディレクトリを作成する
+WORKDIR /usr/src/app
 
-# スクリプトに実行権限を付与
-RUN chmod +x /usr/local/bin/set-permissions.sh
+# アプリケーションの依存関係をインストールする
+COPY TechGuide/package*.json ./
+RUN npm install
 
-# エントリーポイントをスクリプトに設定
-ENTRYPOINT ["/usr/local/bin/set-permissions.sh"]
+# アプリケーションのソースをバンドルする
+COPY . .
 
-# デフォルトのコマンド
-CMD ["nginx", "-g", "daemon off;"]
+# ポートを開ける
+EXPOSE 8080
+
+# PostCSSを実行する
+CMD [ "npm", "run", "watch" ]

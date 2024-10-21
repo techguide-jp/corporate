@@ -1,7 +1,15 @@
 services:
-  web:
-    build: .
+  nginx:
+    image: nginx:latest
     ports:
       - '${PORT}:80'
+      - '444:443'
     volumes:
-      - ./TechGuide/:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./TechGuide:/usr/share/nginx/html
+  app:
+    build: .
+    volumes:
+      - ./TechGuide:/usr/src/app
+    ports:
+      - '8080:8080'
