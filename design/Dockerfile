@@ -11,4 +11,3 @@ ENTRYPOINT ["/usr/local/bin/set-permissions.sh"]
 
 # デフォルトのコマンド
 CMD ["nginx", "-g", "daemon off;"]
-
