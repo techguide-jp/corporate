@@ -21,11 +21,6 @@ FIND_AVAILABLE_PORT = $(shell \
 export PORT := $(call FIND_AVAILABLE_PORT, $(DEFAULT_PORT))
 export APP_PORT := $(call FIND_AVAILABLE_PORT, $$(($$(PORT)+1)))
 
-.PHONY: check-port
-check-port:
-	@echo "使用するポート: $(PORT)"
-	@netstat -tuln | grep ":$(PORT)\b" && echo "ポート $(PORT) は使用中です。" || echo "ポート $(PORT) は使用可能です。"
-
 # ターゲット: 起動
 .PHONY: up
 up: build
