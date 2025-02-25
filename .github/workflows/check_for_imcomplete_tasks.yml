@@ -1,0 +1,58 @@
+name: Check Incomplete Tasks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check-incomplete-tasks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get PR body
+        id: get_body
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BODY=$(curl --fail -s -H "Authorization: token ${GITHUB_TOKEN}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
+          | jq -r '.body // "PR本文が見つかりません"')
+          BODY=$(echo "$BODY" | tr -d '\r')
+          BODY_B64=$(echo "$BODY" | base64)
+          {
+            echo "body_b64<<EOF"
+            echo "$BODY_B64"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install marked
+        run: npm install marked
+
+      - name: Check for incomplete tasks in PR description
+        id: check_incomplete_tasks
+        env:
+          BODY_B64: ${{ steps.get_body.outputs.body_b64 }}
+        run: |
+          set +e
+          BODY=$(echo "${BODY_B64}" | base64 --decode)
+          # PR本文を環境変数 PR_BODY に設定
+          export PR_BODY="$BODY"
+
+          # scripts/parse_tasks.js を実行
+          node .github/scripts/parse_tasks.js > tasks_output.md
+          EXIT_CODE=$?
+
+          set -e  # エラー制御を元に戻す
+
+          # Step Summaryに結果を追記
+          echo "# Task list results" >> $GITHUB_STEP_SUMMARY
+          cat tasks_output.md >> $GITHUB_STEP_SUMMARY
+
+          exit $EXIT_CODE
