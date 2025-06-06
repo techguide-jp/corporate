@@ -13,6 +13,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "postcss ./css/tailwindcss.css -o ./css/output.css",
     "watch": "postcss ./css/tailwindcss.css -o ./css/output.css --watch"
   },
   "keywords": [],
