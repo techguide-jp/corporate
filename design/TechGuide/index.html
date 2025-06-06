@@ -23,9 +23,13 @@
 	<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript" src="js/closed.js"></script>
 	<script type="text/javascript" src="js/ga.js"></script>
-	<link rel="stylesheet" href="css/reset.css">
-	<link rel="stylesheet" href="css/output.css">
-	<link href="css/common.css" rel="stylesheet" type="text/css">
+       <link rel="stylesheet" href="css/reset.css" />
+       <link rel="stylesheet" href="css/output.css" />
+       <link href="css/common.css" rel="stylesheet" type="text/css" />
+       <link
+         rel="stylesheet"
+         href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css"
+       />
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
@@ -90,9 +94,10 @@
 </head>
 
 <body>
-	<header id="top">
-		<div id="logo"><a href="index.html">Tech Guide</a></div>
-		<div class="hamburger-menu">
+       <header id="top" class="bg-gray-800 text-white shadow-md">
+               <div class="container mx-auto flex items-center justify-between p-4">
+                       <div id="logo" class="text-2xl font-bold"><a href="index.html">Tech Guide</a></div>
+                       <div class="hamburger-menu">
 			<input type="checkbox" value="#" id="menu-btn-check">
 			<label for="menu-btn-check" class="menu-btn"><span></span></label>
 			<nav id="g_nav">
@@ -127,17 +132,18 @@
 						</a>
 					</li>
 				</ul>
-			</nav>
-		</div>
-	</header>
+                        </nav>
+                       </div>
+               </div>
+        </header>
 	<main>
-		<div class="mainV">
-			<img src="images/mainVisual_4.png" alt="Tech Guide" />
-			<ul class="mV_txt">
-				<li class="name"><i>IT</i>をより<i>身近</i>に</li>
-				<li class="name"><i>IT</i>とより<i>フレンドリー</i>に</li>
-			</ul>
-		</div>
+               <div class="relative">
+                       <img src="images/mainVisual_4.png" alt="Tech Guide" class="w-full h-auto" />
+                       <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white">
+                               <p class="text-4xl md:text-5xl font-bold mb-2"><i>IT</i>をより<i>身近</i>に</p>
+                               <p class="text-4xl md:text-5xl font-bold"><i>IT</i>とより<i>フレンドリー</i>に</p>
+                       </div>
+               </div>
 		<div id="wrapper">
 			<div id="thought_area" class="scroll-fade-up">
 				<article>

@@ -1,30 +1,43 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Redirect Event</title>
-        <script>
-            window.onload = function() {
-                // キーワードと対応するURLのマッピング
-                var eventToUrl = {
-                    '20230522_talk_seminar': 'https://forms.gle/3TUbGDBYAHLrJBiq9',
-                    // 他のイベントをここに追加
-                };
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Event Redirect</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css"
+    />
+    <script>
+      window.onload = function () {
+        // キーワードと対応するURLのマッピング
+        var eventToUrl = {
+          '20230522_talk_seminar': 'https://forms.gle/3TUbGDBYAHLrJBiq9'
+          // 他のイベントをここに追加
+        };
 
-                var params = new URLSearchParams(window.location.search);
-                var eventKeyword = params.get('event');
+        var params = new URLSearchParams(window.location.search);
+        var eventKeyword = params.get('event');
 
-                if (eventKeyword && eventToUrl[eventKeyword]) {
-                    // キーワードに対応するURLにリダイレクト
-                    window.location.href = eventToUrl[eventKeyword];
-                } else {
-                    // キーワードが設定されていない、またはマッピングが存在しない場合はホームページにリダイレクト
-                    window.location.href = '/';
-                }
-            };
-        </script>
-    </head>
-    <body>
-        Redirecting...
-    </body>
+        if (eventKeyword && eventToUrl[eventKeyword]) {
+          // キーワードに対応するURLにリダイレクト
+          window.location.href = eventToUrl[eventKeyword];
+        } else {
+          // キーワードが設定されていない、またはマッピングが存在しない場合はホームページにリダイレクト
+          window.location.href = '/';
+        }
+      };
+    </script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <h1 class="text-2xl font-semibold mb-4">Redirecting...</h1>
+      <p class="text-gray-600">
+        もし自動的に遷移しない場合は
+        <a href="/" class="text-blue-600 underline">こちら</a>
+        をクリックしてください。
+      </p>
+    </div>
+  </body>
 </html>
 

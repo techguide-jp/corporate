@@ -591,6 +591,9 @@ video {
 .-inset-1 {
   inset: -0.25rem;
 }
+.inset-0 {
+  inset: 0px;
+}
 .end-1 {
   inset-inline-end: 0.25rem;
 }
@@ -1598,6 +1601,9 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
 }
+.bg-black\/40 {
+  background-color: rgb(0 0 0 / 0.4);
+}
 .bg-blue-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(191 219 254 / var(--tw-bg-opacity));
@@ -2479,6 +2485,11 @@ h3.subtitle {
   .md\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
+  }
+
+  .md\:text-5xl {
+    font-size: 3rem;
+    line-height: 1;
   }
 }
 @media (min-width: 1024px) {
