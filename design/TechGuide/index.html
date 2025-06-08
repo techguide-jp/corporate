@@ -30,15 +30,17 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 	<style>
-		.tablinks {
-			background-color: #ddd;
-			color: black;
-			padding: 10px 15px;
-			border: none;
-			cursor: pointer;
-			transition: 0.3s;
-			font-size: 17px;
-		}
+               .tablinks {
+                       background-color: #ddd;
+                       color: black;
+                       padding: 10px 5px;
+                       border: none;
+                       cursor: pointer;
+                       transition: 0.3s;
+                       font-size: 17px;
+                       flex: 1 1 0;
+                       white-space: nowrap;
+               }
 	
 		.tablinks:hover {
 			background-color: #bbb;
@@ -49,10 +51,17 @@
 			color: white;
 		}
 	
-		.tabcontent {
-			padding: 15px 20px;
-			border: 1px solid #ccc;
-		}
+               .tabcontent {
+                       padding: 15px 20px;
+                       border: 1px solid #ccc;
+               }
+
+               .tab_btns {
+                       display: flex;
+                       flex-wrap: nowrap;
+                       justify-content: space-between;
+                       gap: 4px;
+               }
 	</style>
 	<script type="text/javascript" src="js/common.js"></script>
 	<script type="text/javascript">
