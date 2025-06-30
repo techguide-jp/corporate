@@ -159,6 +159,30 @@
 			}
 		}
 		
+		/* ヘッダーナビゲーションの調整 */
+		#g_nav ul li a {
+			white-space: nowrap;
+		}
+		
+		#g_nav ul li a .en {
+			font-size: 0.85rem;
+		}
+		
+		#g_nav ul li a .ja {
+			font-size: 0.75rem;
+		}
+		
+		/* モバイル用のナビ調整 */
+		@media (max-width: 767px) {
+			#g_nav ul li a .en {
+				font-size: 1rem;
+			}
+			
+			#g_nav ul li a .ja {
+				font-size: 0.9rem;
+			}
+		}
+		
 		.diagnostic-banner-title .highlight {
 			color: #ffd700;
 			text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
