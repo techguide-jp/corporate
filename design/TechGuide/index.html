@@ -141,6 +141,22 @@
 			font-weight: bold;
 			margin-bottom: 16px;
 			line-height: 1.2;
+			white-space: nowrap;
+		}
+		
+		/* PC用の調整 */
+		@media (min-width: 768px) {
+			.diagnostic-banner-title {
+				font-size: 2.2rem;
+			}
+		}
+		
+		/* スマホ用の調整 */
+		@media (max-width: 767px) {
+			.diagnostic-banner-title {
+				white-space: normal;
+				font-size: 1.8rem;
+			}
 		}
 		
 		.diagnostic-banner-title .highlight {
