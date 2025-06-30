@@ -53,6 +53,185 @@
 			padding: 15px 20px;
 			border: 1px solid #ccc;
 		}
+		
+		/* モック作成診断バナースタイル */
+		.diagnostic-banner {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			padding: 60px 20px;
+			margin: 40px 0;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.diagnostic-banner::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			right: -50%;
+			width: 200%;
+			height: 200%;
+			background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+			animation: pulse 4s ease-in-out infinite;
+		}
+		
+		@keyframes pulse {
+			0%, 100% { transform: scale(1); opacity: 0.5; }
+			50% { transform: scale(1.1); opacity: 0.8; }
+		}
+		
+		.diagnostic-banner-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			gap: 40px;
+			position: relative;
+			z-index: 1;
+		}
+		
+		.diagnostic-banner-content {
+			flex: 1;
+			color: white;
+		}
+		
+		.diagnostic-banner-title {
+			font-size: 2.5rem;
+			font-weight: bold;
+			margin-bottom: 16px;
+			line-height: 1.2;
+		}
+		
+		.diagnostic-banner-title .highlight {
+			color: #ffd700;
+			text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+			animation: glow 2s ease-in-out infinite;
+		}
+		
+		@keyframes glow {
+			0%, 100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+			50% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8); }
+		}
+		
+		.diagnostic-banner-subtitle {
+			font-size: 1.2rem;
+			margin-bottom: 30px;
+			opacity: 0.95;
+		}
+		
+		.diagnostic-banner-features {
+			display: flex;
+			gap: 30px;
+			margin-bottom: 30px;
+			flex-wrap: wrap;
+		}
+		
+		.feature-item {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		
+		.feature-icon {
+			width: 24px;
+			height: 24px;
+			color: #ffd700;
+		}
+		
+		.diagnostic-banner-btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			background-color: white;
+			color: #667eea;
+			padding: 16px 32px;
+			border-radius: 50px;
+			font-weight: bold;
+			font-size: 1.1rem;
+			text-decoration: none;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+		}
+		
+		.diagnostic-banner-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+			background-color: #ffd700;
+			color: #764ba2;
+		}
+		
+		.btn-arrow {
+			width: 20px;
+			height: 20px;
+			transition: transform 0.3s ease;
+		}
+		
+		.diagnostic-banner-btn:hover .btn-arrow {
+			transform: translateX(5px);
+		}
+		
+		.diagnostic-banner-image {
+			flex: 0 0 400px;
+			position: relative;
+		}
+		
+		.diagnostic-banner-image img {
+			width: 100%;
+			height: auto;
+			border-radius: 10px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+		}
+		
+		.floating-badge {
+			position: absolute;
+			top: -20px;
+			right: -20px;
+			background-color: #ff4757;
+			color: white;
+			padding: 8px 20px;
+			border-radius: 25px;
+			font-weight: bold;
+			font-size: 0.9rem;
+			animation: float 3s ease-in-out infinite;
+			box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+		}
+		
+		@keyframes float {
+			0%, 100% { transform: translateY(0px); }
+			50% { transform: translateY(-10px); }
+		}
+		
+		/* レスポンシブ対応 */
+		@media (max-width: 768px) {
+			.diagnostic-banner {
+				padding: 40px 20px;
+			}
+			
+			.diagnostic-banner-inner {
+				flex-direction: column;
+				text-align: center;
+			}
+			
+			.diagnostic-banner-title {
+				font-size: 1.8rem;
+			}
+			
+			.diagnostic-banner-subtitle {
+				font-size: 1rem;
+			}
+			
+			.diagnostic-banner-features {
+				justify-content: center;
+			}
+			
+			.diagnostic-banner-image {
+				flex: 0 0 auto;
+				max-width: 300px;
+			}
+			
+			.diagnostic-banner-btn {
+				margin: 0 auto;
+			}
+		}
 	</style>
 	<script type="text/javascript" src="js/common.js"></script>
 	<script type="text/javascript">
@@ -143,6 +322,51 @@
 				<li class="name"><i>IT</i>とより<i>フレンドリー</i>に</li>
 			</ul>
 		</div>
+		
+		<!-- モック作成診断バナー -->
+		<div class="diagnostic-banner scroll-fade-up">
+			<div class="diagnostic-banner-inner">
+				<div class="diagnostic-banner-content">
+					<h2 class="diagnostic-banner-title">
+						<span class="highlight">無料</span>であなたのアイデアを試作サイトに！
+					</h2>
+					<p class="diagnostic-banner-subtitle">
+						3分の診断で、あなたのビジネスアイデアを実際に動く試作版（プロトタイプ）として作成します
+					</p>
+					<div class="diagnostic-banner-features">
+						<div class="feature-item">
+							<svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+							<span>3分で試作版が完成</span>
+						</div>
+						<div class="feature-item">
+							<svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+							<span>完全無料で利用可能</span>
+						</div>
+						<div class="feature-item">
+							<svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+							</svg>
+							<span>実際に動くサイトを確認</span>
+						</div>
+					</div>
+					<a href="https://ready-mock.vercel.app" target="_blank" class="diagnostic-banner-btn">
+						<span class="btn-text">無料で試作サイトを作成する</span>
+						<svg class="btn-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+						</svg>
+					</a>
+				</div>
+				<div class="diagnostic-banner-image">
+					<div class="floating-badge">NEW!</div>
+					<img src="https://ready-mock.vercel.app/og-image.png" alt="アプリ開発診断ツール" onerror="this.style.display='none'">
+				</div>
+			</div>
+		</div>
+		
 		<div id="wrapper">
 			<div id="thought_area" class="scroll-fade-up">
 				<article>
