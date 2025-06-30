@@ -30,23 +30,65 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
 	<style>
+		/* タブボタンのみ改善 */
+		.tab_btns {
+			display: flex;
+			gap: 0;
+			margin-bottom: 2rem;
+			background: #f0f4f8;
+			border-radius: 50px;
+			padding: 8px;
+			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+		
 		.tablinks {
-			background-color: #ddd;
-			color: black;
-			padding: 10px 15px;
+			background: transparent;
+			color: #64748b;
+			padding: 15px 30px;
 			border: none;
 			cursor: pointer;
-			transition: 0.3s;
-			font-size: 17px;
+			transition: all 0.3s ease;
+			font-size: 16px;
+			font-weight: 600;
+			border-radius: 25px;
+			flex: 1;
+			text-align: center;
+			position: relative;
+			overflow: hidden;
+		}
+		
+		.tablinks::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+			border-radius: 25px;
+		}
+		
+		.tablinks span {
+			position: relative;
+			z-index: 2;
 		}
 	
 		.tablinks:hover {
-			background-color: #bbb;
+			color: #475569;
+			transform: translateY(-2px);
 		}
 	
 		.tablinks.active {
-			background-color: #4CAF50;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 			color: white;
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+			transform: translateY(-2px);
+		}
+		
+		.tablinks.active::before {
+			opacity: 1;
 		}
 	
 		.tabcontent {
@@ -54,7 +96,7 @@
 			border: 1px solid #ccc;
 		}
 		
-		/* モック作成診断バナースタイル */
+		/* 試作サイト診断バナースタイル */
 		.diagnostic-banner {
 			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 			padding: 60px 20px;
@@ -294,6 +336,7 @@
 					<li><a href="https://speakerdeck.com/tashua314" target="_blank">
 							<span class="en">PRESENTATION</span>
 							<span class="ja">発表資料</span>
+						</a>
 					</li>
 					<li><a href="event.html">
 							<span class="en">EVENT</span>
@@ -323,8 +366,8 @@
 			</ul>
 		</div>
 		
-		<!-- モック作成診断バナー -->
-		<div class="diagnostic-banner scroll-fade-up">
+		<!-- 試作サイト診断バナー -->
+		<div class="diagnostic-banner">
 			<div class="diagnostic-banner-inner">
 				<div class="diagnostic-banner-content">
 					<h2 class="diagnostic-banner-title">
@@ -362,7 +405,7 @@
 				</div>
 				<div class="diagnostic-banner-image">
 					<div class="floating-badge">NEW!</div>
-					<img src="https://ready-mock.vercel.app/og-image.png" alt="アプリ開発診断ツール" onerror="this.style.display='none'">
+					<img src="https://ready-mock.vercel.app/og-image.png" alt="試作サイト診断ツール" onerror="this.style.display='none'">
 				</div>
 			</div>
 		</div>
@@ -411,12 +454,13 @@
 			</div>
 
 			<article class="service_area scroll-fade-up">
-				<h1 id="service">事業内容</h1>
-				<div class="tab">
+				<div class="service_area_inner">
+					<h1 id="service">事業内容</h1>
+					<div class="tab">
 					<div class="tab_btns">
-						<button class="tablinks" onclick="openContent(event, 'Business')" id="defaultOpen">企業向け</button>
-						<button class="tablinks" onclick="openContent(event, 'Engineer')">エンジニア向け</button>
-						<button class="tablinks" onclick="openContent(event, 'Release')">リリースサービス</button>
+						<button class="tablinks" onclick="openContent(event, 'Business')" id="defaultOpen"><span>企業向け</span></button>
+						<button class="tablinks" onclick="openContent(event, 'Engineer')"><span>エンジニア向け</span></button>
+						<button class="tablinks" onclick="openContent(event, 'Release')"><span>リリースサービス</span></button>
 					</div>
 					<div class="panel_area">
 						<div id="Business" class="tabcontent">
@@ -526,6 +570,7 @@
 							</section>
 						</div>
 					</div>
+					</div>
 				</div>
 			</article>
 
@@ -537,8 +582,9 @@
 			</div>
 
 			<section class="company_area scroll-fade-up">
-				<h1 id="company">会社概要</h1>
-				<table class="company">
+				<div class="company_area_inner">
+					<h1 id="company">会社概要</h1>
+					<table class="company">
 					<tr>
 						<th>商号(会社名)</th>
 						<td>テックガイド合同会社</td>
@@ -551,7 +597,8 @@
 						<th>代表</th>
 						<td>高橋 雄太</td>
 					</tr>
-				</table>
+					</table>
+				</div>
 			</section>
 
 			<section class="access_area scroll-fade-up">
