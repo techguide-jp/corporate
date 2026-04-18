@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirect Event</title>
+    <script>
+      window.onload = function() {
+        var eventToUrl = {
+          '20230522_talk_seminar': 'https://forms.gle/3TUbGDBYAHLrJBiq9'
+        };
+
+        var params = new URLSearchParams(window.location.search);
+        var eventKeyword = params.get('event');
+
+        if (eventKeyword && eventToUrl[eventKeyword]) {
+          window.location.href = eventToUrl[eventKeyword];
+        } else {
+          window.location.href = '/';
+        }
+      };
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>
