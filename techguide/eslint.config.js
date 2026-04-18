@@ -31,11 +31,11 @@ export default defineConfig(
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
   ...svelte.configs.recommended,
   {
     name: 'techguide/typed-files',
     files: ['**/*.ts'],
+    extends: [tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       parserOptions: {
         projectService: true,
