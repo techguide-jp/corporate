@@ -2,7 +2,6 @@
   import { page } from '$app/state';
   import { untrack } from 'svelte';
   import type { NavItem } from '$lib/types/content';
-  import LogoMark from '$lib/components/ui/LogoMark.svelte';
 
   interface Props {
     items: NavItem[];
@@ -40,7 +39,6 @@
 <header class="header" id="top">
   <div class="container header__inner">
     <a class="brand" href="/" aria-label="TechGuide ホームへ移動">
-      <LogoMark />
       <span>TechGuide</span>
     </a>
 
@@ -107,7 +105,6 @@
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
     font-family: var(--font-heading);
     font-size: 1.65rem;
     font-weight: 800;
