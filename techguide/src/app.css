@@ -1,0 +1,133 @@
+:root {
+  --font-heading: 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', 'Yu Gothic UI', sans-serif;
+  --font-body: 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', 'Yu Gothic UI', sans-serif;
+
+  --color-bg: #fffdf8;
+  --color-surface: #ffffff;
+  --color-surface-soft: #faf6ec;
+  --color-surface-accent: #fff6d6;
+  --color-surface-deep: #f6eed9;
+  --color-line: rgba(117, 92, 56, 0.16);
+
+  --color-primary: #e6b85c;
+  --color-primary-deep: #d6974c;
+  --color-secondary: #c2b59b;
+  --color-tertiary: #f4e7a1;
+  --color-ink: #2f2418;
+  --color-ink-soft: #6a5a48;
+  --color-white: #ffffff;
+
+  --shadow-soft: 0 12px 28px rgba(111, 83, 41, 0.08);
+  --shadow-card: 0 22px 40px rgba(111, 83, 41, 0.12);
+  --shadow-button: 0 10px 20px rgba(224, 164, 91, 0.24);
+
+  --radius-pill: 999px;
+  --radius-card: 24px;
+  --radius-large: 32px;
+
+  --container-width: 1140px;
+  --header-height: 84px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 18px);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background:
+    radial-gradient(circle at top, rgba(244, 231, 161, 0.22) 0, transparent 30%),
+    var(--color-bg);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+main {
+  display: block;
+}
+
+.container {
+  width: min(var(--container-width), calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: clamp(72px, 9vw, 112px);
+}
+
+.section--tight {
+  padding-block: clamp(56px, 7vw, 88px);
+}
+
+.surface-soft {
+  background:
+    linear-gradient(180deg, rgba(247, 240, 213, 0.88) 0%, rgba(255, 248, 231, 0.96) 100%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.anchor-target {
+  position: relative;
+  top: -120px;
+  display: block;
+  visibility: hidden;
+}
+
+@media (max-width: 720px) {
+  .container {
+    width: min(var(--container-width), calc(100% - 28px));
+  }
+}
