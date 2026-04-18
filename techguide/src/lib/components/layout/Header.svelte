@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/state';
+  import { untrack } from 'svelte';
   import type { NavItem } from '$lib/types/content';
   import LogoMark from '$lib/components/ui/LogoMark.svelte';
 
@@ -30,7 +31,7 @@
     page.url.pathname;
     page.url.hash;
 
-    if (menuOpen) {
+    if (untrack(() => menuOpen)) {
       closeMenu();
     }
   });
