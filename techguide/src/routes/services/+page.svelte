@@ -16,7 +16,7 @@
   <title>支援内容 | TechGuide</title>
   <meta
     name="description"
-    content="テックガイド合同会社の支援内容。ITコンサル・導線設計、LP制作・受託開発、AI活用・技術指導・採用支援を詳しく紹介します。"
+    content="テックガイド合同会社の支援内容。導入前整理・IT活用支援、受託開発・LP/導線改善、AI活用・技術教育・組織支援を詳しく紹介します。"
   />
 </svelte:head>
 
@@ -27,7 +27,7 @@
     <div class="container">
       <SectionHeading
         title="支援内容"
-        subtitle="課題や事業フェーズに応じて、必要な支援を詳しくご覧いただけます。"
+        subtitle="課題や事業フェーズに応じて、導入前整理から制作・技術教育まで必要な支援を詳しくご覧いただけます。"
       />
 
       <div class="service-detail-list__items">

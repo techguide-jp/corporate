@@ -75,31 +75,31 @@ export const story: StoryContent = {
 
 export const services: ServiceItem[] = [
   {
-    title: 'ITコンサルティング・導入支援',
+    title: '導入前整理・IT活用支援',
     description:
-      '課題整理、業務設計、ツール選定までを整理し、何から始めるべきかを明確にします。',
+      '課題整理、優先順位づけ、業務導線の整理を通じて、今の体制で無理なく始められる一歩を明確にします。',
     href: '/services#consulting',
     kind: 'consulting',
     image: '/images/services/consulting-visual.webp',
-    imageAlt: 'ITコンサルティング・導入支援'
+    imageAlt: '導入前整理・IT活用支援'
   },
   {
     title: '受託開発・LP/導線改善',
     description:
-      '要件整理から設計、制作、改善運用まで一気通貫で伴走し、成果に結びつく導線を整えます。',
+      '事業の目的と利用者の行動を踏まえ、伝わる構成と成果につながる導線を設計し、制作から改善まで伴走します。',
     href: '/services#development',
     kind: 'development',
     image: '/images/services/development-visual.webp',
     imageAlt: '受託開発・LP/導線改善'
   },
   {
-    title: 'AI活用・技術指導・採用支援',
+    title: 'AI活用・技術教育・組織支援',
     description:
-      'AI導入のスモールスタートから、内製化に向けた技術指導や採用支援まで対応します。',
+      'AIの現場活用に加え、エンジニアが事業理解を持って対話・提案できるようにする技術教育を通じて、噛み合う組織づくりを支援します。',
     href: '/services#ai',
     kind: 'ai',
     image: '/images/services/ai-visual.webp',
-    imageAlt: 'AI活用・技術指導・採用支援'
+    imageAlt: 'AI活用・技術教育・組織支援'
   }
 ];
 
@@ -162,50 +162,50 @@ export const contactInfo: ContactInfo = {
 export const serviceDetails: ServiceDetail[] = [
   {
     id: 'consulting',
-    title: 'ITコンサル・導線設計',
+    title: '導入前整理・IT活用支援',
     summary:
       'ツール導入や業務改善を進めたいが、何が課題で、何を優先すべきかが曖昧な状態から整理します。',
     issues: [
-      'ITで何が改善できるのか分からない',
-      '提案を受けているが妥当性を判断できない',
-      '現場に合う導線設計や運用フローまで整理したい'
+      '何を改善したいのかがまだ言語化できていない',
+      '提案やツールの妥当性を判断しづらい',
+      '導入前に現場の運用や導線まで整理したい'
     ],
     offerings: [
-      '課題整理と現状ヒアリング',
-      '導線設計、業務整理、導入方針の言語化',
-      '既存ツール活用を含む現実的な提案'
+      '現状把握と課題整理',
+      '優先順位づけと導入方針の言語化',
+      '現場に合う業務導線・運用設計'
     ],
-    process: ['現状ヒアリング', '課題と優先順位の整理', '導入・改善方針の提案'],
+    process: ['現状把握', '優先順位づけ', '導入方針の設計'],
     visual: {
       image: '/images/services/consulting-visual.webp',
-      alt: '課題整理の打ち合わせイメージ',
+      alt: '導入前整理の打ち合わせイメージ',
       eyebrow: 'Planning',
-      title: 'まず課題の輪郭を揃える',
-      description: '導入可否の判断や、現場に無理のない進め方まで整理してから着手します。'
+      title: 'まず着手前の整理を行う',
+      description: '導入可否の判断や、現場に無理のない進め方まで整理してから動き出します。'
     }
   },
   {
     id: 'development',
     title: 'LP制作・受託開発',
     summary:
-      '企画段階から目的を整理し、申込や問い合わせにつながる導線まで含めて制作と改善を進めます。',
+      '企画段階から目的と訴求を整理し、申込や問い合わせにつながる導線まで含めて制作と改善を進めます。',
     issues: [
-      'LPやWebサイトを作りたいが、何を載せるべきか分からない',
+      '何を載せれば伝わるのか整理できていない',
       '公開しているページが成果につながっていない',
       '制作後も改善しながら運用したい'
     ],
     offerings: [
-      '要件整理と構成設計',
-      'LP制作、フォーム導線、改善提案',
-      '公開後の振り返りと継続改善'
+      '目的整理と訴求設計',
+      'LP制作、フォーム導線、必要機能の実装',
+      '公開後の振り返りと改善伴走'
     ],
-    process: ['目的とターゲットの整理', '構成・制作', '公開後の改善伴走'],
+    process: ['目的整理と訴求設計', '制作・実装', '公開後の改善伴走'],
     visual: {
       image: '/images/services/development-visual.webp',
       alt: 'LP制作と導線改善のイメージ',
       eyebrow: 'Development',
       title: '訴求から申込導線まで設計する',
-      description: '構成設計、フォーム導線、公開後の改善まで継続して支える支援です。',
+      description: '訴求設計、フォーム導線、必要機能の実装、公開後の改善まで継続して支えます。',
       href: 'https://lpboost-prod.lpboost.workers.dev/',
       ctaLabel: 'LP Boost を見る'
     },
@@ -228,31 +228,31 @@ export const serviceDetails: ServiceDetail[] = [
   },
   {
     id: 'ai',
-    title: 'AI活用・技術指導・採用支援',
+    title: 'AI活用・技術教育・組織支援',
     summary:
-      'AIを現場で使える形に落とし込みながら、内製化に向けた技術指導や採用体制づくりまで支援します。',
+      'AIを現場で使える形に落とし込みながら、エンジニアが事業背景を理解し、ビジネス側と噛み合う形で動けるようにする技術教育と組織支援を行います。',
     issues: [
-      'ChatGPT や生成AIをどう業務に活かせばいいか分からない',
-      '社内に技術知見が少なく、内製化に不安がある',
-      '採用や育成まで含めて体制を整えたい'
+      'AIをどう業務に活かせば成果につながるのか分からない',
+      '技術力はあっても、事業側との会話や優先順位のすり合わせが噛み合いにくい',
+      'エンジニアが一段上の視座を持ち、提案や判断ができる組織にしたい'
     ],
     offerings: [
-      'AI活用テーマの選定と小さな実証',
-      '技術指導、教育、運用ルール整理',
-      '採用や内製化に向けた体制設計の相談'
+      'AI活用テーマの整理と小さな実証',
+      'エンジニア向けの技術教育、事業理解支援、壁打ち',
+      'ビジネスと技術の認識をそろえる進め方・対話設計'
     ],
-    process: ['テーマ設定', '小さく試す', '現場定着と体制づくり'],
+    process: ['テーマ整理', '小さく試す', '教育と現場定着'],
     visual: {
       image: '/images/services/ai-visual.webp',
-      alt: 'AI活用と技術支援のイメージ',
+      alt: 'AI活用と技術教育のイメージ',
       eyebrow: 'Enablement',
-      title: '小さく始めて、現場に定着させる',
-      description: 'AI導入も技術指導も、試して終わりではなく続く体制づくりまで伴走します。'
+      title: '小さく始めて、噛み合う組織を育てる',
+      description: 'AI導入だけでなく、事業理解と対話力を持って動ける技術人材と進め方づくりまで伴走します。'
     },
     relatedItems: [
       {
         title: 'ValueGate Blog',
-        description: '単価設計やキャリア設計を、実務に落とし込める形で発信するブログ',
+        description: '技術と事業をつなぐ視点を、実務に落とし込める形で発信するブログ',
         image: '/images/showcase/valuegate-blog-hero.webp',
         href: 'https://blog.valuegate.tech/',
         ctaLabel: 'ブログを見る'
