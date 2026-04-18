@@ -46,8 +46,7 @@ body {
   font-family: var(--font-body);
   color: var(--color-ink);
   background:
-    radial-gradient(circle at top, rgba(244, 231, 161, 0.22) 0, transparent 30%),
-    var(--color-bg);
+    radial-gradient(circle at top, rgba(244, 231, 161, 0.22) 0, transparent 30%), var(--color-bg);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -102,8 +101,7 @@ main {
 }
 
 .surface-soft {
-  background:
-    linear-gradient(180deg, rgba(247, 240, 213, 0.88) 0%, rgba(255, 248, 231, 0.96) 100%);
+  background: linear-gradient(180deg, rgba(247, 240, 213, 0.88) 0%, rgba(255, 248, 231, 0.96) 100%);
 }
 
 .text-balance {

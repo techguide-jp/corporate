@@ -4,12 +4,7 @@
   import Header from '$lib/components/layout/Header.svelte';
   import ContactCta from '$lib/components/sections/ContactCta.svelte';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
-  import {
-    companyProfile,
-    contactInfo,
-    navItems,
-    serviceDetails
-  } from '$lib/data/site';
+  import { companyProfile, contactInfo, navItems, serviceDetails } from '$lib/data/site';
 </script>
 
 <svelte:head>
@@ -31,7 +26,7 @@
       />
 
       <div class="service-detail-list__items">
-        {#each serviceDetails as detail, index}
+        {#each serviceDetails as detail, index (detail.id)}
           <article
             class:service-detail--reverse={index === 1}
             class="service-detail"
@@ -45,7 +40,7 @@
 
               <div class="service-detail__visual">
                 {#if detail.visual.href}
-                  <a href={detail.visual.href} target="_blank" rel="noreferrer">
+                  <a href={detail.visual.href} target="_blank" rel="external noreferrer">
                     <img src={asset(detail.visual.image)} alt={detail.visual.alt} loading="lazy" />
                   </a>
                 {:else}
@@ -67,7 +62,7 @@
                   <section>
                     <h3 class="service-detail__section-title">こんな課題</h3>
                     <ul>
-                      {#each detail.issues as item}
+                      {#each detail.issues as item (item)}
                         <li>{item}</li>
                       {/each}
                     </ul>
@@ -76,7 +71,7 @@
                   <section>
                     <h3 class="service-detail__section-title">支援内容</h3>
                     <ul>
-                      {#each detail.offerings as item}
+                      {#each detail.offerings as item (item)}
                         <li>{item}</li>
                       {/each}
                     </ul>
@@ -90,12 +85,12 @@
                 <p class="service-detail__related-eyebrow">関連サービス</p>
 
                 <div class="service-detail__related-grid">
-                  {#each detail.relatedItems as item}
+                  {#each detail.relatedItems as item (item.href)}
                     <a
                       class="service-detail__related-card"
                       href={item.href}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="external noreferrer"
                     >
                       <img src={asset(item.image)} alt={item.title} loading="lazy" />
                       <div>
@@ -154,8 +149,12 @@
     left: 50%;
     width: 100vw;
     transform: translateX(-50%);
-    background:
-      linear-gradient(180deg, rgba(244, 231, 203, 0.9) 0%, rgba(252, 247, 239, 0.82) 58%, rgba(255, 252, 246, 0.74) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(244, 231, 203, 0.9) 0%,
+      rgba(252, 247, 239, 0.82) 58%,
+      rgba(255, 252, 246, 0.74) 100%
+    );
     box-shadow: inset 0 1px 0 rgba(117, 92, 56, 0.12);
     z-index: -1;
     pointer-events: none;

@@ -15,7 +15,7 @@
     { label: '創業', value: profile.foundedAt },
     { label: '代表', value: profile.representative },
     { label: '住所', value: `${access.postalCode} ${access.address}` },
-    { label: 'MAIL', value: contact.email }
+    { label: 'MAIL', value: contact.email },
   ]);
 </script>
 
@@ -28,7 +28,7 @@
     <div class="company__grid">
       <div class="company__info">
         <dl>
-          {#each fields as field}
+          {#each fields as field (field.label)}
             <div class="company__row">
               <dt>{field.label}</dt>
               <dd>
@@ -42,7 +42,12 @@
           {/each}
         </dl>
 
-        <a class="company__map-link" href={access.mapHref} target="_blank" rel="noreferrer">
+        <a
+          class="company__map-link"
+          href={access.mapHref}
+          target="_blank"
+          rel="external noreferrer"
+        >
           Google Maps で見る
         </a>
       </div>

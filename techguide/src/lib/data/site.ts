@@ -7,7 +7,7 @@ import type {
   ServiceDetail,
   ServiceItem,
   ShowcaseItem,
-  StoryContent
+  StoryContent,
 } from '$lib/types/content';
 
 export const navItems: NavItem[] = [
@@ -15,7 +15,7 @@ export const navItems: NavItem[] = [
   { label: 'プロダクト', href: '/#products' },
   { label: '実績', href: '/#works' },
   { label: '会社情報', href: '/#company' },
-  { label: 'お問い合わせ', href: '/contact' }
+  { label: 'お問い合わせ', href: '/contact' },
 ];
 
 export const hero: HeroContent = {
@@ -25,8 +25,8 @@ export const hero: HeroContent = {
     '中小企業や立ち上げ期のチームに向けて、IT導入、LP制作、AI活用まで実行しやすい形に整えて伴走します。',
   actions: [
     { label: '支援内容を見る', href: '/services', tone: 'warm' },
-    { label: 'お問い合わせ', href: '/contact', tone: 'light' }
-  ]
+    { label: 'お問い合わせ', href: '/contact', tone: 'light' },
+  ],
 };
 
 export const story: StoryContent = {
@@ -38,7 +38,7 @@ export const story: StoryContent = {
   paragraphs: [
     'ITは本来、**業務を軽くしたり、事業の可能性を広げたりするための手段**です。けれど実際には、言葉が難しかったり、選択肢が多すぎたりして、現場では「何から始めればいいか分からない」まま止まってしまうことが少なくありません。',
     '私は、技術そのものを見せたいのではなく、**相手の状況に合った形で、使える状態まで整えること**に価値があると考えています。分かりやすく整理し、無理なく始められて、現場で続けられることを大切にしています。',
-    'TechGuideは、**相談の段階から制作、導入、改善までを一緒に進めながら**、ITを特別なものではなく、**事業を前に進めるための実用的な力**として届けていきます。'
+    'TechGuideは、**相談の段階から制作、導入、改善までを一緒に進めながら**、ITを特別なものではなく、**事業を前に進めるための実用的な力**として届けていきます。',
   ],
   focusItems: [
     {
@@ -48,10 +48,10 @@ export const story: StoryContent = {
       points: [
         '**何を改善したいのか**が言語化されていない',
         '提案やツールを比較しても、**自社に合う判断**がしづらい',
-        '通常業務が忙しく、**導入の準備に手が回らない**'
+        '通常業務が忙しく、**導入の準備に手が回らない**',
       ],
       closing:
-        'TechGuideは、こうした止まりやすさに対して、**導入そのものより前に、課題と優先順位を一緒に整理する支援**に取り組んでいます。'
+        'TechGuideは、こうした止まりやすさに対して、**導入そのものより前に、課題と優先順位を一緒に整理する支援**に取り組んでいます。',
     },
     {
       title: '技術とビジネスをつなぐ人材が育ちにくい',
@@ -60,17 +60,17 @@ export const story: StoryContent = {
       points: [
         '技術的には正しくても、**事業側が求める優先順位や判断軸**とずれてしまう',
         '要件や課題をそのまま受け取るだけで、**背景を踏まえた整理や提案**につながりにくい',
-        'エンジニアとビジネス側の間をつなぐ役割が育たず、**認識の行き違い**が繰り返される'
+        'エンジニアとビジネス側の間をつなぐ役割が育たず、**認識の行き違い**が繰り返される',
       ],
       closing:
-        'TechGuideは、こうした齟齬を減らすために、**技術だけでなく相手の状況や感情を汲み取り、事業と噛み合う形で動ける人を増やす支援**に取り組んでいます。'
-    }
+        'TechGuideは、こうした齟齬を減らすために、**技術だけでなく相手の状況や感情を汲み取り、事業と噛み合う形で動ける人を増やす支援**に取り組んでいます。',
+    },
   ],
   missionTitle: 'Mission',
   missionItems: [
     '中小企業にとって、**人に寄り添い、幸せを生み出す IT との関わり**を増やす。',
-    '技術だけでなく相手の状況や感情を汲み取れる人を増やし、**現場で成果の出る支援**を広げる。'
-  ]
+    '技術だけでなく相手の状況や感情を汲み取れる人を増やし、**現場で成果の出る支援**を広げる。',
+  ],
 };
 
 export const services: ServiceItem[] = [
@@ -81,7 +81,7 @@ export const services: ServiceItem[] = [
     href: '/services#consulting',
     kind: 'consulting',
     image: '/images/services/consulting-visual.webp',
-    imageAlt: '導入前整理・IT活用支援'
+    imageAlt: '導入前整理・IT活用支援',
   },
   {
     title: '受託開発・LP/導線改善',
@@ -90,7 +90,7 @@ export const services: ServiceItem[] = [
     href: '/services#development',
     kind: 'development',
     image: '/images/services/development-visual.webp',
-    imageAlt: '受託開発・LP/導線改善'
+    imageAlt: '受託開発・LP/導線改善',
   },
   {
     title: 'AI活用・技術教育・組織支援',
@@ -99,8 +99,8 @@ export const services: ServiceItem[] = [
     href: '/services#ai',
     kind: 'ai',
     image: '/images/services/ai-visual.webp',
-    imageAlt: 'AI活用・技術教育・組織支援'
-  }
+    imageAlt: 'AI活用・技術教育・組織支援',
+  },
 ];
 
 export const productItems: ShowcaseItem[] = [
@@ -109,15 +109,15 @@ export const productItems: ShowcaseItem[] = [
     description: '申込・決済・受付・配信を一本化するイベント運営プロダクト',
     image: '/images/showcase/ticketcraft-hero.webp',
     href: 'https://ticketcraft.jp/',
-    ctaLabel: 'プロダクトを見る'
+    ctaLabel: 'プロダクトを見る',
   },
   {
     title: 'その他事例集',
     description: '制作実績を横断して見られるポートフォリオ集',
     image: '/images/showcase/portfolio-hero.webp',
     href: 'https://portfolio-site-sage-seven.vercel.app/',
-    ctaLabel: '事例集を見る'
-  }
+    ctaLabel: '事例集を見る',
+  },
 ];
 
 export const workItems: ShowcaseItem[] = [
@@ -126,21 +126,21 @@ export const workItems: ShowcaseItem[] = [
     description: 'セルフコンディショニングブランドの講座・申込LP',
     image: '/images/showcase/aromine-hero.webp',
     href: 'https://aromine.vercel.app/',
-    ctaLabel: '実績を見る'
+    ctaLabel: '実績を見る',
   },
   {
     title: '守成クラブ 東京品川会場',
     description: '例会案内・イベント導線を整理した公式サイト',
     image: '/images/showcase/shusei-shinagawa-hero.webp',
     href: 'https://www.shusei-tokyoshinagawa.com/',
-    ctaLabel: '実績を見る'
-  }
+    ctaLabel: '実績を見る',
+  },
 ];
 
 export const companyProfile: CompanyProfile = {
   name: 'TechGuide合同会社',
   foundedAt: '2021年4月12日',
-  representative: '高橋 雄太'
+  representative: '高橋 雄太',
 };
 
 export const accessInfo: AccessInfo = {
@@ -149,14 +149,14 @@ export const accessInfo: AccessInfo = {
   mapHref:
     'https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E6%96%B0%E5%AE%BF7-20-6%20%E5%A4%A7%E4%B9%85%E4%BF%9D%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B31F',
   embedSrc:
-    'https://www.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E6%96%B0%E5%AE%BF7-20-6%20%E5%A4%A7%E4%B9%85%E4%BF%9D%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B31F&z=17&output=embed'
+    'https://www.google.com/maps?q=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E6%96%B0%E5%AE%BF7-20-6%20%E5%A4%A7%E4%B9%85%E4%BF%9D%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B31F&z=17&output=embed',
 };
 
 export const contactInfo: ContactInfo = {
   heading: '導入前の整理から、制作・改善まで気軽にご相談ください。',
   description:
     '現状整理、LP改善、ツール導入、AI活用の壁打ちまで、事業フェーズに合わせて伴走します。',
-  email: 'y.takahashi@techguide.jp'
+  email: 'y.takahashi@techguide.jp',
 };
 
 export const serviceDetails: ServiceDetail[] = [
@@ -168,12 +168,12 @@ export const serviceDetails: ServiceDetail[] = [
     issues: [
       '何を改善したいのかがまだ言語化できていない',
       '提案やツールの妥当性を判断しづらい',
-      '導入前に現場の運用や導線まで整理したい'
+      '導入前に現場の運用や導線まで整理したい',
     ],
     offerings: [
       '現状把握と課題整理',
       '優先順位づけと導入方針の言語化',
-      '現場に合う業務導線・運用設計'
+      '現場に合う業務導線・運用設計',
     ],
     process: ['現状把握', '優先順位づけ', '導入方針の設計'],
     visual: {
@@ -181,8 +181,8 @@ export const serviceDetails: ServiceDetail[] = [
       alt: '導入前整理の打ち合わせイメージ',
       eyebrow: 'Planning',
       title: 'まず着手前の整理を行う',
-      description: '導入可否の判断や、現場に無理のない進め方まで整理してから動き出します。'
-    }
+      description: '導入可否の判断や、現場に無理のない進め方まで整理してから動き出します。',
+    },
   },
   {
     id: 'development',
@@ -192,12 +192,12 @@ export const serviceDetails: ServiceDetail[] = [
     issues: [
       '何を載せれば伝わるのか整理できていない',
       '公開しているページが成果につながっていない',
-      '制作後も改善しながら運用したい'
+      '制作後も改善しながら運用したい',
     ],
     offerings: [
       '目的整理と訴求設計',
       'LP制作、フォーム導線、必要機能の実装',
-      '公開後の振り返りと改善伴走'
+      '公開後の振り返りと改善伴走',
     ],
     process: ['目的整理と訴求設計', '制作・実装', '公開後の改善伴走'],
     visual: {
@@ -207,7 +207,7 @@ export const serviceDetails: ServiceDetail[] = [
       title: '訴求から申込導線まで設計する',
       description: '訴求設計、フォーム導線、必要機能の実装、公開後の改善まで継続して支えます。',
       href: 'https://lpboost-prod.lpboost.workers.dev/',
-      ctaLabel: 'LP Boost を見る'
+      ctaLabel: 'LP Boost を見る',
     },
     relatedItems: [
       {
@@ -215,16 +215,16 @@ export const serviceDetails: ServiceDetail[] = [
         description: '相談導線まで整えるLP制作・改善支援',
         image: '/images/showcase/lpboost-hero.webp',
         href: 'https://lpboost-prod.lpboost.workers.dev/',
-        ctaLabel: 'サービスを見る'
+        ctaLabel: 'サービスを見る',
       },
       {
         title: 'Ready Mock',
         description: '3分診断を起点に、事業に合う試作サービス案を組み立てる支援',
         image: '/images/showcase/ready-mock-hero.webp',
         href: 'https://ready-mock.com/',
-        ctaLabel: 'サービスを見る'
-      }
-    ]
+        ctaLabel: 'サービスを見る',
+      },
+    ],
   },
   {
     id: 'ai',
@@ -234,12 +234,12 @@ export const serviceDetails: ServiceDetail[] = [
     issues: [
       'AIをどう業務に活かせば成果につながるのか分からない',
       '技術力はあっても、事業側との会話や優先順位のすり合わせが噛み合いにくい',
-      'エンジニアが一段上の視座を持ち、提案や判断ができる組織にしたい'
+      'エンジニアが一段上の視座を持ち、提案や判断ができる組織にしたい',
     ],
     offerings: [
       'AI活用テーマの整理と小さな実証',
       'エンジニア向けの技術教育、事業理解支援、壁打ち',
-      'ビジネスと技術の認識をそろえる進め方・対話設計'
+      'ビジネスと技術の認識をそろえる進め方・対話設計',
     ],
     process: ['テーマ整理', '小さく試す', '教育と現場定着'],
     visual: {
@@ -247,7 +247,8 @@ export const serviceDetails: ServiceDetail[] = [
       alt: 'AI活用と技術教育のイメージ',
       eyebrow: 'Enablement',
       title: '小さく始めて、噛み合う組織を育てる',
-      description: 'AI導入だけでなく、事業理解と対話力を持って動ける技術人材と進め方づくりまで伴走します。'
+      description:
+        'AI導入だけでなく、事業理解と対話力を持って動ける技術人材と進め方づくりまで伴走します。',
     },
     relatedItems: [
       {
@@ -255,8 +256,8 @@ export const serviceDetails: ServiceDetail[] = [
         description: '技術と事業をつなぐ視点を、実務に落とし込める形で発信するブログ',
         image: '/images/showcase/valuegate-blog-hero.webp',
         href: 'https://blog.valuegate.tech/',
-        ctaLabel: 'ブログを見る'
-      }
-    ]
-  }
+        ctaLabel: 'ブログを見る',
+      },
+    ],
+  },
 ];

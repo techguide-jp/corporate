@@ -16,7 +16,7 @@
     productItems,
     services,
     story,
-    workItems
+    workItems,
   } from '$lib/data/site';
 </script>
 

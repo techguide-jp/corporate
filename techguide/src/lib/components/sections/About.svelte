@@ -60,7 +60,7 @@
       <article class="about__story">
         <p class="about__eyebrow">代表の想い</p>
         <p class="about__lead">
-          {#each splitEmphasis(content.lead) as chunk}
+          {#each splitEmphasis(content.lead) as chunk, chunkIndex (chunkIndex)}
             {#if chunk.emphasized}
               <strong>{chunk.text}</strong>
             {:else}
@@ -70,9 +70,9 @@
         </p>
 
         <div class="about__copy">
-          {#each content.paragraphs as paragraph}
+          {#each content.paragraphs as paragraph (paragraph)}
             <p>
-              {#each splitEmphasis(paragraph) as chunk}
+              {#each splitEmphasis(paragraph) as chunk, chunkIndex (chunkIndex)}
                 {#if chunk.emphasized}
                   <strong>{chunk.text}</strong>
                 {:else}
@@ -91,9 +91,9 @@
       </div>
 
       <ul class="about__mission-list">
-        {#each content.missionItems as item}
+        {#each content.missionItems as item (item)}
           <li>
-            {#each splitEmphasis(item) as chunk}
+            {#each splitEmphasis(item) as chunk, chunkIndex (chunkIndex)}
               {#if chunk.emphasized}
                 <strong>{chunk.text}</strong>
               {:else}
@@ -109,7 +109,7 @@
       <div class="about__block-head">
         <p class="about__eyebrow">課題意識</p>
         <p class="about__block-copy">
-          {#each splitEmphasis(focusIntro) as chunk}
+          {#each splitEmphasis(focusIntro) as chunk, chunkIndex (chunkIndex)}
             {#if chunk.emphasized}
               <strong>{chunk.text}</strong>
             {:else}
@@ -120,11 +120,11 @@
       </div>
 
       <div class="about__focus-list">
-        {#each content.focusItems as item}
+        {#each content.focusItems as item (item.title)}
           <article>
             <h3>{item.title}</h3>
             <p>
-              {#each splitEmphasis(item.description) as chunk}
+              {#each splitEmphasis(item.description) as chunk, chunkIndex (chunkIndex)}
                 {#if chunk.emphasized}
                   <strong>{chunk.text}</strong>
                 {:else}
@@ -135,9 +135,9 @@
 
             {#if item.points?.length}
               <ul class="about__focus-points">
-                {#each item.points as point}
+                {#each item.points as point (point)}
                   <li>
-                    {#each splitEmphasis(point) as chunk}
+                    {#each splitEmphasis(point) as chunk, chunkIndex (chunkIndex)}
                       {#if chunk.emphasized}
                         <strong>{chunk.text}</strong>
                       {:else}
@@ -151,7 +151,7 @@
 
             {#if item.closing}
               <p class="about__focus-closing">
-                {#each splitEmphasis(item.closing) as chunk}
+                {#each splitEmphasis(item.closing) as chunk, chunkIndex (chunkIndex)}
                   {#if chunk.emphasized}
                     <strong>{chunk.text}</strong>
                   {:else}
@@ -274,8 +274,12 @@
     bottom: -14px;
     width: 100vw;
     transform: translateX(-50%);
-    background:
-      linear-gradient(90deg, rgba(233, 188, 96, 0.32) 0%, rgba(244, 223, 180, 0.2) 26%, rgba(255, 249, 239, 0.08) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(233, 188, 96, 0.32) 0%,
+      rgba(244, 223, 180, 0.2) 26%,
+      rgba(255, 249, 239, 0.08) 100%
+    );
     box-shadow:
       inset 0 3px 0 rgba(214, 151, 76, 0.62),
       inset 0 -1px 0 rgba(214, 151, 76, 0.24);

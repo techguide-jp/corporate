@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { asset } from '$app/paths';
+  import { asset, resolve } from '$app/paths';
   import type { ServiceItem } from '$lib/types/content';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
 
   interface Props {
     items: ServiceItem[];
   }
+
+  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { items }: Props = $props();
 </script>
@@ -18,8 +20,12 @@
     />
 
     <div class="services__grid">
-      {#each items as item}
-        <a class="service" href={item.href} aria-label={`${item.title} の詳細を見る`}>
+      {#each items as item (item.href)}
+        <a
+          class="service"
+          href={resolve(item.href as ResolvableHref)}
+          aria-label={`${item.title} の詳細を見る`}
+        >
           <div class="service__image">
             <img src={asset(item.image)} alt={item.imageAlt} loading="lazy" />
           </div>

@@ -20,8 +20,7 @@
 <style>
   .contact-cta {
     padding-block: clamp(38px, 4vw, 52px);
-    background:
-      linear-gradient(180deg, rgba(244, 168, 93, 0.96) 0%, rgba(235, 141, 74, 1) 100%);
+    background: linear-gradient(180deg, rgba(244, 168, 93, 0.96) 0%, rgba(235, 141, 74, 1) 100%);
   }
 
   .contact-cta__inner {

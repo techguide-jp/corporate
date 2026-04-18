@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import type { NavItem } from '$lib/types/content';
   import LogoMark from '$lib/components/ui/LogoMark.svelte';
@@ -7,6 +8,8 @@
     companyName: string;
     items: NavItem[];
   }
+
+  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { companyName, items }: Props = $props();
 
@@ -24,7 +27,7 @@
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <a class="footer__brand-link" href="/" aria-label="TechGuide ホームへ移動">
+      <a class="footer__brand-link" href={resolve('/')} aria-label="TechGuide ホームへ移動">
         <LogoMark />
         <span>{companyName}</span>
       </a>
@@ -34,8 +37,13 @@
     <div class="footer__links">
       <p class="footer__label">サイトマップ</p>
       <nav aria-label="フッターリンク">
-        {#each items as item}
-          <a class:footer__link--active={isActive(item.href)} href={item.href}>{item.label}</a>
+        {#each items as item (item.href)}
+          <a
+            class:footer__link--active={isActive(item.href)}
+            href={resolve(item.href as ResolvableHref)}
+          >
+            {item.label}
+          </a>
         {/each}
       </nav>
     </div>
@@ -51,8 +59,7 @@
 <style>
   .footer {
     padding-block: 34px 36px;
-    background:
-      linear-gradient(180deg, rgba(255, 248, 231, 0.92) 0%, rgba(255, 253, 248, 1) 100%);
+    background: linear-gradient(180deg, rgba(255, 248, 231, 0.92) 0%, rgba(255, 253, 248, 1) 100%);
     border-top: 1px solid rgba(117, 92, 56, 0.12);
   }
 

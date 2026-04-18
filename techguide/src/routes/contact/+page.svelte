@@ -4,8 +4,7 @@
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { companyProfile, navItems } from '$lib/data/site';
 
-  const contactFormUrl =
-    'https://tayori.com/form/0a9d521c221f55e0c7b857f7e2f83f5760c7b7bb/';
+  const contactFormUrl = 'https://tayori.com/form/0a9d521c221f55e0c7b857f7e2f83f5760c7b7bb/';
 </script>
 
 <svelte:head>

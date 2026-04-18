@@ -14,18 +14,18 @@
   let { id, title, subtitle, items, surface = 'plain' }: Props = $props();
 </script>
 
-<section class={`section showcase showcase--${surface}`} id={id}>
+<section class={`section showcase showcase--${surface}`} {id}>
   <div class="container">
-    <SectionHeading title={title} subtitle={subtitle} />
+    <SectionHeading {title} {subtitle} />
 
     <div class="showcase__grid">
-      {#each items as item}
+      {#each items as item (item.href)}
         <article class="showcase-card">
           <a
             class="showcase-card__image-link"
             href={item.href}
             target="_blank"
-            rel="noreferrer"
+            rel="external noreferrer"
             aria-label={`${item.title} を開く`}
           >
             <img src={asset(item.image)} alt={item.title} loading="lazy" />
@@ -34,7 +34,12 @@
           <div class="showcase-card__body">
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <a class="showcase-card__link" href={item.href} target="_blank" rel="noreferrer">
+            <a
+              class="showcase-card__link"
+              href={item.href}
+              target="_blank"
+              rel="external noreferrer"
+            >
               {item.ctaLabel}
             </a>
           </div>
@@ -46,8 +51,11 @@
 
 <style>
   .showcase--soft {
-    background:
-      linear-gradient(180deg, rgba(248, 241, 216, 0.7) 0%, rgba(255, 249, 237, 0.96) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(248, 241, 216, 0.7) 0%,
+      rgba(255, 249, 237, 0.96) 100%
+    );
   }
 
   .showcase__grid {

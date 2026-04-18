@@ -18,7 +18,7 @@
       <p class="hero__description">{content.description}</p>
 
       <div class="hero__actions">
-        {#each content.actions as action}
+        {#each content.actions as action (action.href)}
           <ActionButton href={action.href} label={action.label} tone={action.tone} size="lg" />
         {/each}
       </div>
@@ -42,7 +42,12 @@
     inset: 0;
     background:
       radial-gradient(circle at center, rgba(255, 253, 248, 0.32) 0%, rgba(255, 253, 248, 0) 40%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 28%, rgba(255, 253, 248, 0.16) 100%);
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0) 28%,
+        rgba(255, 253, 248, 0.16) 100%
+      );
     pointer-events: none;
   }
 
@@ -50,8 +55,15 @@
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(90deg, rgba(255, 253, 248, 0.3) 0%, rgba(255, 253, 248, 0.08) 18%, transparent 34%, transparent 66%, rgba(255, 253, 248, 0.08) 82%, rgba(255, 253, 248, 0.3) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 253, 248, 0.3) 0%,
+      rgba(255, 253, 248, 0.08) 18%,
+      transparent 34%,
+      transparent 66%,
+      rgba(255, 253, 248, 0.08) 82%,
+      rgba(255, 253, 248, 0.3) 100%
+    );
     pointer-events: none;
   }
 
@@ -72,10 +84,17 @@
     justify-items: center;
     gap: 18px;
     text-align: center;
-    inline-size: min(100%, calc((var(--hero-title-size) * 11.5) + (var(--hero-inline-padding) * 2) + 0.5rem));
+    inline-size: min(
+      100%,
+      calc((var(--hero-title-size) * 11.5) + (var(--hero-inline-padding) * 2) + 0.5rem)
+    );
     padding: clamp(28px, 4vw, 44px) var(--hero-inline-padding);
     border-radius: min(36px, 4vw);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 249, 238, 0.46) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.58) 0%,
+      rgba(255, 249, 238, 0.46) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.48);
     box-shadow: 0 20px 40px rgba(95, 67, 32, 0.11);
     backdrop-filter: blur(18px) saturate(140%);

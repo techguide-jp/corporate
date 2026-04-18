@@ -1,11 +1,5 @@
 <script lang="ts">
-  type IconKind =
-    | 'consulting'
-    | 'development'
-    | 'ai'
-    | 'readymock'
-    | 'ticketcraft'
-    | 'lpboost';
+  type IconKind = 'consulting' | 'development' | 'ai' | 'readymock' | 'ticketcraft' | 'lpboost';
 
   interface Props {
     kind: IconKind;

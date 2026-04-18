@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { untrack } from 'svelte';
   import type { NavItem } from '$lib/types/content';
@@ -6,6 +7,8 @@
   interface Props {
     items: NavItem[];
   }
+
+  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { items }: Props = $props();
   let menuOpen = $state(false);
@@ -27,8 +30,11 @@
   }
 
   $effect(() => {
-    page.url.pathname;
-    page.url.hash;
+    const currentLocation = `${page.url.pathname}${page.url.hash}`;
+
+    if (!currentLocation) {
+      return;
+    }
 
     if (untrack(() => menuOpen)) {
       closeMenu();
@@ -38,7 +44,7 @@
 
 <header class="header" id="top">
   <div class="container header__inner">
-    <a class="brand" href="/" aria-label="TechGuide ホームへ移動">
+    <a class="brand" href={resolve('/')} aria-label="TechGuide ホームへ移動">
       <span>TechGuide</span>
     </a>
 
@@ -61,17 +67,13 @@
       </button>
     {/if}
 
-    <nav
-      class={`nav ${menuOpen ? 'nav--open' : ''}`}
-      id="site-nav"
-      aria-label="主要ナビゲーション"
-    >
+    <nav class={`nav ${menuOpen ? 'nav--open' : ''}`} id="site-nav" aria-label="主要ナビゲーション">
       <ul>
-        {#each items as item}
+        {#each items as item (item.href)}
           <li>
             <a
               class:nav__link--active={isActive(item.href)}
-              href={item.href}
+              href={resolve(item.href as ResolvableHref)}
               aria-current={isActive(item.href) ? ariaCurrentValue(item.href) : undefined}
               onclick={closeMenu}
             >

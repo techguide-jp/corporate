@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
+
   interface Props {
     href: string;
     label: string;
@@ -6,12 +8,27 @@
     size?: 'md' | 'lg';
   }
 
+  type ResolvableHref = Parameters<typeof resolve>[0];
+
   let { href, label, tone = 'warm', size = 'md' }: Props = $props();
 </script>
 
-<a class={`action-button action-button--${tone} action-button--${size}`} href={href}>
-  {label}
-</a>
+{#if href.startsWith('/')}
+  <a
+    class={`action-button action-button--${tone} action-button--${size}`}
+    href={resolve(href as ResolvableHref)}
+  >
+    {label}
+  </a>
+{:else}
+  <a
+    class={`action-button action-button--${tone} action-button--${size}`}
+    {href}
+    rel="external noreferrer"
+  >
+    {label}
+  </a>
+{/if}
 
 <style>
   .action-button {
@@ -43,8 +60,12 @@
 
   .action-button--warm {
     color: rgba(255, 255, 255, 0.96);
-    background:
-      linear-gradient(180deg, rgba(248, 187, 114, 1) 0%, rgba(235, 162, 86, 1) 56%, rgba(214, 132, 58, 1) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(248, 187, 114, 1) 0%,
+      rgba(235, 162, 86, 1) 56%,
+      rgba(214, 132, 58, 1) 100%
+    );
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.32),
       0 7px 0 rgba(181, 113, 53, 0.72),
@@ -52,8 +73,12 @@
   }
 
   .action-button--warm:hover {
-    background:
-      linear-gradient(180deg, rgba(255, 197, 128, 1) 0%, rgba(242, 170, 93, 1) 56%, rgba(220, 136, 62, 1) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 197, 128, 1) 0%,
+      rgba(242, 170, 93, 1) 56%,
+      rgba(220, 136, 62, 1) 100%
+    );
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.34),
       0 9px 0 rgba(171, 104, 45, 0.78),
@@ -69,8 +94,11 @@
 
   .action-button--light {
     color: var(--color-ink);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 243, 231, 0.98) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      rgba(250, 243, 231, 0.98) 100%
+    );
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.92),
       0 7px 0 rgba(194, 173, 143, 0.95),
@@ -78,8 +106,7 @@
   }
 
   .action-button--light:hover {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 236, 220, 1) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(246, 236, 220, 1) 100%);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.96),
       0 9px 0 rgba(187, 165, 135, 1),
