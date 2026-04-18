@@ -8,6 +8,44 @@
   }
 
   let { content }: Props = $props();
+
+  type TextChunk = {
+    text: string;
+    emphasized: boolean;
+  };
+
+  const focusIntro =
+    '**導入前の整理で止まること**と、**技術とビジネスをつなぐ人材が育ちにくいこと**に向き合っています。';
+
+  function splitEmphasis(text: string): TextChunk[] {
+    const matches = Array.from(text.matchAll(/\*\*(.+?)\*\*/g));
+
+    if (matches.length === 0) {
+      return [{ text, emphasized: false }];
+    }
+
+    const chunks: TextChunk[] = [];
+    let currentIndex = 0;
+
+    for (const match of matches) {
+      const start = match.index ?? 0;
+      const fullText = match[0];
+      const emphasizedText = match[1];
+
+      if (start > currentIndex) {
+        chunks.push({ text: text.slice(currentIndex, start), emphasized: false });
+      }
+
+      chunks.push({ text: emphasizedText, emphasized: true });
+      currentIndex = start + fullText.length;
+    }
+
+    if (currentIndex < text.length) {
+      chunks.push({ text: text.slice(currentIndex), emphasized: false });
+    }
+
+    return chunks;
+  }
 </script>
 
 <section class="section section--tight about" id="about">
@@ -21,11 +59,27 @@
 
       <article class="about__story">
         <p class="about__eyebrow">代表の想い</p>
-        <p class="about__lead">{content.lead}</p>
+        <p class="about__lead">
+          {#each splitEmphasis(content.lead) as chunk}
+            {#if chunk.emphasized}
+              <strong>{chunk.text}</strong>
+            {:else}
+              {chunk.text}
+            {/if}
+          {/each}
+        </p>
 
         <div class="about__copy">
           {#each content.paragraphs as paragraph}
-            <p>{paragraph}</p>
+            <p>
+              {#each splitEmphasis(paragraph) as chunk}
+                {#if chunk.emphasized}
+                  <strong>{chunk.text}</strong>
+                {:else}
+                  {chunk.text}
+                {/if}
+              {/each}
+            </p>
           {/each}
         </div>
       </article>
@@ -38,7 +92,15 @@
 
       <ul class="about__mission-list">
         {#each content.missionItems as item}
-          <li>{item}</li>
+          <li>
+            {#each splitEmphasis(item) as chunk}
+              {#if chunk.emphasized}
+                <strong>{chunk.text}</strong>
+              {:else}
+                {chunk.text}
+              {/if}
+            {/each}
+          </li>
         {/each}
       </ul>
     </section>
@@ -47,7 +109,13 @@
       <div class="about__block-head">
         <p class="about__eyebrow">課題意識</p>
         <p class="about__block-copy">
-          IT 活用の格差と、人材・現場のミスマッチを埋めることに向き合っています。
+          {#each splitEmphasis(focusIntro) as chunk}
+            {#if chunk.emphasized}
+              <strong>{chunk.text}</strong>
+            {:else}
+              {chunk.text}
+            {/if}
+          {/each}
         </p>
       </div>
 
@@ -55,14 +123,42 @@
         {#each content.focusItems as item}
           <article>
             <h3>{item.title}</h3>
-            <p>{item.description}</p>
+            <p>
+              {#each splitEmphasis(item.description) as chunk}
+                {#if chunk.emphasized}
+                  <strong>{chunk.text}</strong>
+                {:else}
+                  {chunk.text}
+                {/if}
+              {/each}
+            </p>
 
             {#if item.points?.length}
               <ul class="about__focus-points">
                 {#each item.points as point}
-                  <li>{point}</li>
+                  <li>
+                    {#each splitEmphasis(point) as chunk}
+                      {#if chunk.emphasized}
+                        <strong>{chunk.text}</strong>
+                      {:else}
+                        {chunk.text}
+                      {/if}
+                    {/each}
+                  </li>
                 {/each}
               </ul>
+            {/if}
+
+            {#if item.closing}
+              <p class="about__focus-closing">
+                {#each splitEmphasis(item.closing) as chunk}
+                  {#if chunk.emphasized}
+                    <strong>{chunk.text}</strong>
+                  {:else}
+                    {chunk.text}
+                  {/if}
+                {/each}
+              </p>
             {/if}
           </article>
         {/each}
@@ -141,8 +237,10 @@
   }
 
   .about__copy p {
+    max-width: 42rem;
     font-size: 0.98rem;
     line-height: 1.8;
+    text-wrap: pretty;
   }
 
   .about__mission-area {
@@ -229,6 +327,7 @@
     color: rgba(57, 45, 29, 0.94);
     font-weight: 800;
     border-bottom: 1px solid rgba(117, 92, 56, 0.1);
+    text-wrap: pretty;
   }
 
   .about__mission-list li:first-child {
@@ -264,21 +363,74 @@
     color: var(--color-ink-soft);
     font-size: 0.97rem;
     line-height: 1.8;
+    text-wrap: pretty;
   }
 
   .about__focus-points {
     display: grid;
-    gap: 10px;
-    margin: 4px 0 0;
+    gap: 12px;
+    margin: 10px 0 0;
     padding: 0;
     list-style: none;
   }
 
   .about__focus-points li {
-    padding-left: 0;
+    position: relative;
+    padding: 14px 16px 14px 44px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.58);
+    border: 1px solid rgba(117, 92, 56, 0.12);
+    box-shadow: 0 10px 22px rgba(111, 83, 41, 0.06);
     color: rgba(72, 58, 40, 0.92);
     font-size: 0.95rem;
-    line-height: 1.85;
+    line-height: 1.8;
+    text-wrap: pretty;
+  }
+
+  .about__focus-points li::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 1.05rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at center, rgba(255, 253, 248, 0.92) 0 28%, transparent 32%),
+      linear-gradient(180deg, rgba(236, 174, 101, 1) 0%, rgba(214, 151, 76, 1) 100%);
+    box-shadow:
+      0 0 0 4px rgba(230, 184, 92, 0.16),
+      0 4px 10px rgba(214, 151, 76, 0.22);
+  }
+
+  .about__focus-closing {
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(117, 92, 56, 0.12);
+    color: rgba(48, 37, 23, 0.94);
+    font-size: 0.97rem;
+    line-height: 1.8;
+    text-wrap: pretty;
+  }
+
+  .about strong {
+    color: rgba(35, 27, 17, 0.98);
+    font-weight: 800;
+  }
+
+  .about__copy strong,
+  .about__block-copy strong,
+  .about__mission-list strong,
+  .about__focus-list strong,
+  .about__focus-points strong,
+  .about__focus-closing strong {
+    background: linear-gradient(transparent 58%, rgba(230, 184, 92, 0.26) 58%);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  .about__lead strong {
+    color: rgba(28, 21, 13, 0.98);
   }
 
   @media (max-width: 900px) {

@@ -29,6 +29,7 @@ export interface StoryFocus {
   title: string;
   description: string;
   points?: string[];
+  closing?: string;
 }
 
 export interface StoryContent {
