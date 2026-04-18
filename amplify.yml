@@ -1,0 +1,22 @@
+version: 1
+applications:
+  - appRoot: techguide
+    env:
+      variables:
+        AMPLIFY_MONOREPO_APP_ROOT: techguide
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - corepack enable
+            - pnpm install --frozen-lockfile
+        build:
+          commands:
+            - pnpm build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
