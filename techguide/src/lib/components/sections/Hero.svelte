@@ -65,13 +65,15 @@
   }
 
   .hero__content {
+    --hero-title-size: clamp(1.72rem, 4.1vw, 3.75rem);
+    --hero-inline-padding: clamp(22px, 5vw, 52px);
     position: relative;
     display: grid;
     justify-items: center;
     gap: 18px;
     text-align: center;
-    max-width: 760px;
-    padding: clamp(28px, 4vw, 44px) clamp(22px, 5vw, 52px);
+    inline-size: min(100%, calc((var(--hero-title-size) * 11.5) + (var(--hero-inline-padding) * 2) + 0.5rem));
+    padding: clamp(28px, 4vw, 44px) var(--hero-inline-padding);
     border-radius: min(36px, 4vw);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 249, 238, 0.46) 100%);
     border: 1px solid rgba(255, 255, 255, 0.48);
@@ -81,8 +83,8 @@
 
   h1 {
     font-family: var(--font-heading);
-    max-width: 15em;
-    font-size: clamp(1.72rem, 4.1vw, 3.75rem);
+    max-width: 11.5em;
+    font-size: var(--hero-title-size);
     line-height: 1.12;
     letter-spacing: -0.06em;
     font-weight: 800;
@@ -91,7 +93,7 @@
   }
 
   .hero__description {
-    max-width: 560px;
+    max-width: 30rem;
     font-size: clamp(1rem, 2vw, 1.16rem);
     color: rgba(69, 55, 37, 0.88);
   }
@@ -111,13 +113,18 @@
     }
 
     .hero__content {
-      padding: 26px 18px 24px;
+      --hero-title-size: clamp(1.72rem, 5.8vw, 3rem);
+      --hero-inline-padding: 18px;
+      padding: 26px var(--hero-inline-padding) 24px;
       border-radius: 28px;
     }
 
     h1 {
-      max-width: 11em;
-      font-size: clamp(1.72rem, 5.8vw, 3rem);
+      max-width: 11.5em;
+    }
+
+    .hero__description {
+      max-width: 19rem;
     }
 
     .hero__actions {
