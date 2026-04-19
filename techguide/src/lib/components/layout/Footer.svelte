@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import type { NavItem } from '$lib/types/content';
@@ -12,6 +13,7 @@
   type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { companyName, items }: Props = $props();
+  let showFloatingTop = $state(false);
 
   const currentYear = new Date().getFullYear();
 
@@ -31,6 +33,28 @@
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  function updateFloatingTopVisibility() {
+    showFloatingTop = window.scrollY > 0;
+  }
+
+  $effect(() => {
+    if (!browser) {
+      return;
+    }
+
+    updateFloatingTopVisibility();
+
+    const handleScroll = () => {
+      updateFloatingTopVisibility();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
 </script>
 
 <footer class="footer">
@@ -63,9 +87,11 @@
   </div>
 </footer>
 
-<button class="floating-top" type="button" aria-label="ページ最上部へ戻る" onclick={scrollToTop}>
-  TOPへ
-</button>
+{#if showFloatingTop}
+  <button class="floating-top" type="button" aria-label="ページ最上部へ戻る" onclick={scrollToTop}>
+    TOPへ
+  </button>
+{/if}
 
 <style>
   .footer {
