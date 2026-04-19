@@ -50,7 +50,7 @@
 
 <section class="section section--tight about" id="about">
   <div class="container about__inner">
-    <SectionHeading title={content.label} subtitle={content.title} />
+    <SectionHeading eyebrow={content.label} title={content.title} />
 
     <div class="about__intro">
       <div class="about__portrait">
@@ -187,8 +187,8 @@
     font-size: clamp(1.82rem, 2.6vw, 2.38rem);
   }
 
-  .about :global(.section-heading p) {
-    font-size: 0.96rem;
+  .about :global(.section-heading__eyebrow) {
+    font-size: 0.9rem;
   }
 
   .about__intro {

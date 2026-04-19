@@ -9,14 +9,12 @@ const sitemapEntries = [
 ] as const;
 
 export function GET() {
-  const lastmod = new Date().toISOString();
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${sitemapEntries
   .map(
     ({ path, changefreq, priority }) => `  <url>
     <loc>${new URL(path, `${siteMetadata.siteUrl}/`).toString()}</loc>
-    <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`,

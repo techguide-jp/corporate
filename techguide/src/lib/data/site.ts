@@ -24,7 +24,7 @@ export const siteMetadata: SiteMetadata = {
     'テックガイド合同会社のコーポレートサイト。導入前整理・IT活用支援、LP制作・受託開発、AI活用・技術教育・組織支援まで事業フェーズに合わせて伴走します。',
   defaultOgImage: '/images/hero/hero.webp',
   defaultOgImageAlt: 'TechGuide の支援領域を伝えるキービジュアル',
-  sameAs: ['https://www.techguide.jp/'],
+  sameAs: [],
 };
 
 export const pageSeo: Record<'home' | 'services' | 'contact', PageSeo> = {
