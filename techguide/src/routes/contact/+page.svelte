@@ -22,16 +22,12 @@
     trackEvent('contact_page_view');
   });
 
-  function openMailClient() {
-    window.location.href = `mailto:${contactInfo.email}`;
-  }
-
-  function openContactForm() {
+  function trackFallbackLink(destinationType: 'form' | 'email') {
     trackEvent('contact_form_fallback_click', {
-      destination_host: new URL(contactInfo.formUrl).hostname,
+      destination_type: destinationType,
+      destination_host:
+        destinationType === 'form' ? new URL(contactInfo.formUrl).hostname : 'mailto',
     });
-
-    window.open(contactInfo.formUrl, '_blank', 'noopener,noreferrer');
   }
 
   const contactStructuredData = [
@@ -98,8 +94,17 @@
             <p>{contactPageContent.alternateContactDescription}</p>
 
             <div class="contact-page__links">
-              <button type="button" onclick={openContactForm}>フォームを直接開く</button>
-              <button type="button" onclick={openMailClient}>メールで問い合わせる</button>
+              <a
+                href={contactInfo.formUrl}
+                target="_blank"
+                rel="external noreferrer"
+                onclick={() => trackFallbackLink('form')}
+              >
+                フォームを直接開く
+              </a>
+              <a href={`mailto:${contactInfo.email}`} onclick={() => trackFallbackLink('email')}>
+                メールで問い合わせる
+              </a>
             </div>
           </section>
         </div>
@@ -195,7 +200,7 @@
     gap: 12px;
   }
 
-  .contact-page__links button {
+  .contact-page__links a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -211,7 +216,8 @@
   }
 
   .contact-page__frame {
-    min-height: 1360px;
+    --contact-form-height: 1600px;
+    min-height: var(--contact-form-height);
     border-radius: 28px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.92);
@@ -219,10 +225,10 @@
     box-shadow: var(--shadow-soft);
   }
 
-  iframe {
+  .contact-page__frame iframe {
     display: block;
     width: 100%;
-    height: 1360px;
+    height: var(--contact-form-height);
     border: 0;
     background: #fff;
   }
@@ -234,14 +240,6 @@
   }
 
   @media (max-width: 720px) {
-    .contact-page__frame {
-      min-height: 1560px;
-    }
-
-    iframe {
-      height: 1560px;
-    }
-
     .contact-page__links {
       flex-direction: column;
     }
