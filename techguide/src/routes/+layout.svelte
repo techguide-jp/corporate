@@ -15,8 +15,8 @@
     }
 
     window.dataLayer = window.dataLayer || [];
-    window.gtag = (...args) => {
-      window.dataLayer?.push(args);
+    window.gtag = function () {
+      window.dataLayer?.push(arguments);
     };
 
     const gaScript = document.createElement('script');
