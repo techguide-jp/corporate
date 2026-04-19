@@ -2,13 +2,18 @@
   interface Props {
     title: string;
     subtitle?: string;
+    level?: 1 | 2;
   }
 
-  let { title, subtitle }: Props = $props();
+  let { title, subtitle, level = 2 }: Props = $props();
 </script>
 
 <div class="section-heading">
-  <h2>{title}</h2>
+  {#if level === 1}
+    <h1>{title}</h1>
+  {:else}
+    <h2>{title}</h2>
+  {/if}
   {#if subtitle}
     <p>{subtitle}</p>
   {/if}
@@ -23,6 +28,7 @@
     margin-bottom: clamp(34px, 4vw, 48px);
   }
 
+  h1,
   h2 {
     font-family: var(--font-heading);
     font-size: clamp(2rem, 3vw, 2.8rem);

@@ -1,14 +1,52 @@
 import type {
   AccessInfo,
   CompanyProfile,
+  ContactPageContent,
   ContactInfo,
   HeroContent,
   NavItem,
+  PageSeo,
   ServiceDetail,
   ServiceItem,
+  SiteMetadata,
   ShowcaseItem,
   StoryContent,
 } from '$lib/types/content';
+
+export const siteMetadata: SiteMetadata = {
+  brandName: 'TechGuide',
+  legalName: 'TechGuide合同会社',
+  siteUrl: 'https://techguide.jp',
+  language: 'ja',
+  locale: 'ja_JP',
+  defaultTitle: 'TechGuide | IT導入・LP制作・AI活用まで伴走するパートナー',
+  defaultDescription:
+    'テックガイド合同会社のコーポレートサイト。導入前整理・IT活用支援、LP制作・受託開発、AI活用・技術教育・組織支援まで事業フェーズに合わせて伴走します。',
+  defaultOgImage: '/images/hero/hero.webp',
+  defaultOgImageAlt: 'TechGuide の支援領域を伝えるキービジュアル',
+};
+
+export const pageSeo: Record<'home' | 'services' | 'contact', PageSeo> = {
+  home: {
+    title: siteMetadata.defaultTitle,
+    description: siteMetadata.defaultDescription,
+    path: '/',
+  },
+  services: {
+    title: '支援内容 | TechGuide',
+    description:
+      'テックガイド合同会社の支援内容。導入前整理・IT活用支援、受託開発・LP/導線改善、AI活用・技術教育・組織支援を詳しく紹介します。',
+    path: '/services/',
+    image: '/images/services/development-visual.webp',
+    imageAlt: 'TechGuide の支援内容を紹介するページのビジュアル',
+  },
+  contact: {
+    title: 'お問い合わせ | TechGuide',
+    description:
+      'IT導入、LP制作、受託開発、AI活用・技術教育に関するご相談窓口です。課題整理から制作・改善まで、TechGuide が伴走します。',
+    path: '/contact/',
+  },
+};
 
 export const navItems: NavItem[] = [
   { label: '支援内容', href: '/services' },
@@ -148,12 +186,17 @@ export const workItems: ShowcaseItem[] = [
 export const companyProfile: CompanyProfile = {
   name: 'TechGuide合同会社',
   foundedAt: '2021年4月12日',
+  foundingDateIso: '2021-04-12',
   representative: '高橋 雄太',
 };
 
 export const accessInfo: AccessInfo = {
   postalCode: '〒160-0022',
   address: '東京都新宿区新宿7-20-6 大久保マンション1F',
+  streetAddress: '新宿7-20-6 大久保マンション1F',
+  addressLocality: '新宿区',
+  addressRegion: '東京都',
+  addressCountry: 'JP',
   mapHref:
     'https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E6%96%B0%E5%AE%BF%E5%8C%BA%E6%96%B0%E5%AE%BF7-20-6%20%E5%A4%A7%E4%B9%85%E4%BF%9D%E3%83%9E%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%B31F',
   embedSrc:
@@ -165,6 +208,31 @@ export const contactInfo: ContactInfo = {
   description:
     '現状整理、LP改善、ツール導入、AI活用の壁打ちまで、事業フェーズに合わせて伴走します。',
   email: 'y.takahashi@techguide.jp',
+  formUrl: 'https://tayori.com/form/0a9d521c221f55e0c7b857f7e2f83f5760c7b7bb/',
+};
+
+export const contactPageContent: ContactPageContent = {
+  title: 'お問い合わせ',
+  subtitle:
+    'IT導入、LP制作、受託開発、AI活用・技術教育に関するご相談をこちらから受け付けています。',
+  lead: '現状の整理から制作・改善まで、事業フェーズや社内体制に合わせて進め方を一緒に考えます。相談段階でも問題ありません。',
+  inquiryExamples: [
+    '何から着手すべきか分からないので、課題と優先順位を整理したい',
+    'LPやサイトを作りたいが、訴求や問い合わせ導線の設計から相談したい',
+    'AIを現場でどう使うべきか、小さく試せるテーマから検討したい',
+    'エンジニアと事業側の認識をそろえる進め方や教育支援を相談したい',
+  ],
+  processTitle: 'ご相談後の進め方',
+  processSteps: [
+    'お問い合わせ内容をもとに、現状・目的・優先したいことを確認します。',
+    '内容に応じて、メールでの一次回答またはオンラインでの打ち合わせをご案内します。',
+    '必要な支援範囲を整理し、進め方やスケジュール感が分かる形でご提案します。',
+  ],
+  responseNote:
+    'お問い合わせは営業日に順次確認しています。お急ぎの場合は、希望時期や期限もあわせてご記入ください。',
+  alternateContactTitle: 'フォームが表示されない場合',
+  alternateContactDescription:
+    'Tayori のフォームを直接開くか、メールからのご連絡も可能です。環境によって iframe が表示されない場合はこちらをご利用ください。',
 };
 
 export const serviceDetails: ServiceDetail[] = [

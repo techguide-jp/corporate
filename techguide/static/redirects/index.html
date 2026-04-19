@@ -3,6 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <link rel="canonical" href="https://techguide.jp/" />
     <title>Redirect Event</title>
     <script>
       window.onload = function () {
@@ -14,9 +17,9 @@
         var eventKeyword = params.get('event');
 
         if (eventKeyword && eventToUrl[eventKeyword]) {
-          window.location.href = eventToUrl[eventKeyword];
+          window.location.replace(eventToUrl[eventKeyword]);
         } else {
-          window.location.href = '/';
+          window.location.replace('/');
         }
       };
     </script>

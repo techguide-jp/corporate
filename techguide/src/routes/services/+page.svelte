@@ -1,11 +1,13 @@
 <script lang="ts">
   import { asset } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
+  import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import ContactCta from '$lib/components/sections/ContactCta.svelte';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
-  import { companyProfile, contactInfo, navItems, serviceDetails } from '$lib/data/site';
+  import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
+  import { companyProfile, contactInfo, navItems, pageSeo, serviceDetails } from '$lib/data/site';
 
   function handleOutboundClick(section: string, label: string, href: string) {
     trackEvent('outbound_link_click', {
@@ -14,15 +16,29 @@
       destination_host: new URL(href).hostname,
     });
   }
+
+  const servicesStructuredData = [
+    buildWebPageJsonLd({
+      name: pageSeo.services.title,
+      description: pageSeo.services.description,
+      path: pageSeo.services.path,
+      type: 'CollectionPage',
+    }),
+    buildBreadcrumbJsonLd([
+      { name: 'ホーム', path: '/' },
+      { name: '支援内容', path: pageSeo.services.path },
+    ]),
+  ].map((item) => serializeJsonLd(item));
 </script>
 
-<svelte:head>
-  <title>支援内容 | TechGuide</title>
-  <meta
-    name="description"
-    content="テックガイド合同会社の支援内容。導入前整理・IT活用支援、受託開発・LP/導線改善、AI活用・技術教育・組織支援を詳しく紹介します。"
-  />
-</svelte:head>
+<SeoHead
+  title={pageSeo.services.title}
+  description={pageSeo.services.description}
+  path={pageSeo.services.path}
+  image={pageSeo.services.image}
+  imageAlt={pageSeo.services.imageAlt}
+  jsonLd={servicesStructuredData}
+/>
 
 <Header items={navItems} />
 
@@ -32,6 +48,7 @@
       <SectionHeading
         title="支援内容"
         subtitle="課題や事業フェーズに応じて、導入前整理から制作・技術教育まで必要な支援を詳しくご覧いただけます。"
+        level={1}
       />
 
       <div class="service-detail-list__items">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import About from '$lib/components/sections/About.svelte';
@@ -8,25 +9,43 @@
   import Services from '$lib/components/sections/Services.svelte';
   import ShowcaseSection from '$lib/components/sections/ShowcaseSection.svelte';
   import {
+    buildOrganizationJsonLd,
+    buildProfessionalServiceJsonLd,
+    buildWebPageJsonLd,
+    buildWebSiteJsonLd,
+    serializeJsonLd,
+  } from '$lib/seo';
+  import {
     accessInfo,
     companyProfile,
     contactInfo,
     hero,
     navItems,
+    pageSeo,
     productItems,
     services,
     story,
     workItems,
   } from '$lib/data/site';
+
+  const homeStructuredData = [
+    buildWebSiteJsonLd(),
+    buildOrganizationJsonLd(),
+    buildProfessionalServiceJsonLd(),
+    buildWebPageJsonLd({
+      name: pageSeo.home.title,
+      description: pageSeo.home.description,
+      path: pageSeo.home.path,
+    }),
+  ].map((item) => serializeJsonLd(item));
 </script>
 
-<svelte:head>
-  <title>TechGuide | IT導入・LP制作・AI活用まで伴走するパートナー</title>
-  <meta
-    name="description"
-    content="テックガイド合同会社のコーポレートサイト。導入前整理・IT活用支援、LP制作・受託開発、AI活用・技術教育・組織支援まで事業フェーズに合わせて伴走します。"
-  />
-</svelte:head>
+<SeoHead
+  title={pageSeo.home.title}
+  description={pageSeo.home.description}
+  path={pageSeo.home.path}
+  jsonLd={homeStructuredData}
+/>
 
 <Header items={navItems} />
 

@@ -69,12 +69,17 @@ export interface ServiceVisual {
 export interface CompanyProfile {
   name: string;
   foundedAt: string;
+  foundingDateIso: string;
   representative: string;
 }
 
 export interface AccessInfo {
   postalCode: string;
   address: string;
+  streetAddress: string;
+  addressLocality: string;
+  addressRegion: string;
+  addressCountry: string;
   mapHref: string;
   embedSrc: string;
 }
@@ -83,6 +88,7 @@ export interface ContactInfo {
   heading: string;
   description: string;
   email: string;
+  formUrl: string;
 }
 
 export interface ServiceDetail {
@@ -94,4 +100,36 @@ export interface ServiceDetail {
   process: string[];
   visual: ServiceVisual;
   relatedItems?: ShowcaseItem[];
+}
+
+export interface SiteMetadata {
+  brandName: string;
+  legalName: string;
+  siteUrl: string;
+  language: string;
+  locale: string;
+  defaultTitle: string;
+  defaultDescription: string;
+  defaultOgImage: string;
+  defaultOgImageAlt: string;
+}
+
+export interface PageSeo {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+export interface ContactPageContent {
+  title: string;
+  subtitle: string;
+  lead: string;
+  inquiryExamples: string[];
+  processTitle: string;
+  processSteps: string[];
+  responseNote: string;
+  alternateContactTitle: string;
+  alternateContactDescription: string;
 }

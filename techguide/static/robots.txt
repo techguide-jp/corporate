@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://techguide.jp/sitemap.xml
