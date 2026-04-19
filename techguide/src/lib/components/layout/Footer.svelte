@@ -22,6 +22,15 @@
 
     return page.url.pathname === href;
   }
+
+  function scrollToTop() {
+    if (window.location.hash) {
+      const cleanUrl = `${window.location.pathname}${window.location.search}`;
+      window.history.replaceState(window.history.state, '', cleanUrl);
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 </script>
 
 <footer class="footer">
@@ -54,7 +63,9 @@
   </div>
 </footer>
 
-<a class="floating-top" href="#top" aria-label="ページ上部へ戻る">TOPへ</a>
+<button class="floating-top" type="button" aria-label="ページ最上部へ戻る" onclick={scrollToTop}>
+  TOPへ
+</button>
 
 <style>
   .footer {
@@ -142,7 +153,7 @@
 
   .floating-top {
     position: fixed;
-    left: 18px;
+    right: max(18px, calc(18px + env(safe-area-inset-right)));
     bottom: calc(18px + env(safe-area-inset-bottom));
     z-index: 20;
     display: inline-flex;
@@ -180,7 +191,7 @@
     }
 
     .floating-top {
-      left: 14px;
+      right: max(14px, calc(14px + env(safe-area-inset-right)));
       bottom: calc(14px + env(safe-area-inset-bottom));
       min-height: 42px;
       padding-inline: 16px;
