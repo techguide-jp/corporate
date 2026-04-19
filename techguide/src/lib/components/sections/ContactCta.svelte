@@ -13,7 +13,13 @@
   <div class="container contact-cta__inner">
     <p class="text-balance">{contact.heading}</p>
     <span>{contact.description}</span>
-    <ActionButton href="/contact" label="お問い合わせ" tone="light" size="lg" />
+    <ActionButton
+      href="/contact"
+      label="お問い合わせ"
+      tone="light"
+      size="lg"
+      analytics={{ eventName: 'contact_cta_click', params: { placement: 'bottom_cta' } }}
+    />
   </div>
 </section>
 

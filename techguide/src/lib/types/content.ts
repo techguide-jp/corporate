@@ -7,6 +7,10 @@ export interface ActionLink {
   label: string;
   href: string;
   tone?: 'warm' | 'light';
+  analytics?: {
+    eventName: 'contact_cta_click';
+    params?: Record<string, string>;
+  };
 }
 
 export interface HeroContent {

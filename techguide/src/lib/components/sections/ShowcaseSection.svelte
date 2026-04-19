@@ -1,5 +1,6 @@
 <script lang="ts">
   import { asset } from '$app/paths';
+  import { trackEvent } from '$lib/analytics';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import type { ShowcaseItem } from '$lib/types/content';
 
@@ -12,6 +13,14 @@
   }
 
   let { id, title, subtitle, items, surface = 'plain' }: Props = $props();
+
+  function handleOutboundClick(item: ShowcaseItem) {
+    trackEvent('outbound_link_click', {
+      section: id,
+      link_label: item.title,
+      destination_host: new URL(item.href).hostname
+    });
+  }
 </script>
 
 <section class={`section showcase showcase--${surface}`} {id}>
@@ -27,6 +36,7 @@
             target="_blank"
             rel="external noreferrer"
             aria-label={`${item.title} を開く`}
+            onclick={() => handleOutboundClick(item)}
           >
             <img src={asset(item.image)} alt={item.title} loading="lazy" />
           </a>
@@ -39,6 +49,7 @@
               href={item.href}
               target="_blank"
               rel="external noreferrer"
+              onclick={() => handleOutboundClick(item)}
             >
               {item.ctaLabel}
             </a>

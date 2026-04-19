@@ -1,22 +1,34 @@
 <script lang="ts">
   import { resolve } from '$app/paths';
+  import { trackEvent } from '$lib/analytics';
+  import type { AnalyticsMetadata } from '$lib/analytics';
 
   interface Props {
     href: string;
     label: string;
     tone?: 'warm' | 'light';
     size?: 'md' | 'lg';
+    analytics?: AnalyticsMetadata;
   }
 
   type ResolvableHref = Parameters<typeof resolve>[0];
 
-  let { href, label, tone = 'warm', size = 'md' }: Props = $props();
+  let { href, label, tone = 'warm', size = 'md', analytics }: Props = $props();
+
+  function handleClick() {
+    if (!analytics) {
+      return;
+    }
+
+    trackEvent(analytics.eventName, analytics.params);
+  }
 </script>
 
 {#if href.startsWith('/')}
   <a
     class={`action-button action-button--${tone} action-button--${size}`}
     href={resolve(href as ResolvableHref)}
+    onclick={handleClick}
   >
     {label}
   </a>
@@ -25,6 +37,7 @@
     class={`action-button action-button--${tone} action-button--${size}`}
     {href}
     rel="external noreferrer"
+    onclick={handleClick}
   >
     {label}
   </a>

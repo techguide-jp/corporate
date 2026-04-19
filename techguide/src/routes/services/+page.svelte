@@ -1,10 +1,19 @@
 <script lang="ts">
   import { asset } from '$app/paths';
+  import { trackEvent } from '$lib/analytics';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import ContactCta from '$lib/components/sections/ContactCta.svelte';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { companyProfile, contactInfo, navItems, serviceDetails } from '$lib/data/site';
+
+  function handleOutboundClick(section: string, label: string, href: string) {
+    trackEvent('outbound_link_click', {
+      section,
+      link_label: label,
+      destination_host: new URL(href).hostname
+    });
+  }
 </script>
 
 <svelte:head>
@@ -40,7 +49,14 @@
 
               <div class="service-detail__visual">
                 {#if detail.visual.href}
-                  <a href={detail.visual.href} target="_blank" rel="external noreferrer">
+                  <a
+                    href={detail.visual.href}
+                    target="_blank"
+                    rel="external noreferrer"
+                    onclick={() =>
+                      handleOutboundClick(detail.id, detail.visual.ctaLabel ?? detail.title, detail.visual.href ?? '')
+                    }
+                  >
                     <img src={asset(detail.visual.image)} alt={detail.visual.alt} loading="lazy" />
                   </a>
                 {:else}
@@ -91,6 +107,7 @@
                       href={item.href}
                       target="_blank"
                       rel="external noreferrer"
+                      onclick={() => handleOutboundClick(detail.id, item.title, item.href)}
                     >
                       <img src={asset(item.image)} alt={item.title} loading="lazy" />
                       <div>

@@ -19,7 +19,13 @@
 
       <div class="hero__actions">
         {#each content.actions as action (action.href)}
-          <ActionButton href={action.href} label={action.label} tone={action.tone} size="lg" />
+          <ActionButton
+            href={action.href}
+            label={action.label}
+            tone={action.tone}
+            size="lg"
+            analytics={action.analytics}
+          />
         {/each}
       </div>
     </div>

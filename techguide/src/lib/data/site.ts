@@ -25,7 +25,15 @@ export const hero: HeroContent = {
     '中小企業や立ち上げ期のチームに向けて、IT導入、LP制作、AI活用まで実行しやすい形に整えて伴走します。',
   actions: [
     { label: '支援内容を見る', href: '/services', tone: 'warm' },
-    { label: 'お問い合わせ', href: '/contact', tone: 'light' },
+    {
+      label: 'お問い合わせ',
+      href: '/contact',
+      tone: 'light',
+      analytics: {
+        eventName: 'contact_cta_click',
+        params: { placement: 'hero' },
+      },
+    },
   ],
 };
 
