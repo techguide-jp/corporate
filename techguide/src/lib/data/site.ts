@@ -24,6 +24,7 @@ export const siteMetadata: SiteMetadata = {
     'テックガイド合同会社のコーポレートサイト。導入前整理・IT活用支援、LP制作・受託開発、AI活用・技術教育・組織支援まで事業フェーズに合わせて伴走します。',
   defaultOgImage: '/images/hero/hero.webp',
   defaultOgImageAlt: 'TechGuide の支援領域を伝えるキービジュアル',
+  sameAs: ['https://www.techguide.jp/'],
 };
 
 export const pageSeo: Record<'home' | 'services' | 'contact', PageSeo> = {
@@ -58,6 +59,9 @@ export const navItems: NavItem[] = [
 
 export const hero: HeroContent = {
   image: '/images/hero/hero.webp',
+  imageAlt: '',
+  imageWidth: 1316,
+  imageHeight: 688,
   title: 'IT を、もっと身近に。\n成果につながる形まで。',
   description:
     '中小企業や立ち上げ期のチームに向けて、IT導入、LP制作、AI活用まで実行しやすい形に整えて伴走します。',

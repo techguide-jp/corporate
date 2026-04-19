@@ -11,6 +11,7 @@
     type?: 'website' | 'article';
     noindex?: boolean;
     jsonLd?: string[];
+    preloadImage?: boolean;
   }
 
   let {
@@ -22,6 +23,7 @@
     type = 'website',
     noindex = false,
     jsonLd = [],
+    preloadImage = false,
   }: Props = $props();
 
   const canonicalUrl = $derived(buildAbsoluteUrl(path));
@@ -51,6 +53,10 @@
   {#if noindex}
     <meta name="robots" content="noindex, nofollow" />
     <meta name="googlebot" content="noindex, nofollow" />
+  {/if}
+
+  {#if preloadImage}
+    <link rel="preload" as="image" href={ogImageUrl} fetchpriority="high" />
   {/if}
 
   {#each jsonLd as item, index (index)}

@@ -61,11 +61,14 @@ export function buildWebSiteJsonLd(): JsonLdObject {
 }
 
 export function buildOrganizationJsonLd(): JsonLdObject {
+  const sameAs = siteMetadata.sameAs.filter(Boolean);
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': `${buildAbsoluteUrl('/')}#organization`,
     name: companyProfile.name,
+    legalName: siteMetadata.legalName,
     alternateName: siteMetadata.brandName,
     url: buildAbsoluteUrl('/'),
     email: contactInfo.email,
@@ -91,15 +94,19 @@ export function buildOrganizationJsonLd(): JsonLdObject {
         availableLanguage: [siteMetadata.language],
       },
     ],
+    ...(sameAs.length ? { sameAs } : {}),
   };
 }
 
 export function buildProfessionalServiceJsonLd(): JsonLdObject {
+  const sameAs = siteMetadata.sameAs.filter(Boolean);
+
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     '@id': `${buildAbsoluteUrl('/')}#service`,
     name: companyProfile.name,
+    legalName: siteMetadata.legalName,
     url: buildAbsoluteUrl('/'),
     image: buildAbsoluteUrl(siteMetadata.defaultOgImage),
     email: contactInfo.email,
@@ -116,6 +123,7 @@ export function buildProfessionalServiceJsonLd(): JsonLdObject {
     parentOrganization: {
       '@id': `${buildAbsoluteUrl('/')}#organization`,
     },
+    ...(sameAs.length ? { sameAs } : {}),
   };
 }
 

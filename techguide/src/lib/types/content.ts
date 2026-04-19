@@ -15,6 +15,9 @@ export interface ActionLink {
 
 export interface HeroContent {
   image: string;
+  imageAlt: string;
+  imageWidth: number;
+  imageHeight: number;
   title: string;
   description: string;
   actions: ActionLink[];
@@ -112,6 +115,7 @@ export interface SiteMetadata {
   defaultDescription: string;
   defaultOgImage: string;
   defaultOgImageAlt: string;
+  sameAs: string[];
 }
 
 export interface PageSeo {

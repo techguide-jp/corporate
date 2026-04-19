@@ -45,6 +45,7 @@
   description={pageSeo.home.description}
   path={pageSeo.home.path}
   jsonLd={homeStructuredData}
+  preloadImage={true}
 />
 
 <Header items={navItems} />

@@ -8,10 +8,22 @@
   }
 
   let { content }: Props = $props();
-  const backgroundStyle = $derived(`--hero-image: url('${asset(content.image)}')`);
+  const imageSrc = $derived(asset(content.image));
 </script>
 
-<section class="hero" style={backgroundStyle}>
+<section class="hero">
+  <img
+    class="hero__media"
+    src={imageSrc}
+    alt={content.imageAlt}
+    width={content.imageWidth}
+    height={content.imageHeight}
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    aria-hidden={content.imageAlt ? undefined : 'true'}
+  />
+
   <div class="container hero__inner">
     <div class="hero__content">
       <h1 class="text-balance">{content.title}</h1>
@@ -35,17 +47,31 @@
 <style>
   .hero {
     position: relative;
+    isolation: isolate;
     overflow: clip;
     min-height: clamp(520px, 58vw, 700px);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 253, 248, 0.32) 100%),
-      var(--hero-image) center center / cover no-repeat;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 253, 248, 0.32) 100%
+    );
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   .hero::before {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: -1;
     background:
       radial-gradient(circle at center, rgba(255, 253, 248, 0.32) 0%, rgba(255, 253, 248, 0) 40%),
       linear-gradient(
@@ -61,6 +87,7 @@
     content: '';
     position: absolute;
     inset: 0;
+    z-index: -1;
     background: linear-gradient(
       90deg,
       rgba(255, 253, 248, 0.3) 0%,
