@@ -11,7 +11,7 @@
     trackEvent('outbound_link_click', {
       section,
       link_label: label,
-      destination_host: new URL(href).hostname
+      destination_host: new URL(href).hostname,
     });
   }
 </script>
@@ -54,8 +54,11 @@
                     target="_blank"
                     rel="external noreferrer"
                     onclick={() =>
-                      handleOutboundClick(detail.id, detail.visual.ctaLabel ?? detail.title, detail.visual.href ?? '')
-                    }
+                      handleOutboundClick(
+                        detail.id,
+                        detail.visual.ctaLabel ?? detail.title,
+                        detail.visual.href ?? '',
+                      )}
                   >
                     <img src={asset(detail.visual.image)} alt={detail.visual.alt} loading="lazy" />
                   </a>

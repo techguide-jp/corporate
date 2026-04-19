@@ -7,25 +7,27 @@
 
   let { children }: { children: Snippet } = $props();
   let previousUrl = $state('');
-  const gaBootstrapScript = $derived.by(() => {
-    if (!GA_MEASUREMENT_ID) {
-      return '';
+  let gaInitialized = false;
+
+  function initializeGa() {
+    if (!browser || gaInitialized || !GA_MEASUREMENT_ID || !isGaEnabled(window.location.hostname)) {
+      return;
     }
 
-    return `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      window.gtag = gtag;
-      if (['techguide.jp', 'www.techguide.jp'].includes(window.location.hostname)) {
-        var gaScript = document.createElement('script');
-        gaScript.async = true;
-        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}';
-        document.head.appendChild(gaScript);
-        gtag('js', new Date());
-        gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });
-      }
-    `;
-  });
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = (...args) => {
+      window.dataLayer?.push(args);
+    };
+
+    const gaScript = document.createElement('script');
+    gaScript.async = true;
+    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    document.head.appendChild(gaScript);
+
+    window.gtag('js', new Date());
+    window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
+    gaInitialized = true;
+  }
 
   function sendPageView() {
     if (!browser || !isGaEnabled(window.location.hostname)) {
@@ -43,21 +45,25 @@
   }
 
   $effect(() => {
-    page.url.pathname;
-    page.url.search;
+    if (!browser) {
+      return;
+    }
 
-    if (!browser || !isGaEnabled(window.location.hostname)) {
+    initializeGa();
+  });
+
+  $effect(() => {
+    void page.url.pathname;
+    void page.url.search;
+
+    initializeGa();
+
+    if (!gaInitialized) {
       return;
     }
 
     sendPageView();
   });
 </script>
-
-<svelte:head>
-  {#if GA_MEASUREMENT_ID}
-    <script>{@html gaBootstrapScript}</script>
-  {/if}
-</svelte:head>
 
 {@render children()}

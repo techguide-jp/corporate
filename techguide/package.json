@@ -13,10 +13,14 @@
     "lint:fix": "eslint . --fix --max-warnings 0",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "validate": "pnpm format:check && pnpm lint && pnpm check && pnpm build"
+    "validate": "pnpm format:check && pnpm lint && pnpm check && pnpm build",
+    "ga:list": "node --env-file-if-exists=.env scripts/ga-admin.mjs list",
+    "ga:sync": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync",
+    "ga:sync:dry": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync --dry-run"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@google-analytics/admin": "^9.0.1",
     "@sveltejs/adapter-static": "^3.0.8",
     "@sveltejs/kit": "^2.55.0",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",

@@ -18,7 +18,7 @@
     trackEvent('outbound_link_click', {
       section: id,
       link_label: item.title,
-      destination_host: new URL(item.href).hostname
+      destination_host: new URL(item.href).hostname,
     });
   }
 </script>

@@ -52,7 +52,7 @@
           rel="noreferrer"
           onclick={() =>
             trackEvent('contact_form_fallback_click', {
-              destination_host: new URL(contactFormUrl).hostname
+              destination_host: new URL(contactFormUrl).hostname,
             })}
         >
           こちら
