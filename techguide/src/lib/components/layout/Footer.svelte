@@ -3,7 +3,6 @@
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import type { NavItem } from '$lib/types/content';
-  import LogoMark from '$lib/components/ui/LogoMark.svelte';
 
   interface Props {
     companyName: string;
@@ -61,7 +60,6 @@
   <div class="container footer__inner">
     <div class="footer__brand">
       <a class="footer__brand-link" href={resolve('/')} aria-label="TechGuide ホームへ移動">
-        <LogoMark />
         <span>{companyName}</span>
       </a>
       <p class="footer__summary">IT導入、LP制作、AI活用まで、現場に合わせて伴走します。</p>
