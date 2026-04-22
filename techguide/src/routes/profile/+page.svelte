@@ -427,7 +427,17 @@
             <div class="profile-contact__card-body">
               <h2>{item.title}</h2>
               <p>
-                {@html item.descriptionHtml ?? item.description}
+                {#if item.descriptionSegments}
+                  {#each item.descriptionSegments as segment, index (segment.text + index)}
+                    {#if segment.strong}
+                      <strong>{segment.text}</strong>
+                    {:else}
+                      {segment.text}
+                    {/if}
+                  {/each}
+                {:else}
+                  {item.description}
+                {/if}
               </p>
             </div>
 

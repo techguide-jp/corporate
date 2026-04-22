@@ -529,8 +529,22 @@ export const profilePageContent: ProfilePageContent = {
     {
       title: '起業家向けサポート用LINE',
       description: 'イベントの集客やお誘い導線を整えたい方におすすめです。',
-      descriptionHtml:
-        '<strong>LINE に登録して「イベントお誘い」とメッセージ</strong>を送っていただいた方へ、プレゼントとして<strong>「イベントお誘いツール」</strong>をお渡ししています。イベントの集客やお誘い導線を整えたい方におすすめです。',
+      descriptionSegments: [
+        {
+          text: 'LINE に登録して「イベントお誘い」とメッセージ',
+          strong: true,
+        },
+        {
+          text: 'を送っていただいた方へ、プレゼントとして',
+        },
+        {
+          text: '「イベントお誘いツール」',
+          strong: true,
+        },
+        {
+          text: 'をお渡ししています。イベントの集客やお誘い導線を整えたい方におすすめです。',
+        },
+      ],
       href: 'https://lin.ee/76ZzaJl',
       buttonImage: 'https://scdn.line-apps.com/n/line_add_friends/btn/ja.png',
       buttonImageAlt: '友だち追加',

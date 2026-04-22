@@ -204,7 +204,10 @@ export interface ProfileBackgroundSection {
 export interface ProfileContactItem {
   title: string;
   description: string;
-  descriptionHtml?: string;
+  descriptionSegments?: Array<{
+    text: string;
+    strong?: boolean;
+  }>;
   href?: string;
   ctaLabel?: string;
   buttonImage?: string;
