@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
   import { asset } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
@@ -49,25 +49,21 @@
     computedStatus: string;
     statusTone: 'accepting' | 'upcoming' | 'ended';
     isEnded: boolean;
+    isInteractive: boolean;
+    metaLabel: string;
   };
 
   function getEventView(item: ProfileEventItem, todayTokyoIso: string): ProfileEventView {
+    const canJudge = todayTokyoIso !== '';
     const isEnded = todayTokyoIso !== '' && item.dateIso < todayTokyoIso;
-
-    if (isEnded) {
-      return {
-        ...item,
-        computedStatus: '終了',
-        statusTone: 'ended',
-        isEnded: true,
-      };
-    }
 
     return {
       ...item,
-      computedStatus: item.status,
-      statusTone: item.isAccepting ? 'accepting' : 'upcoming',
-      isEnded: false,
+      computedStatus: isEnded ? '終了' : item.status,
+      statusTone: isEnded ? 'ended' : item.isAccepting ? 'accepting' : 'upcoming',
+      isEnded,
+      isInteractive: canJudge && !isEnded,
+      metaLabel: isEnded ? '終了しました' : item.ctaLabel,
     };
   }
 
@@ -85,12 +81,12 @@
 
   const heroTaglineLines = profilePageContent.hero.tagline.split('\n');
 
-  let todayTokyoIso = '';
-
-  onMount(() => {
-    todayTokyoIso = getTokyoTodayIso();
-  });
+  const todayTokyoIso = browser ? getTokyoTodayIso() : '';
 </script>
+
+<svelte:head>
+  <script type="module" src={asset('/scripts/profile-events-boot.js')}></script>
+</svelte:head>
 
 <SeoHead
   title={pageSeo.profile.title}
@@ -296,46 +292,42 @@
       <div class="profile-events">
         {#each profilePageContent.events.items as rawItem (rawItem.dateIso + rawItem.title)}
           {@const item = getEventView(rawItem, todayTokyoIso)}
+          <a
+            class={`profile-events__card${item.isEnded ? ' profile-events__card--ended' : ''}`}
+            data-profile-event-card
+            data-event-date-iso={rawItem.dateIso}
+            data-event-href={rawItem.href}
+            data-event-accepting={rawItem.isAccepting}
+            data-event-status-label={rawItem.status}
+            data-event-cta-label={rawItem.ctaLabel}
+            href={item.isInteractive ? item.href : undefined}
+            target={item.isInteractive ? '_blank' : undefined}
+            rel="external noreferrer"
+            onclick={() =>
+              item.isInteractive && handleOutboundClick('profile_events', item.title, item.href)}
+          >
+            <div class="profile-events__date-block">
+              <p class="profile-events__date">{item.date}</p>
+              <span
+                class={`profile-events__status profile-events__status--${item.statusTone}`}
+                data-event-status
+              >
+                {item.computedStatus}
+              </span>
+            </div>
 
-          {#if item.isEnded}
-            <article class="profile-events__card profile-events__card--ended">
-              <div class="profile-events__date-block">
-                <p class="profile-events__date">{item.date}</p>
-                <span class={`profile-events__status profile-events__status--${item.statusTone}`}>
-                  {item.computedStatus}
-                </span>
-              </div>
+            <div class="profile-events__body">
+              <h2>{item.title}</h2>
+              <p>{item.description}</p>
+            </div>
 
-              <div class="profile-events__body">
-                <h2>{item.title}</h2>
-                <p>{item.description}</p>
-              </div>
-
-              <span class="profile-events__meta profile-events__meta--ended">終了しました</span>
-            </article>
-          {:else}
-            <a
-              class="profile-events__card"
-              href={item.href}
-              target="_blank"
-              rel="external noreferrer"
-              onclick={() => handleOutboundClick('profile_events', item.title, item.href)}
+            <span
+              class={`profile-events__meta${item.isEnded ? ' profile-events__meta--ended' : ''}`}
+              data-event-meta
             >
-              <div class="profile-events__date-block">
-                <p class="profile-events__date">{item.date}</p>
-                <span class={`profile-events__status profile-events__status--${item.statusTone}`}>
-                  {item.computedStatus}
-                </span>
-              </div>
-
-              <div class="profile-events__body">
-                <h2>{item.title}</h2>
-                <p>{item.description}</p>
-              </div>
-
-              <span class="profile-events__meta">{item.ctaLabel}</span>
-            </a>
-          {/if}
+              {item.metaLabel}
+            </span>
+          </a>
         {/each}
       </div>
     </div>
@@ -924,6 +916,10 @@
       border-color 0.2s ease;
   }
 
+  .profile-events__card:not([href]) {
+    cursor: default;
+  }
+
   .profile-events__date-block {
     display: grid;
     gap: 8px;
@@ -991,11 +987,16 @@
     white-space: nowrap;
   }
 
+  .profile-events__card:not([href]) .profile-events__meta::after {
+    content: none;
+  }
+
   .profile-events__card--ended {
     color: inherit;
     background: rgba(250, 248, 244, 0.94);
   }
 
+  .profile-events__card:not([href]):hover,
   .profile-events__card--ended:hover {
     transform: none;
     border-color: rgba(117, 92, 56, 0.12);
