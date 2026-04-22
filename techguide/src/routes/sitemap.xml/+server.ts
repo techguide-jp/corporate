@@ -5,6 +5,7 @@ export const prerender = true;
 const sitemapEntries = [
   { path: pageSeo.home.path, changefreq: 'weekly', priority: '1.0' },
   { path: pageSeo.services.path, changefreq: 'weekly', priority: '0.8' },
+  { path: pageSeo.profile.path, changefreq: 'monthly', priority: '0.6' },
   { path: pageSeo.contact.path, changefreq: 'monthly', priority: '0.7' },
 ] as const;
 

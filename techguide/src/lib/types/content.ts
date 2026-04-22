@@ -137,3 +137,101 @@ export interface ContactPageContent {
   alternateContactTitle: string;
   alternateContactDescription: string;
 }
+
+export interface ProfileLink {
+  label: string;
+  href: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+export interface ProfileHeroContent {
+  eyebrow: string;
+  name: string;
+  role: string;
+  tagline: string;
+  specialties: string[];
+  lead: string;
+  image: string;
+  imageAlt: string;
+  highlights: string[];
+}
+
+export interface ProfileValueItem {
+  id: string;
+  title: string;
+  description: string;
+  points: string[];
+  closing: string;
+  cta?: ProfileLink;
+}
+
+export interface ProfileEventItem {
+  date: string;
+  dateIso: string;
+  status: string;
+  isAccepting: boolean;
+  title: string;
+  description: string;
+  href: string;
+  ctaLabel: string;
+}
+
+export interface ProfileEventsSection {
+  title: string;
+  subtitle: string;
+  items: ProfileEventItem[];
+}
+
+export interface ProfileCareerItem {
+  title: string;
+  description: string;
+  meta?: string;
+}
+
+export interface ProfileInfoGroup {
+  title: string;
+  items: string[];
+}
+
+export interface ProfileBackgroundSection {
+  title: string;
+  subtitle: string;
+  careerItems: ProfileCareerItem[];
+  personalGroups: ProfileInfoGroup[];
+}
+
+export interface ProfileContactItem {
+  title: string;
+  description: string;
+  descriptionHtml?: string;
+  href?: string;
+  ctaLabel?: string;
+  buttonImage?: string;
+  buttonImageAlt?: string;
+}
+
+export interface ProfilePageContent {
+  hero: ProfileHeroContent;
+  overviewTitle: string;
+  overviewSubtitle: string;
+  overviewParagraphs: string[];
+  overviewFocusTitle: string;
+  overviewFocusItems: string[];
+  background: ProfileBackgroundSection;
+  valuesTitle: string;
+  valuesSubtitle: string;
+  values: ProfileValueItem[];
+  events: ProfileEventsSection;
+  portfolioTitle: string;
+  portfolioSubtitle: string;
+  portfolioItems: ShowcaseItem[];
+  stanceTitle: string;
+  stanceLead: string;
+  stanceItems: string[];
+  audienceTitle: string;
+  audienceItems: string[];
+  contactTitle: string;
+  contactLead: string;
+  contactItems: ProfileContactItem[];
+}
