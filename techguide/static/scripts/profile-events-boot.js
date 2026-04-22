@@ -12,6 +12,8 @@
   const day = parts.find((part) => part.type === 'day')?.value;
   const todayTokyoIso = year && month && day ? `${year}-${month}-${day}` : '';
 
+  document.documentElement.dataset.profileTodayIso = todayTokyoIso;
+
   const cards = document.querySelectorAll('[data-profile-event-card]');
   const statusClasses = [
     'profile-events__status--accepting',

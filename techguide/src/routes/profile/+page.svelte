@@ -81,7 +81,17 @@
 
   const heroTaglineLines = profilePageContent.hero.tagline.split('\n');
 
-  const todayTokyoIso = browser ? getTokyoTodayIso() : '';
+  function getInitialTodayTokyoIso() {
+    if (!browser) {
+      return getTokyoTodayIso();
+    }
+
+    return document.documentElement.dataset.profileTodayIso || getTokyoTodayIso();
+  }
+
+  // Static HTML uses the prerender/build date so event links remain usable without JS.
+  // Browsers then upgrade this with the boot script's current Tokyo date before hydration.
+  const todayTokyoIso = getInitialTodayTokyoIso();
 </script>
 
 <svelte:head>
