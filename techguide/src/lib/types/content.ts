@@ -202,6 +202,9 @@ export interface ProfileBackgroundSection {
 }
 
 export interface ProfileContactItem {
+  platformLabel?: string;
+  platformImage?: string;
+  platformImageAlt?: string;
   title: string;
   description: string;
   descriptionSegments?: Array<{

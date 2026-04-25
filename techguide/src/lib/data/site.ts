@@ -63,6 +63,7 @@ export const navItems: NavItem[] = [
   { label: 'プロダクト', href: '/#products' },
   { label: '実績', href: '/#works' },
   { label: '会社情報', href: '/#company' },
+  { label: '代表について', href: '/profile' },
   { label: 'お問い合わせ', href: '/contact' },
 ];
 
@@ -408,13 +409,13 @@ export const profilePageContent: ProfilePageContent = {
       {
         date: '2026.05.13',
         dateIso: '2026-05-13',
-        status: '次回参加希望受付',
-        isAccepting: false,
+        status: '申込受付中',
+        isAccepting: true,
         title: 'エンジニア人生相談会',
         description:
-          'まだ本受付前ですが、フォーム内の「次回参加したい」から参加希望を送っていただけます。',
+          'エンジニアとしての働き方やキャリアの悩みを、気軽に相談できる場として開催します。現在申込受付中です。',
         href: 'https://forms.gle/ndwE2RjDYZE6Kpz86',
-        ctaLabel: '参加希望を送る',
+        ctaLabel: '申込フォームを見る',
       },
       {
         date: '2026.05.31',
@@ -515,12 +516,18 @@ export const profilePageContent: ProfilePageContent = {
     '「まずは相談だけ」でも問題ありません。アイデア段階・構想段階からでもお気軽にご連絡ください。',
   contactItems: [
     {
+      platformLabel: 'SNS：X（旧Twitter）',
+      platformImage: '/images/social/x.svg',
+      platformImageAlt: 'X',
       title: 'エンジニア向け発信',
       description: '具体的なキャリア戦略と収入アップ術を発信しています。',
       href: 'https://x.com/tashua314',
       ctaLabel: 'Xを見る',
     },
     {
+      platformLabel: 'SNS：Instagram',
+      platformImage: '/images/social/instagram.svg',
+      platformImageAlt: 'Instagram',
       title: '起業家向け発信',
       description: '「ITをもっと身近に」をテーマに、IT活用や伴走支援に関する発信をしています。',
       href: 'https://www.instagram.com/yuchan_314/',

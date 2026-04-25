@@ -16,12 +16,16 @@
 
   const currentYear = new Date().getFullYear();
 
+  function normalizePathname(pathname: string) {
+    return pathname === '/' ? pathname : pathname.replace(/\/$/, '');
+  }
+
   function isActive(href: string) {
     if (href.startsWith('/#')) {
       return page.url.pathname === '/' && page.url.hash === href.slice(1);
     }
 
-    return page.url.pathname === href;
+    return normalizePathname(page.url.pathname) === normalizePathname(href);
   }
 
   function scrollToTop() {
