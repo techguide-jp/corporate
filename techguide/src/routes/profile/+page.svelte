@@ -15,7 +15,7 @@
     pageSeo,
     profilePageContent,
   } from '$lib/data/site';
-  import type { ProfileEventItem } from '$lib/types/content';
+  import type { ProfileContactItem, ProfileEventItem } from '$lib/types/content';
 
   function handleOutboundClick(section: string, label: string, href: string) {
     trackEvent('outbound_link_click', {
@@ -107,6 +107,71 @@
   jsonLd={profileStructuredData}
 />
 
+{#snippet profileContactCardContent(item: ProfileContactItem)}
+  {#if item.platformImage}
+    <img
+      class="profile-contact__watermark"
+      src={resolveImageSrc(item.platformImage)}
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  {/if}
+
+  <div class="profile-contact__card-body">
+    {#if item.platformLabel}
+      <p class="profile-contact__platform">
+        {#if item.platformImage}
+          <img
+            class="profile-contact__platform-image"
+            src={resolveImageSrc(item.platformImage)}
+            alt={item.platformImageAlt ?? ''}
+            loading="lazy"
+            decoding="async"
+          />
+        {/if}
+        <span>{item.platformLabel}</span>
+      </p>
+    {/if}
+    <h2>{item.title}</h2>
+    <p>
+      {#if item.descriptionSegments}
+        {#each item.descriptionSegments as segment, index (segment.text + index)}
+          {#if segment.strong}
+            <strong>{segment.text}</strong>
+          {:else}
+            {segment.text}
+          {/if}
+        {/each}
+      {:else}
+        {item.description}
+      {/if}
+    </p>
+  </div>
+
+  {#if item.href}
+    <div class="profile-contact__actions">
+      <span
+        class={item.buttonImage
+          ? 'profile-contact__button profile-contact__button--image'
+          : 'profile-contact__button'}
+      >
+        {#if item.buttonImage}
+          <img
+            src={resolveImageSrc(item.buttonImage)}
+            alt={item.buttonImageAlt ?? item.title}
+            loading="lazy"
+            decoding="async"
+          />
+        {:else}
+          {item.ctaLabel ?? '外部サイトを開く'}
+        {/if}
+      </span>
+    </div>
+  {/if}
+{/snippet}
+
 <Header items={navItems} />
 
 <main class="profile-page">
@@ -181,59 +246,6 @@
     </div>
   </section>
 
-  <section class="section section--tight profile-background-section">
-    <div class="container">
-      <div class="profile-reading-heading">
-        <SectionHeading
-          eyebrow="Background"
-          title={profilePageContent.background.title}
-          subtitle={profilePageContent.background.subtitle}
-        />
-      </div>
-
-      <div class="profile-background">
-        <section class="profile-background__career" aria-labelledby="profile-career-heading">
-          <div class="profile-section-label">
-            <p class="profile-background__eyebrow">Career</p>
-            <h3 id="profile-career-heading">仕事につながる経歴</h3>
-          </div>
-
-          <div class="profile-background__timeline">
-            {#each profilePageContent.background.careerItems as item (item.title)}
-              <article class="profile-career-item">
-                {#if item.meta}
-                  <p class="profile-career-item__meta">{item.meta}</p>
-                {/if}
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </article>
-            {/each}
-          </div>
-        </section>
-
-        <section class="profile-background__personal" aria-labelledby="profile-personal-heading">
-          <div class="profile-section-label">
-            <p class="profile-background__eyebrow">Personal</p>
-            <h3 id="profile-personal-heading">人となりと関心</h3>
-          </div>
-
-          <div class="profile-background__groups">
-            {#each profilePageContent.background.personalGroups as group (group.title)}
-              <article class="profile-info-group">
-                <h3>{group.title}</h3>
-                <ul>
-                  {#each group.items as item (item)}
-                    <li>{item}</li>
-                  {/each}
-                </ul>
-              </article>
-            {/each}
-          </div>
-        </section>
-      </div>
-    </div>
-  </section>
-
   <section class="section surface-soft">
     <div class="container">
       <SectionHeading
@@ -286,6 +298,36 @@
               </a>
             {/if}
           </article>
+        {/each}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Contact"
+        title={profilePageContent.contactTitle}
+        subtitle={profilePageContent.contactLead}
+      />
+
+      <div class="profile-contact">
+        {#each profilePageContent.contactItems as item (item.title)}
+          {#if item.href}
+            <a
+              class="profile-contact__card profile-contact__card--link"
+              href={item.href}
+              target="_blank"
+              rel="external noreferrer"
+              onclick={() => handleOutboundClick('profile_contact', item.title, item.href ?? '')}
+            >
+              {@render profileContactCardContent(item)}
+            </a>
+          {:else}
+            <article class="profile-contact__card">
+              {@render profileContactCardContent(item)}
+            </article>
+          {/if}
         {/each}
       </div>
     </div>
@@ -415,61 +457,55 @@
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section class="section section--tight profile-background-section">
     <div class="container">
-      <SectionHeading
-        eyebrow="Contact"
-        title={profilePageContent.contactTitle}
-        subtitle={profilePageContent.contactLead}
-      />
+      <div class="profile-reading-heading">
+        <SectionHeading
+          eyebrow="Background"
+          title={profilePageContent.background.title}
+          subtitle={profilePageContent.background.subtitle}
+        />
+      </div>
 
-      <div class="profile-contact">
-        {#each profilePageContent.contactItems as item (item.title)}
-          <article class="profile-contact__card">
-            <div class="profile-contact__card-body">
-              <h2>{item.title}</h2>
-              <p>
-                {#if item.descriptionSegments}
-                  {#each item.descriptionSegments as segment, index (segment.text + index)}
-                    {#if segment.strong}
-                      <strong>{segment.text}</strong>
-                    {:else}
-                      {segment.text}
-                    {/if}
-                  {/each}
-                {:else}
-                  {item.description}
+      <div class="profile-background">
+        <section class="profile-background__career" aria-labelledby="profile-career-heading">
+          <div class="profile-section-label">
+            <p class="profile-background__eyebrow">Career</p>
+            <h3 id="profile-career-heading">仕事につながる経歴</h3>
+          </div>
+
+          <div class="profile-background__timeline">
+            {#each profilePageContent.background.careerItems as item (item.title)}
+              <article class="profile-career-item">
+                {#if item.meta}
+                  <p class="profile-career-item__meta">{item.meta}</p>
                 {/if}
-              </p>
-            </div>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </article>
+            {/each}
+          </div>
+        </section>
 
-            {#if item.href}
-              <div class="profile-contact__actions">
-                <a
-                  class={item.buttonImage
-                    ? 'profile-contact__button profile-contact__button--image'
-                    : 'profile-contact__button'}
-                  href={item.href}
-                  target="_blank"
-                  rel="external noreferrer"
-                  onclick={() =>
-                    handleOutboundClick('profile_contact', item.title, item.href ?? '')}
-                >
-                  {#if item.buttonImage}
-                    <img
-                      src={resolveImageSrc(item.buttonImage)}
-                      alt={item.buttonImageAlt ?? item.title}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  {:else}
-                    {item.ctaLabel ?? '外部サイトを開く'}
-                  {/if}
-                </a>
-              </div>
-            {/if}
-          </article>
-        {/each}
+        <section class="profile-background__personal" aria-labelledby="profile-personal-heading">
+          <div class="profile-section-label">
+            <p class="profile-background__eyebrow">Personal</p>
+            <h3 id="profile-personal-heading">人となりと関心</h3>
+          </div>
+
+          <div class="profile-background__groups">
+            {#each profilePageContent.background.personalGroups as group (group.title)}
+              <article class="profile-info-group">
+                <h3>{group.title}</h3>
+                <ul>
+                  {#each group.items as item (item)}
+                    <li>{item}</li>
+                  {/each}
+                </ul>
+              </article>
+            {/each}
+          </div>
+        </section>
       </div>
     </div>
   </section>
@@ -1140,15 +1176,73 @@
   }
 
   .profile-contact__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: grid;
     gap: 16px;
     min-height: 100%;
     padding: clamp(16px, 2.4vw, 22px);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .profile-contact__card--link:hover {
+    transform: translateY(-2px);
+    border-color: rgba(214, 151, 76, 0.42);
+    box-shadow: 0 26px 42px rgba(111, 83, 41, 0.16);
+  }
+
+  .profile-contact__card--link:focus-visible {
+    outline: 3px solid rgba(214, 151, 76, 0.42);
+    outline-offset: 4px;
   }
 
   .profile-contact__card-body {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: 8px;
+  }
+
+  .profile-contact__watermark {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 0;
+    width: clamp(84px, 10vw, 128px);
+    height: clamp(84px, 10vw, 128px);
+    border-radius: 24px;
+    opacity: 0.1;
+    pointer-events: none;
+  }
+
+  .profile-contact__card .profile-contact__platform {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    width: fit-content;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255, 247, 228, 0.94);
+    border: 1px solid rgba(214, 151, 76, 0.22);
+    color: rgba(135, 99, 45, 0.98);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .profile-contact__platform-image {
+    width: 1.12rem;
+    height: 1.12rem;
+    flex: 0 0 auto;
+    border-radius: 4px;
   }
 
   .profile-contact__card-body p :global(strong) {
@@ -1163,6 +1257,8 @@
   }
 
   .profile-contact__actions {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     gap: 10px 14px;
