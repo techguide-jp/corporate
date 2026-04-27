@@ -31,6 +31,7 @@
   let turnstileClientError = $state('');
   let turnstileWidgetId: string | undefined;
   let turnstileLoadPromise: Promise<void> | undefined;
+  let turnstileRetryCount = 0;
 
   const values = $derived.by<ContactFormValues>(() => ({
     ...createEmptyContactFormValues(data.selectedCategory),
@@ -87,6 +88,7 @@
       }
       turnstileWidgetId = undefined;
       turnstileToken = '';
+      turnstileRetryCount = 0;
     };
   });
 
@@ -134,6 +136,7 @@
       theme: 'light',
       'response-field': false,
       callback: (token) => {
+        turnstileRetryCount = 0;
         turnstileToken = token;
         turnstileClientError = '';
       },
@@ -141,6 +144,12 @@
         turnstileToken = '';
       },
       'error-callback': () => {
+        turnstileRetryCount += 1;
+
+        if (turnstileToken || turnstileRetryCount <= 2) {
+          return false;
+        }
+
         turnstileToken = '';
         turnstileClientError =
           '迷惑投稿対策の確認に失敗しました。ページを再読み込みしてから送信してください。';
@@ -192,6 +201,7 @@
 
   function resetTurnstile() {
     turnstileToken = '';
+    turnstileRetryCount = 0;
     if (turnstileWidgetId) {
       window.turnstile?.reset(turnstileWidgetId);
       return;
