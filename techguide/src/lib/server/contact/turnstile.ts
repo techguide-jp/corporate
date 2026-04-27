@@ -1,5 +1,5 @@
 import { dev } from '$app/environment';
-import { env as privateEnv } from '$env/dynamic/private';
+import { getServerEnv } from '$lib/server/env';
 
 export type TurnstileResult =
   | { ok: true }
@@ -14,7 +14,7 @@ export async function verifyTurnstile(
   formData: FormData,
   remoteIp?: string,
 ): Promise<TurnstileResult> {
-  const secret = privateEnv.TURNSTILE_SECRET_KEY;
+  const secret = getServerEnv('TURNSTILE_SECRET_KEY')?.trim();
   const token = formData.get('cf-turnstile-response');
 
   if (!secret) {

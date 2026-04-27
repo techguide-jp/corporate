@@ -1,5 +1,5 @@
-import { env as privateEnv } from '$env/dynamic/private';
 import { Resend } from 'resend';
+import { getServerEnv } from '$lib/server/env';
 import { buildAdminEmail, buildAutoReplyEmail } from './emailTemplates';
 import type { ContactSubmission } from './validation';
 
@@ -14,10 +14,10 @@ export type SendContactEmailResult =
 export async function sendContactEmails(
   submission: ContactSubmission,
 ): Promise<SendContactEmailResult> {
-  const apiKey = privateEnv.RESEND_API_KEY;
-  const fromName = privateEnv.RESEND_FROM_NAME?.trim();
-  const fromEmail = privateEnv.RESEND_FROM_EMAIL?.trim();
-  const to = privateEnv.CONTACT_TO_EMAIL;
+  const apiKey = getServerEnv('RESEND_API_KEY')?.trim();
+  const fromName = getServerEnv('RESEND_FROM_NAME')?.trim();
+  const fromEmail = getServerEnv('RESEND_FROM_EMAIL')?.trim();
+  const to = getServerEnv('CONTACT_TO_EMAIL')?.trim();
 
   if (!apiKey || !fromName || !fromEmail || !to) {
     return {
