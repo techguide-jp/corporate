@@ -10,6 +10,9 @@ declare global {
   interface Window {
     dataLayer: unknown[];
     gtag?: (...args: unknown[]) => void;
+    turnstile?: {
+      reset: () => void;
+    };
   }
 
   namespace App {}

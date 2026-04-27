@@ -1,6 +1,8 @@
+import type { InternalHref } from '$lib/utils/paths';
+
 export interface NavItem {
   label: string;
-  href: string;
+  href: InternalHref;
 }
 
 export interface ActionLink {
@@ -26,7 +28,7 @@ export interface HeroContent {
 export interface ServiceItem {
   title: string;
   description: string;
-  href: string;
+  href: InternalHref;
   kind: 'consulting' | 'development' | 'ai';
   image: string;
   imageAlt: string;
@@ -91,7 +93,6 @@ export interface ContactInfo {
   heading: string;
   description: string;
   email: string;
-  formUrl: string;
 }
 
 export interface ServiceDetail {
@@ -134,8 +135,8 @@ export interface ContactPageContent {
   processTitle: string;
   processSteps: string[];
   responseNote: string;
-  alternateContactTitle: string;
-  alternateContactDescription: string;
+  formTitle: string;
+  formDescription: string;
 }
 
 export interface ProfileLink {
