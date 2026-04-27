@@ -45,7 +45,10 @@
     title={recruitContent.hero.title}
     description={recruitContent.hero.description}
   />
-  <RecruitBackground title={recruitContent.background.title} items={recruitContent.background.items} />
+  <RecruitBackground
+    title={recruitContent.background.title}
+    items={recruitContent.background.items}
+  />
   <RecruitOpportunities
     title={recruitContent.opportunities.title}
     items={recruitContent.opportunities.items}

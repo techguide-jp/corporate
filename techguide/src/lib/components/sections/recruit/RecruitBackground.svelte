@@ -9,7 +9,7 @@
 
 <section class="section--tight">
   <div class="container panel">
-    <SectionHeading title={title} level={2} />
+    <SectionHeading {title} level={2} />
     <ul>
       {#each items as item (item)}
         <li>{item}</li>
@@ -19,6 +19,15 @@
 </section>
 
 <style>
-  .panel { display:grid; gap:16px; }
-  ul { margin:0; padding-left:1.2rem; color: var(--color-ink-soft); display:grid; gap:10px; }
+  .panel {
+    display: grid;
+    gap: 16px;
+  }
+  ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--color-ink-soft);
+    display: grid;
+    gap: 10px;
+  }
 </style>

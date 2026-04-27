@@ -11,7 +11,7 @@
 
 <section class="section--tight">
   <div class="container panel">
-    <SectionHeading title={title} level={2} />
+    <SectionHeading {title} level={2} />
     <ul>
       {#each items as item (item)}
         <li>{item}</li>
