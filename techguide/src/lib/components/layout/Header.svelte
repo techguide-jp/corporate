@@ -3,12 +3,11 @@
   import { page } from '$app/state';
   import { untrack } from 'svelte';
   import type { NavItem } from '$lib/types/content';
+  import { getResolveArgs } from '$lib/utils/paths';
 
   interface Props {
     items: NavItem[];
   }
-
-  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { items }: Props = $props();
   let menuOpen = $state(false);
@@ -77,7 +76,7 @@
           <li>
             <a
               class:nav__link--active={isActive(item.href)}
-              href={resolve(item.href as ResolvableHref)}
+              href={resolve(...getResolveArgs(item.href))}
               aria-current={isActive(item.href) ? ariaCurrentValue(item.href) : undefined}
               onclick={closeMenu}
             >

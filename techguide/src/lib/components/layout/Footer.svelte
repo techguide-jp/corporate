@@ -3,13 +3,12 @@
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import type { NavItem } from '$lib/types/content';
+  import { getResolveArgs } from '$lib/utils/paths';
 
   interface Props {
     companyName: string;
     items: NavItem[];
   }
-
-  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { companyName, items }: Props = $props();
   let showFloatingTop = $state(false);
@@ -75,7 +74,7 @@
         {#each items as item (item.href)}
           <a
             class:footer__link--active={isActive(item.href)}
-            href={resolve(item.href as ResolvableHref)}
+            href={resolve(...getResolveArgs(item.href))}
           >
             {item.label}
           </a>

@@ -2,6 +2,7 @@
   import { resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import type { AnalyticsMetadata } from '$lib/analytics';
+  import { getResolveArgs, isInternalHref } from '$lib/utils/paths';
 
   interface Props {
     href: string;
@@ -10,8 +11,6 @@
     size?: 'md' | 'lg';
     analytics?: AnalyticsMetadata;
   }
-
-  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { href, label, tone = 'warm', size = 'md', analytics }: Props = $props();
 
@@ -24,10 +23,10 @@
   }
 </script>
 
-{#if href.startsWith('/')}
+{#if isInternalHref(href)}
   <a
     class={`action-button action-button--${tone} action-button--${size}`}
-    href={resolve(href as ResolvableHref)}
+    href={resolve(...getResolveArgs(href))}
     onclick={handleClick}
   >
     {label}
