@@ -4,7 +4,10 @@
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import RecruitBackground from '$lib/components/sections/recruit/RecruitBackground.svelte';
   import RecruitBenefits from '$lib/components/sections/recruit/RecruitBenefits.svelte';
+  import RecruitCases from '$lib/components/sections/recruit/RecruitCases.svelte';
+  import RecruitConditions from '$lib/components/sections/recruit/RecruitConditions.svelte';
   import RecruitCta from '$lib/components/sections/recruit/RecruitCta.svelte';
+  import RecruitExpectations from '$lib/components/sections/recruit/RecruitExpectations.svelte';
   import RecruitFit from '$lib/components/sections/recruit/RecruitFit.svelte';
   import RecruitFlow from '$lib/components/sections/recruit/RecruitFlow.svelte';
   import RecruitHero from '$lib/components/sections/recruit/RecruitHero.svelte';
@@ -44,6 +47,9 @@
     lead={recruitContent.hero.lead}
     title={recruitContent.hero.title}
     description={recruitContent.hero.description}
+    badges={recruitContent.hero.badges}
+    ctaLabel={recruitContent.hero.ctaLabel}
+    ctaHref={recruitContent.hero.ctaHref}
   />
   <RecruitBackground
     title={recruitContent.background.title}
@@ -53,6 +59,11 @@
     title={recruitContent.opportunities.title}
     items={recruitContent.opportunities.items}
   />
+  <RecruitCases
+    title={recruitContent.cases.title}
+    subtitle={recruitContent.cases.subtitle}
+    items={recruitContent.cases.items}
+  />
   <RecruitWork title={recruitContent.work.title} items={recruitContent.work.items} />
   <RecruitStack
     title={recruitContent.stack.title}
@@ -60,6 +71,15 @@
     platform={recruitContent.stack.platform}
   />
   <RecruitWorkStyle title={recruitContent.workStyle.title} items={recruitContent.workStyle.items} />
+  <RecruitExpectations
+    title={recruitContent.expectations.title}
+    subtitle={recruitContent.expectations.subtitle}
+    items={recruitContent.expectations.items}
+  />
+  <RecruitConditions
+    title={recruitContent.conditions.title}
+    items={recruitContent.conditions.items}
+  />
   <RecruitFit
     title={recruitContent.fit.title}
     good={recruitContent.fit.good}

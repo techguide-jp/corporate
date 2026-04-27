@@ -13,6 +13,8 @@ applications:
         build:
           commands:
             - pnpm build
+            - cd build/compute/default/
+            - pnpm install --prod --no-frozen-lockfile
       artifacts:
         baseDirectory: build
         files:

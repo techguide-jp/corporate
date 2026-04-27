@@ -1,11 +1,15 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
+  import { getResolveArgs, type InternalHref } from '$lib/utils/paths';
+
   interface Props {
     title: string;
     description: string;
     buttonLabel: string;
-    href: string;
+    href: InternalHref;
   }
+
   let { title, description, buttonLabel, href }: Props = $props();
 
   function onClick() {
@@ -17,7 +21,7 @@
   <div class="container cta">
     <h2>{title}</h2>
     <p>{description}</p>
-    <a {href} target="_blank" rel="external noreferrer" onclick={onClick}>{buttonLabel}</a>
+    <a href={resolve(...getResolveArgs(href))} onclick={onClick}>{buttonLabel}</a>
   </div>
 </section>
 

@@ -8,16 +8,17 @@
 
   interface Props {
     title: string;
+    subtitle: string;
     items: Item[];
   }
 
-  let { title, items }: Props = $props();
+  let { title, subtitle, items }: Props = $props();
 </script>
 
-<section class="section--tight surface-soft">
+<section class="section--tight">
   <div class="container panel">
-    <SectionHeading {title} level={2} />
-    <div class="cards">
+    <SectionHeading {title} {subtitle} level={2} />
+    <div class="grid">
       {#each items as item (item.title)}
         <article>
           <h3>{item.title}</h3>
@@ -31,25 +32,28 @@
 <style>
   .panel {
     display: grid;
-    gap: 16px;
+    gap: 18px;
   }
-  .cards {
+
+  .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
   }
+
   article {
     display: grid;
-    gap: 8px;
+    gap: 10px;
     padding: 18px;
-    border-radius: 16px;
-    background: #fff;
-    border: 1px solid var(--color-line);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(117, 92, 56, 0.12);
   }
+
   h3 {
     font-size: 1rem;
-    font-weight: 700;
   }
+
   p {
     color: var(--color-ink-soft);
   }

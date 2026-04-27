@@ -93,7 +93,6 @@ export interface ContactInfo {
   heading: string;
   description: string;
   email: string;
-  formUrl: string;
 }
 
 export interface ServiceDetail {
@@ -136,8 +135,8 @@ export interface ContactPageContent {
   processTitle: string;
   processSteps: string[];
   responseNote: string;
-  alternateContactTitle: string;
-  alternateContactDescription: string;
+  formTitle: string;
+  formDescription: string;
 }
 
 export interface ProfileLink {

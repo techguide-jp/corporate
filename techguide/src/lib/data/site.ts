@@ -229,7 +229,6 @@ export const contactInfo: ContactInfo = {
   description:
     '現状整理、LP改善、ツール導入、AI活用の壁打ちまで、事業フェーズに合わせて伴走します。',
   email: 'y.takahashi@techguide.jp',
-  formUrl: 'https://tayori.com/form/0a9d521c221f55e0c7b857f7e2f83f5760c7b7bb/',
 };
 
 export const contactPageContent: ContactPageContent = {
@@ -250,10 +249,10 @@ export const contactPageContent: ContactPageContent = {
     '必要な支援範囲を整理し、進め方やスケジュール感が分かる形でご提案します。',
   ],
   responseNote:
-    'お問い合わせは営業日に順次確認しています。お急ぎの場合は、希望時期や期限もあわせてご記入ください。',
-  alternateContactTitle: 'フォームが表示されない場合',
-  alternateContactDescription:
-    'Tayori のフォームを直接開くか、メールからのご連絡も可能です。環境によって iframe が表示されない場合はこちらをご利用ください。',
+    'お問い合わせは営業日に順次確認しています。送信後は入力いただいたメールアドレスへ控えをお送りします。',
+  formTitle: '相談内容を送信する',
+  formDescription:
+    'カテゴリを選ぶと必要な入力欄が切り替わります。採用・パートナー応募の場合は、稼働条件や利用しているAIツールもあわせてお知らせください。',
 };
 
 export const profilePageContent: ProfilePageContent = {
