@@ -38,7 +38,7 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 14px;
   }
-  section {
+  .grid > section {
     background: #fff;
     border: 1px solid var(--color-line);
     border-radius: 18px;
