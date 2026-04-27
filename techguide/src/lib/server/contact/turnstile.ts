@@ -42,10 +42,19 @@ export async function verifyTurnstile(
     body.set('remoteip', remoteIp);
   }
 
-  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST',
-    body,
-  });
+  let response: Response;
+  try {
+    response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body,
+    });
+  } catch {
+    return {
+      ok: false,
+      status: 'invalid',
+      message: '迷惑投稿対策の確認に失敗しました。時間をおいて再度お試しください。',
+    };
+  }
 
   if (!response.ok) {
     return {
@@ -55,7 +64,16 @@ export async function verifyTurnstile(
     };
   }
 
-  const payload = (await response.json()) as TurnstileResponse;
+  let payload: TurnstileResponse;
+  try {
+    payload = (await response.json()) as TurnstileResponse;
+  } catch {
+    return {
+      ok: false,
+      status: 'invalid',
+      message: '迷惑投稿対策の確認に失敗しました。時間をおいて再度お試しください。',
+    };
+  }
   if (!payload.success) {
     return {
       ok: false,

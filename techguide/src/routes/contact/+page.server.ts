@@ -57,7 +57,9 @@ export const actions: Actions = {
     return {
       ok: true,
       values: createEmptyContactFormValues(),
-      message: 'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。',
+      message:
+        sendResult.message ??
+        'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。',
     };
   },
 };
