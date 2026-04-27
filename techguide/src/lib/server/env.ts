@@ -4,12 +4,21 @@ type AmplifySecrets = Record<string, string>;
 
 let cachedAmplifySecrets: AmplifySecrets | undefined;
 
+function getDirectEnv(name: string): string | undefined {
+  const processValue = process.env[name];
+  if (processValue) {
+    return processValue;
+  }
+
+  return privateEnv[name];
+}
+
 function getAmplifySecrets(): AmplifySecrets {
   if (cachedAmplifySecrets) {
     return cachedAmplifySecrets;
   }
 
-  const rawSecrets = privateEnv.secrets ?? privateEnv.SECRETS;
+  const rawSecrets = getDirectEnv('secrets') ?? getDirectEnv('SECRETS');
   if (!rawSecrets) {
     cachedAmplifySecrets = {};
     return cachedAmplifySecrets;
@@ -36,7 +45,7 @@ function getAmplifySecrets(): AmplifySecrets {
 }
 
 export function getServerEnv(name: string): string | undefined {
-  const directValue = privateEnv[name];
+  const directValue = getDirectEnv(name);
   if (directValue) {
     return directValue;
   }
