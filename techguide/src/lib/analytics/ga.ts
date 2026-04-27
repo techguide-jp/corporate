@@ -1,7 +1,7 @@
 import { dev } from '$app/environment';
-import { env as publicEnv } from '$env/dynamic/public';
+import { PUBLIC_GA_MEASUREMENT_ID } from '$env/static/public';
 
-export const GA_MEASUREMENT_ID = publicEnv.PUBLIC_GA_MEASUREMENT_ID ?? '';
+export const GA_MEASUREMENT_ID = PUBLIC_GA_MEASUREMENT_ID.trim();
 
 const PRODUCTION_HOSTS = new Set(['techguide.jp', 'www.techguide.jp']);
 

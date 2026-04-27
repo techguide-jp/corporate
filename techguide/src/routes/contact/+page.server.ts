@@ -1,4 +1,4 @@
-import { env as publicEnv } from '$env/dynamic/public';
+import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
 import { fail, type Actions } from '@sveltejs/kit';
 import { createEmptyContactFormValues, getInitialCategory } from '$lib/contact/form';
 import { sendContactEmails } from '$lib/server/contact/sendContactEmails';
@@ -13,7 +13,7 @@ export const load: PageServerLoad = ({ url }) => {
 
   return {
     selectedCategory,
-    turnstileSiteKey: publicEnv.PUBLIC_TURNSTILE_SITE_KEY ?? '',
+    turnstileSiteKey: PUBLIC_TURNSTILE_SITE_KEY.trim(),
   };
 };
 
