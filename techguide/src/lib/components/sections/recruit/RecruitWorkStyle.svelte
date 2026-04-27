@@ -24,10 +24,14 @@
   .panel {
     display: grid;
     gap: 16px;
+    max-width: 560px;
+    margin-inline: auto;
   }
 
   ul {
-    margin: 0;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
     padding-left: 1.2rem;
     display: grid;
     gap: 10px;

@@ -20,6 +20,8 @@
   .panel {
     display: grid;
     gap: 16px;
+    max-width: 560px;
+    margin-inline: auto;
   }
   ol {
     margin: 0;
