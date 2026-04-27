@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
 
-const [command, positionalLogGroupName] = process.argv.slice(2);
+const rawArgs = process.argv.slice(2);
+const [command, ...commandArgs] = rawArgs;
+const [positionalLogGroupName] = commandArgs.filter((arg) => arg !== '--');
 
 const region =
   process.env.AMPLIFY_AWS_REGION?.trim() ||
@@ -123,12 +125,12 @@ if (!command || command === 'help' || command === '--help' || command === '-h') 
 if (command === 'groups') {
   runAwsAndPrint(
     [
+      '--region',
+      region,
       'logs',
       'describe-log-groups',
       '--log-group-name-prefix',
       logGroupPrefix,
-      '--region',
-      region,
       '--query',
       'logGroups[].{name:logGroupName,retention:retentionInDays,storedBytes:storedBytes}',
       '--output',
@@ -158,6 +160,8 @@ if (command === 'tail') {
   }
 
   const args = [
+    '--region',
+    region,
     'logs',
     'tail',
     logGroupName,
@@ -166,8 +170,6 @@ if (command === 'tail') {
     since,
     '--format',
     'short',
-    '--region',
-    region,
   ];
 
   if (filterPattern) {
