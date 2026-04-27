@@ -11,7 +11,24 @@ declare global {
     dataLayer: unknown[];
     gtag?: (...args: unknown[]) => void;
     turnstile?: {
-      reset: () => void;
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          action?: string;
+          appearance?: 'always' | 'execute' | 'interaction-only';
+          execution?: 'render' | 'execute';
+          language?: string;
+          size?: 'normal' | 'flexible' | 'compact';
+          theme?: 'light' | 'dark' | 'auto';
+          'response-field'?: boolean;
+          callback?: (token: string) => void;
+          'expired-callback'?: () => void;
+          'error-callback'?: (errorCode?: string) => boolean | void;
+        },
+      ) => string;
+      reset: (widgetId?: string) => void;
+      remove?: (widgetId: string) => void;
     };
   }
 

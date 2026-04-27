@@ -16,13 +16,21 @@
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
+  import { tick } from 'svelte';
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { PageProps } from './$types';
+
+  const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script';
 
   let { data, form }: PageProps = $props();
   const initialSelectedCategory = () => data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
   let isSubmitting = $state(false);
+  let turnstileContainer = $state<HTMLDivElement>();
+  let turnstileToken = $state('');
+  let turnstileClientError = $state('');
+  let turnstileWidgetId: string | undefined;
+  let turnstileLoadPromise: Promise<void> | undefined;
 
   const values = $derived.by<ContactFormValues>(() => ({
     ...createEmptyContactFormValues(data.selectedCategory),
@@ -53,6 +61,36 @@
   });
 
   $effect(() => {
+    if (!browser || !hasTurnstile || !turnstileContainer) {
+      return;
+    }
+
+    let isActive = true;
+
+    void renderTurnstile()
+      .then(() => {
+        if (isActive) {
+          turnstileClientError = '';
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          turnstileClientError =
+            '迷惑投稿対策の読み込みに失敗しました。ページを再読み込みしてから送信してください。';
+        }
+      });
+
+    return () => {
+      isActive = false;
+      if (turnstileWidgetId && window.turnstile?.remove) {
+        window.turnstile.remove(turnstileWidgetId);
+      }
+      turnstileWidgetId = undefined;
+      turnstileToken = '';
+    };
+  });
+
+  $effect(() => {
     if (form?.values?.category !== undefined) {
       selectedCategory = form.values.category;
     }
@@ -68,19 +106,100 @@
     return async ({ update }) => {
       try {
         await update();
-        window.turnstile?.reset();
+        resetTurnstile();
       } finally {
         isSubmitting = false;
       }
     };
   };
-</script>
 
-<svelte:head>
-  {#if hasTurnstile}
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  {/if}
-</svelte:head>
+  async function renderTurnstile() {
+    await tick();
+    if (!turnstileContainer || turnstileWidgetId) {
+      return;
+    }
+
+    await loadTurnstileScript();
+    if (!turnstileContainer || !window.turnstile) {
+      throw new Error('Turnstile is unavailable.');
+    }
+
+    turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+      sitekey: data.turnstileSiteKey,
+      action: 'contact',
+      appearance: 'always',
+      execution: 'render',
+      language: 'ja',
+      size: 'normal',
+      theme: 'light',
+      'response-field': false,
+      callback: (token) => {
+        turnstileToken = token;
+        turnstileClientError = '';
+      },
+      'expired-callback': () => {
+        turnstileToken = '';
+      },
+      'error-callback': () => {
+        turnstileToken = '';
+        turnstileClientError =
+          '迷惑投稿対策の確認に失敗しました。ページを再読み込みしてから送信してください。';
+        return true;
+      },
+    });
+  }
+
+  function loadTurnstileScript() {
+    if (window.turnstile) {
+      return Promise.resolve();
+    }
+
+    if (turnstileLoadPromise) {
+      return turnstileLoadPromise;
+    }
+
+    turnstileLoadPromise = new Promise<void>((resolve, reject) => {
+      const existingScript = document.getElementById(
+        TURNSTILE_SCRIPT_ID,
+      ) as HTMLScriptElement | null;
+
+      if (existingScript) {
+        existingScript.addEventListener('load', () => resolve(), { once: true });
+        existingScript.addEventListener(
+          'error',
+          () => reject(new Error('Turnstile load failed.')),
+          {
+            once: true,
+          },
+        );
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = TURNSTILE_SCRIPT_ID;
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.addEventListener('load', () => resolve(), { once: true });
+      script.addEventListener('error', () => reject(new Error('Turnstile load failed.')), {
+        once: true,
+      });
+      document.head.append(script);
+    });
+
+    return turnstileLoadPromise;
+  }
+
+  function resetTurnstile() {
+    turnstileToken = '';
+    if (turnstileWidgetId) {
+      window.turnstile?.reset(turnstileWidgetId);
+      return;
+    }
+
+    window.turnstile?.reset();
+  }
+</script>
 
 <SeoHead
   title={pageSeo.contact.title}
@@ -337,9 +456,17 @@
 
           <div class="contact-form__turnstile">
             {#if hasTurnstile}
-              <div class="cf-turnstile" data-sitekey={data.turnstileSiteKey}></div>
+              <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+              <div
+                class="contact-form__turnstile-widget"
+                bind:this={turnstileContainer}
+                aria-live="polite"
+              ></div>
             {:else}
               <p>迷惑投稿対策は本番環境で有効になります。</p>
+            {/if}
+            {#if turnstileClientError}
+              <small>{turnstileClientError}</small>
             {/if}
             {#if fieldErrors.turnstile}
               <small>{fieldErrors.turnstile}</small>
@@ -557,6 +684,10 @@
     gap: 8px;
     min-height: 68px;
     align-items: center;
+  }
+
+  .contact-form__turnstile-widget {
+    min-height: 65px;
   }
 
   .contact-form__submit {
