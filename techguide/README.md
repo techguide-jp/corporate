@@ -121,7 +121,8 @@ AWS CLI の認証済み環境で、Amplify Hosting compute logs の CloudWatch L
 
 ```bash
 pnpm logs:groups
-pnpm logs:tail -- /aws/amplify/<app>/<branch>
+pnpm logs:tail -- /aws/amplify/<app-id>
+LOG_STREAM_PREFIX=main pnpm logs:tail -- /aws/amplify/<app-id>
 ```
 
 `.env` に `AMPLIFY_LOG_GROUP_NAME` を設定している場合は、ロググループ名の指定を省略できます。
@@ -131,6 +132,8 @@ pnpm logs:tail
 ```
 
 必要に応じて `LOG_SINCE=30m`、`LOG_FILTER_PATTERN=ERROR`、`AMPLIFY_AWS_REGION=ap-northeast-1` を指定してください。通常のAccess logsではなく、SSR/API実行ログの確認用途です。
+
+Amplify Console の `Monitoring > Hosting compute logs` に `log-group:/aws/amplify/<app-id>:logStreamNameFilter:main` のように表示される場合、ロググループ名は `/aws/amplify/<app-id>`、ログストリームの絞り込みが `main` です。この文字列はそのまま `pnpm logs:tail -- 'log-group:/aws/amplify/<app-id>:logStreamNameFilter:main'` に渡すこともできます。
 
 `pnpm logs:groups` でロググループが見つからない場合は、Amplify Console の `Monitoring > Hosting compute logs` に表示されるロググループ名とリージョンを確認してください。SSR app の初回デプロイ前、該当ブランチでSSRページへのアクセスがない場合、またはカスタムService roleにCloudWatch Logs権限がない場合もロググループが見つからないことがあります。
 
@@ -169,7 +172,8 @@ CONTACT_TO_EMAIL=y.takahashi@techguide.jp
 PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAAAxxxxxxxxxxxxxx
 TURNSTILE_SECRET_KEY=0x4AAAAAAAxxxxxxxxxxxxxx
 AMPLIFY_AWS_REGION=ap-northeast-1
-AMPLIFY_LOG_GROUP_NAME=/aws/amplify/your-app/your-branch
+AMPLIFY_LOG_GROUP_NAME=/aws/amplify/your-app-id
+LOG_STREAM_PREFIX=main
 ```
 
 利用コマンド:

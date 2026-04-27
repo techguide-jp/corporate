@@ -8,19 +8,22 @@ const region =
   process.env.AWS_REGION?.trim() ||
   process.env.AWS_DEFAULT_REGION?.trim() ||
   'ap-northeast-1';
-const logGroupName =
+const rawLogGroupName =
   positionalLogGroupName?.trim() ||
   process.env.AMPLIFY_LOG_GROUP_NAME?.trim() ||
   process.env.LOG_GROUP_NAME?.trim();
 const logGroupPrefix = process.env.AMPLIFY_LOG_GROUP_PREFIX?.trim() || '/aws/amplify';
 const since = process.env.LOG_SINCE?.trim() || '10m';
 const filterPattern = process.env.LOG_FILTER_PATTERN?.trim();
-const streamPrefix = process.env.LOG_STREAM_PREFIX?.trim();
+const logTarget = parseLogTarget(rawLogGroupName);
+const logGroupName = logTarget.logGroupName;
+const streamPrefix = process.env.LOG_STREAM_PREFIX?.trim() || logTarget.streamPrefix;
 
 function printHelp() {
   console.log(`Usage:
   pnpm logs:groups
   pnpm logs:tail -- <log-group-name>
+  pnpm logs:tail -- 'log-group:/aws/amplify/<app-id>:logStreamNameFilter:<branch>'
   AMPLIFY_LOG_GROUP_NAME=<log-group-name> pnpm logs:tail
 
 Environment:
@@ -31,6 +34,43 @@ Environment:
   LOG_FILTER_PATTERN                                    optional CloudWatch filter pattern
   LOG_STREAM_PREFIX                                     optional log stream prefix
 `);
+}
+
+function decodeCloudWatchConsolePart(value) {
+  let decoded = value;
+
+  for (let i = 0; i < 3; i += 1) {
+    const normalized = decoded.replace(/\$([0-9A-Fa-f]{2})/g, '%$1');
+
+    try {
+      const next = decodeURIComponent(normalized);
+      if (next === decoded) {
+        return next;
+      }
+      decoded = next;
+    } catch {
+      return decoded;
+    }
+  }
+
+  return decoded;
+}
+
+function parseLogTarget(value) {
+  if (!value) {
+    return { logGroupName: undefined, streamPrefix: undefined };
+  }
+
+  const decodedValue = decodeCloudWatchConsolePart(value);
+  const consoleMatch = decodedValue.match(/^log-group:(.+?)(?::logStreamNameFilter:(.+))?$/);
+  if (!consoleMatch) {
+    return { logGroupName: decodedValue, streamPrefix: undefined };
+  }
+
+  return {
+    logGroupName: decodeCloudWatchConsolePart(consoleMatch[1]),
+    streamPrefix: consoleMatch[2] ? decodeCloudWatchConsolePart(consoleMatch[2]) : undefined,
+  };
 }
 
 function handleAwsError(result) {
