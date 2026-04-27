@@ -16,7 +16,9 @@
     "validate": "pnpm format:check && pnpm lint && pnpm check && pnpm build",
     "ga:list": "node --env-file-if-exists=.env scripts/ga-admin.mjs list",
     "ga:sync": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync",
-    "ga:sync:dry": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync --dry-run"
+    "ga:sync:dry": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync --dry-run",
+    "logs:groups": "node --env-file-if-exists=.env scripts/amplify-logs.mjs groups",
+    "logs:tail": "node --env-file-if-exists=.env scripts/amplify-logs.mjs tail"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
