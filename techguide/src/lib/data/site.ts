@@ -28,7 +28,7 @@ export const siteMetadata: SiteMetadata = {
   sameAs: [],
 };
 
-export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile', PageSeo> = {
+export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile' | 'recruit', PageSeo> = {
   home: {
     title: siteMetadata.defaultTitle,
     description: siteMetadata.defaultDescription,
@@ -56,6 +56,12 @@ export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile', PageSe
     image: '/images/about/ceo.webp',
     imageAlt: 'TechGuide合同会社 代表 高橋雄太',
   },
+  recruit: {
+    title: '採用・パートナー募集 | TechGuide',
+    description:
+      'TechGuideのWebエンジニア（業務委託・副業）募集ページ。週5時間〜・フルリモートで、設計から改善まで関われる開発パートナーを募集しています。',
+    path: '/recruit/',
+  },
 };
 
 export const navItems: NavItem[] = [
@@ -64,6 +70,7 @@ export const navItems: NavItem[] = [
   { label: '実績', href: '/#works' },
   { label: '会社情報', href: '/#company' },
   { label: '代表について', href: '/profile' },
+  { label: '採用', href: '/recruit' },
   { label: 'お問い合わせ', href: '/contact' },
 ];
 
