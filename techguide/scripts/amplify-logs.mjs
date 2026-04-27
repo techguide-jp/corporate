@@ -33,9 +33,7 @@ Environment:
 `);
 }
 
-function runAws(args) {
-  const result = spawnSync('aws', args, { stdio: 'inherit' });
-
+function handleAwsError(result) {
   if (result.error) {
     if (result.error.code === 'ENOENT') {
       console.error('AWS CLI が見つかりません。`aws --version` が通る状態で実行してください。');
@@ -44,8 +42,37 @@ function runAws(args) {
     }
     process.exit(1);
   }
+}
+
+function runAws(args) {
+  const result = spawnSync('aws', args, { stdio: 'inherit' });
+
+  handleAwsError(result);
 
   process.exit(result.status ?? 1);
+}
+
+function runAwsAndPrint(args, emptyMessage) {
+  const result = spawnSync('aws', args, { encoding: 'utf8' });
+
+  handleAwsError(result);
+
+  if (result.stderr) {
+    process.stderr.write(result.stderr);
+  }
+
+  if (result.status !== 0) {
+    process.exit(result.status ?? 1);
+  }
+
+  const output = result.stdout.trimEnd();
+  if (output.length > 0) {
+    console.log(output);
+    process.exit(0);
+  }
+
+  console.log(emptyMessage);
+  process.exit(0);
 }
 
 if (!command || command === 'help' || command === '--help' || command === '-h') {
@@ -54,18 +81,31 @@ if (!command || command === 'help' || command === '--help' || command === '-h') 
 }
 
 if (command === 'groups') {
-  runAws([
-    'logs',
-    'describe-log-groups',
-    '--log-group-name-prefix',
-    logGroupPrefix,
-    '--region',
-    region,
-    '--query',
-    'logGroups[].{name:logGroupName,retention:retentionInDays,storedBytes:storedBytes}',
-    '--output',
-    'table',
-  ]);
+  runAwsAndPrint(
+    [
+      'logs',
+      'describe-log-groups',
+      '--log-group-name-prefix',
+      logGroupPrefix,
+      '--region',
+      region,
+      '--query',
+      'logGroups[].{name:logGroupName,retention:retentionInDays,storedBytes:storedBytes}',
+      '--output',
+      'table',
+    ],
+    `CloudWatch Logs のロググループが見つかりませんでした。
+
+region: ${region}
+prefix: ${logGroupPrefix}
+
+確認してください:
+- Amplify Console > Monitoring > Hosting compute logs に表示されるロググループ名を直接確認する
+- リージョンが違う場合は AMPLIFY_AWS_REGION=<region> pnpm logs:groups で再実行する
+- prefix が違う場合は AMPLIFY_LOG_GROUP_PREFIX=<prefix> pnpm logs:groups で再実行する
+- SSR app のデプロイ後に /contact などのSSRページへアクセスしてから再実行する
+- カスタムService roleを使っている場合は CloudWatch Logs への作成/書き込み権限を確認する`,
+  );
 }
 
 if (command === 'tail') {

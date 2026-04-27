@@ -132,6 +132,8 @@ pnpm logs:tail
 
 必要に応じて `LOG_SINCE=30m`、`LOG_FILTER_PATTERN=ERROR`、`AMPLIFY_AWS_REGION=ap-northeast-1` を指定してください。通常のAccess logsではなく、SSR/API実行ログの確認用途です。
 
+`pnpm logs:groups` でロググループが見つからない場合は、Amplify Console の `Monitoring > Hosting compute logs` に表示されるロググループ名とリージョンを確認してください。SSR app の初回デプロイ前、該当ブランチでSSRページへのアクセスがない場合、またはカスタムService roleにCloudWatch Logs権限がない場合もロググループが見つからないことがあります。
+
 ## GA4 管理スクリプト
 
 GA4 の管理作業は、公式クライアント `@google-analytics/admin` を使う [scripts/ga-admin.mjs](./scripts/ga-admin.mjs) に寄せています。
