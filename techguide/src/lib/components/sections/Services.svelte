@@ -2,12 +2,11 @@
   import { asset, resolve } from '$app/paths';
   import type { ServiceItem } from '$lib/types/content';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
+  import { getResolveArgs } from '$lib/utils/paths';
 
   interface Props {
     items: ServiceItem[];
   }
-
-  type ResolvableHref = Parameters<typeof resolve>[0];
 
   let { items }: Props = $props();
 </script>
@@ -23,7 +22,7 @@
       {#each items as item (item.href)}
         <a
           class="service"
-          href={resolve(item.href as ResolvableHref)}
+          href={resolve(...getResolveArgs(item.href))}
           aria-label={`${item.title} の詳細を見る`}
         >
           <div class="service__image">

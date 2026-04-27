@@ -28,7 +28,7 @@ export const siteMetadata: SiteMetadata = {
   sameAs: [],
 };
 
-export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile', PageSeo> = {
+export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile' | 'recruit', PageSeo> = {
   home: {
     title: siteMetadata.defaultTitle,
     description: siteMetadata.defaultDescription,
@@ -56,6 +56,12 @@ export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile', PageSe
     image: '/images/about/ceo.webp',
     imageAlt: 'TechGuide合同会社 代表 高橋雄太',
   },
+  recruit: {
+    title: '採用・パートナー募集 | TechGuide',
+    description:
+      'TechGuideのWebエンジニア（業務委託・副業）募集ページ。週5時間〜・フルリモートで、設計から改善まで関われる開発パートナーを募集しています。',
+    path: '/recruit/',
+  },
 };
 
 export const navItems: NavItem[] = [
@@ -64,6 +70,7 @@ export const navItems: NavItem[] = [
   { label: '実績', href: '/#works' },
   { label: '会社情報', href: '/#company' },
   { label: '代表について', href: '/profile' },
+  { label: '採用', href: '/recruit' },
   { label: 'お問い合わせ', href: '/contact' },
 ];
 
@@ -222,7 +229,6 @@ export const contactInfo: ContactInfo = {
   description:
     '現状整理、LP改善、ツール導入、AI活用の壁打ちまで、事業フェーズに合わせて伴走します。',
   email: 'y.takahashi@techguide.jp',
-  formUrl: 'https://tayori.com/form/0a9d521c221f55e0c7b857f7e2f83f5760c7b7bb/',
 };
 
 export const contactPageContent: ContactPageContent = {
@@ -243,10 +249,10 @@ export const contactPageContent: ContactPageContent = {
     '必要な支援範囲を整理し、進め方やスケジュール感が分かる形でご提案します。',
   ],
   responseNote:
-    'お問い合わせは営業日に順次確認しています。お急ぎの場合は、希望時期や期限もあわせてご記入ください。',
-  alternateContactTitle: 'フォームが表示されない場合',
-  alternateContactDescription:
-    'Tayori のフォームを直接開くか、メールからのご連絡も可能です。環境によって iframe が表示されない場合はこちらをご利用ください。',
+    'お問い合わせは営業日に順次確認しています。送信後は入力いただいたメールアドレスへ控えをお送りします。',
+  formTitle: '相談内容を送信する',
+  formDescription:
+    'カテゴリを選ぶと必要な入力欄が切り替わります。採用・パートナー応募の場合は、稼働条件や利用しているAIツールもあわせてお知らせください。',
 };
 
 export const profilePageContent: ProfilePageContent = {
