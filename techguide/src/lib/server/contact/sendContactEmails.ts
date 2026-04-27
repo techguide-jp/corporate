@@ -15,16 +15,18 @@ export async function sendContactEmails(
   submission: ContactSubmission,
 ): Promise<SendContactEmailResult> {
   const apiKey = privateEnv.RESEND_API_KEY;
-  const from = privateEnv.RESEND_FROM_EMAIL;
+  const fromName = privateEnv.RESEND_FROM_NAME?.trim();
+  const fromEmail = privateEnv.RESEND_FROM_EMAIL?.trim();
   const to = privateEnv.CONTACT_TO_EMAIL;
 
-  if (!apiKey || !from || !to) {
+  if (!apiKey || !fromName || !fromEmail || !to) {
     return {
       ok: false,
       message: 'メール送信設定が未完了です。時間をおいて再度お試しください。',
     };
   }
 
+  const from = `${fromName} <${fromEmail}>`;
   const resend = new Resend(apiKey);
   const adminEmail = buildAdminEmail(submission);
   const autoReplyEmail = buildAutoReplyEmail(submission);
