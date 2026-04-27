@@ -14,10 +14,10 @@ export type SendContactEmailResult =
 export async function sendContactEmails(
   submission: ContactSubmission,
 ): Promise<SendContactEmailResult> {
-  const apiKey = getServerEnv('RESEND_API_KEY')?.trim();
-  const fromName = getServerEnv('RESEND_FROM_NAME')?.trim();
-  const fromEmail = getServerEnv('RESEND_FROM_EMAIL')?.trim();
-  const to = getServerEnv('CONTACT_TO_EMAIL')?.trim();
+  const apiKey = (await getServerEnv('RESEND_API_KEY'))?.trim();
+  const fromName = (await getServerEnv('RESEND_FROM_NAME'))?.trim();
+  const fromEmail = (await getServerEnv('RESEND_FROM_EMAIL'))?.trim();
+  const to = (await getServerEnv('CONTACT_TO_EMAIL'))?.trim();
 
   if (!apiKey || !fromName || !fromEmail || !to) {
     return {

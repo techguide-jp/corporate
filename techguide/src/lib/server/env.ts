@@ -1,8 +1,14 @@
 import { env as privateEnv } from '$env/dynamic/private';
+import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
 type AmplifySecrets = Record<string, string>;
 
+const DEFAULT_AMPLIFY_APP_ID = 'd1ei4wu36fr0u9';
+const SSM_SECRET_NAMES = new Set(['RESEND_API_KEY', 'TURNSTILE_SECRET_KEY']);
+
 let cachedAmplifySecrets: AmplifySecrets | undefined;
+let cachedSsmClient: SSMClient | undefined;
+const cachedSsmSecrets = new Map<string, Promise<string | undefined>>();
 
 function getDirectEnv(name: string): string | undefined {
   const processValue = process.env[name];
@@ -11,6 +17,20 @@ function getDirectEnv(name: string): string | undefined {
   }
 
   return privateEnv[name];
+}
+
+function getAwsRegion(): string {
+  return (
+    getDirectEnv('AWS_REGION') ??
+    getDirectEnv('AWS_DEFAULT_REGION') ??
+    getDirectEnv('AMPLIFY_AWS_REGION') ??
+    'ap-northeast-1'
+  );
+}
+
+function getSsmClient(): SSMClient {
+  cachedSsmClient ??= new SSMClient({ region: getAwsRegion() });
+  return cachedSsmClient;
 }
 
 function getAmplifySecrets(): AmplifySecrets {
@@ -44,11 +64,63 @@ function getAmplifySecrets(): AmplifySecrets {
   }
 }
 
-export function getServerEnv(name: string): string | undefined {
+function getAmplifySecretParameterNames(name: string): string[] {
+  const configuredPrefix = getDirectEnv('AMPLIFY_SECRET_PATH_PREFIX')?.trim().replace(/\/$/, '');
+  if (configuredPrefix) {
+    return [`${configuredPrefix}/${name}`];
+  }
+
+  const appId = getDirectEnv('AMPLIFY_APP_ID')?.trim() || getDirectEnv('AWS_APP_ID')?.trim();
+  const sharedAppId = appId || DEFAULT_AMPLIFY_APP_ID;
+
+  return sharedAppId ? [`/amplify/shared/${sharedAppId}/${name}`] : [];
+}
+
+async function getSsmSecret(name: string): Promise<string | undefined> {
+  if (!SSM_SECRET_NAMES.has(name)) {
+    return undefined;
+  }
+
+  if (cachedSsmSecrets.has(name)) {
+    return cachedSsmSecrets.get(name);
+  }
+
+  const secretPromise = (async () => {
+    for (const parameterName of getAmplifySecretParameterNames(name)) {
+      try {
+        const result = await getSsmClient().send(
+          new GetParameterCommand({
+            Name: parameterName,
+            WithDecryption: true,
+          }),
+        );
+
+        const value = result.Parameter?.Value;
+        if (value) {
+          return value;
+        }
+      } catch {
+        // SSR Compute role 未設定や権限不足の環境では通常の環境変数フォールバックに任せる。
+      }
+    }
+
+    return undefined;
+  })();
+
+  cachedSsmSecrets.set(name, secretPromise);
+  return secretPromise;
+}
+
+export async function getServerEnv(name: string): Promise<string | undefined> {
   const directValue = getDirectEnv(name);
   if (directValue) {
     return directValue;
   }
 
-  return getAmplifySecrets()[name];
+  const amplifySecret = getAmplifySecrets()[name];
+  if (amplifySecret) {
+    return amplifySecret;
+  }
+
+  return getSsmSecret(name);
 }

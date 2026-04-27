@@ -14,7 +14,7 @@ export async function verifyTurnstile(
   formData: FormData,
   remoteIp?: string,
 ): Promise<TurnstileResult> {
-  const secret = getServerEnv('TURNSTILE_SECRET_KEY')?.trim();
+  const secret = (await getServerEnv('TURNSTILE_SECRET_KEY'))?.trim();
   const token = formData.get('cf-turnstile-response');
 
   if (!secret) {
