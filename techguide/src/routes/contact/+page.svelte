@@ -21,11 +21,13 @@
   import type { PageProps } from './$types';
 
   const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script';
+  const MIN_SUBMITTING_MS = 1000;
 
   let { data, form }: PageProps = $props();
   const initialSelectedCategory = () => data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
   let isSubmitting = $state(false);
+  let submissionStatusPanel = $state<HTMLElement>();
   let turnstileContainer = $state<HTMLDivElement>();
   let turnstileToken = $state('');
   let turnstileClientError = $state('');
@@ -40,6 +42,8 @@
   const fieldErrors = $derived.by<ContactFieldErrors>(() => form?.fieldErrors ?? {});
   const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
   const hasTurnstile = $derived(data.turnstileSiteKey.length > 0);
+  const showSuccessPanel = $derived(!isSubmitting && form?.ok === true);
+  const hideContactForm = $derived(isSubmitting || showSuccessPanel);
   const contactStructuredData = [
     buildWebPageJsonLd({
       name: pageSeo.contact.title,
@@ -103,17 +107,47 @@
   }
 
   const handleSubmit: SubmitFunction = () => {
+    const startedAt = Date.now();
     isSubmitting = true;
+    scrollSubmissionStatusIntoView();
 
-    return async ({ update }) => {
+    return async ({ result, update }) => {
+      let shouldScrollResult = false;
+
       try {
         await update();
         resetTurnstile();
+        shouldScrollResult = result.type === 'success';
+
+        const remainingDelay = MIN_SUBMITTING_MS - (Date.now() - startedAt);
+        if (remainingDelay > 0) {
+          await wait(remainingDelay);
+        }
       } finally {
         isSubmitting = false;
+        if (shouldScrollResult) {
+          scrollSubmissionStatusIntoView();
+        }
       }
     };
   };
+
+  function wait(ms: number) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+  }
+
+  function scrollSubmissionStatusIntoView() {
+    if (!browser) {
+      return;
+    }
+
+    void tick().then(() => {
+      submissionStatusPanel?.focus({ preventScroll: true });
+      submissionStatusPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
 
   async function renderTurnstile() {
     await tick();
@@ -231,8 +265,8 @@
 
       <p class="contact-page__lead">{contactPageContent.lead}</p>
 
-      <div class="contact-page__content">
-        <div class="contact-page__details">
+      <div class:contact-page__content--feedback={hideContactForm} class="contact-page__content">
+        <div class="contact-page__details" hidden={hideContactForm}>
           <section class="contact-page__panel">
             <h2>このようなご相談に対応しています</h2>
             <ul class="contact-page__support-list">
@@ -257,7 +291,38 @@
           </section>
         </div>
 
-        <form method="POST" action="?/submit" class="contact-form" use:enhance={handleSubmit}>
+        {#if isSubmitting || showSuccessPanel}
+          <section
+            class:contact-form__feedback--success={showSuccessPanel}
+            class:contact-form__feedback--submitting={isSubmitting}
+            class="contact-form__feedback"
+            bind:this={submissionStatusPanel}
+            tabindex="-1"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="contact-form__feedback-mark" aria-hidden="true"></span>
+            <div class="contact-form__feedback-body">
+              <p>{isSubmitting ? '送信中' : '送信完了'}</p>
+              <h2>{isSubmitting ? 'お問い合わせを送信しています' : '送信が完了しました'}</h2>
+              <span>
+                {isSubmitting
+                  ? '完了までこのままお待ちください。'
+                  : (form?.message ??
+                    'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。')}
+              </span>
+            </div>
+          </section>
+        {/if}
+
+        <form
+          method="POST"
+          action="?/submit"
+          class="contact-form"
+          hidden={hideContactForm}
+          aria-hidden={hideContactForm ? 'true' : undefined}
+          use:enhance={handleSubmit}
+        >
           <div class="contact-form__header">
             <h2>{contactPageContent.formTitle}</h2>
             <p>{contactPageContent.formDescription}</p>
@@ -524,13 +589,18 @@
     align-items: start;
   }
 
+  .contact-page__content--feedback {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .contact-page__details {
     display: grid;
     gap: 18px;
   }
 
   .contact-page__panel,
-  .contact-form {
+  .contact-form,
+  .contact-form__feedback {
     display: grid;
     gap: 18px;
     padding: clamp(22px, 3vw, 30px);
@@ -540,12 +610,80 @@
     box-shadow: var(--shadow-soft);
   }
 
+  .contact-form__feedback {
+    min-height: min(460px, 70vh);
+    place-items: center;
+    text-align: center;
+    outline: none;
+  }
+
+  .contact-form__feedback-body {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    max-width: 32rem;
+  }
+
+  .contact-form__feedback-body p {
+    width: fit-content;
+    margin: 0;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    color: var(--color-primary-deep);
+    background: rgba(255, 246, 214, 0.86);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .contact-form__feedback-body span {
+    color: var(--color-ink-soft);
+    line-height: 1.8;
+  }
+
+  .contact-form__feedback-mark {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    border-radius: 999px;
+    background: rgba(255, 246, 214, 0.86);
+  }
+
+  .contact-form__feedback--submitting .contact-form__feedback-mark {
+    border: 4px solid rgba(214, 151, 76, 0.24);
+    border-top-color: var(--color-primary-deep);
+    animation: contact-feedback-spin 0.9s linear infinite;
+  }
+
+  .contact-form__feedback--success .contact-form__feedback-mark {
+    background: rgba(220, 245, 229, 0.94);
+    border: 1px solid rgba(50, 130, 79, 0.22);
+  }
+
+  .contact-form__feedback--success .contact-form__feedback-mark::after {
+    position: absolute;
+    left: 26px;
+    top: 18px;
+    width: 16px;
+    height: 28px;
+    border: solid #23543a;
+    border-width: 0 5px 5px 0;
+    content: '';
+    transform: rotate(45deg);
+  }
+
+  @keyframes contact-feedback-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
   .contact-page__panel--compact {
     gap: 12px;
   }
 
   .contact-page__panel h2,
-  .contact-form h2 {
+  .contact-form h2,
+  .contact-form__feedback h2 {
     font-family: var(--font-heading);
     font-size: clamp(1.22rem, 1.8vw, 1.5rem);
     line-height: 1.3;
