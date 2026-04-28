@@ -1,6 +1,7 @@
 import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
 import { fail, type Actions } from '@sveltejs/kit';
 import { createEmptyContactFormValues, getInitialCategory } from '$lib/contact/form';
+import { shouldMockContactSubmission } from '$lib/server/contact/devSubmission';
 import { sendContactEmails } from '$lib/server/contact/sendContactEmails';
 import { verifyTurnstile } from '$lib/server/contact/turnstile';
 import { parseContactFormData } from '$lib/server/contact/validation';
@@ -8,12 +9,15 @@ import type { PageServerLoad } from './$types';
 
 export const prerender = false;
 
-export const load: PageServerLoad = ({ url }) => {
+const SUCCESS_MESSAGE = 'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。';
+
+export const load: PageServerLoad = async ({ url }) => {
   const selectedCategory = getInitialCategory(url.searchParams.get('category'));
+  const mockSubmission = await shouldMockContactSubmission();
 
   return {
     selectedCategory,
-    turnstileSiteKey: PUBLIC_TURNSTILE_SITE_KEY.trim(),
+    turnstileSiteKey: mockSubmission ? '' : PUBLIC_TURNSTILE_SITE_KEY.trim(),
   };
 };
 
@@ -24,6 +28,14 @@ export const actions: Actions = {
 
     if (!validation.ok) {
       return fail(400, validation);
+    }
+
+    if (await shouldMockContactSubmission()) {
+      return {
+        ok: true,
+        values: createEmptyContactFormValues(),
+        message: SUCCESS_MESSAGE,
+      };
     }
 
     const turnstile = await verifyTurnstile(formData, getClientAddress());
@@ -40,7 +52,7 @@ export const actions: Actions = {
       return {
         ok: true,
         values: createEmptyContactFormValues(),
-        message: 'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。',
+        message: SUCCESS_MESSAGE,
       };
     }
 
@@ -57,9 +69,7 @@ export const actions: Actions = {
     return {
       ok: true,
       values: createEmptyContactFormValues(),
-      message:
-        sendResult.message ??
-        'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。',
+      message: sendResult.message ?? SUCCESS_MESSAGE,
     };
   },
 };
