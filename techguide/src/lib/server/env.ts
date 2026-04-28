@@ -6,8 +6,6 @@ import {
 } from '$env/static/private';
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
-type AmplifySecrets = Record<string, string>;
-
 const DEFAULT_AMPLIFY_APP_ID = 'd1ei4wu36fr0u9';
 const SSM_SECRET_NAMES = new Set(['RESEND_API_KEY', 'TURNSTILE_SECRET_KEY']);
 const BUILD_TIME_SERVER_ENV: Record<string, string | undefined> = {
@@ -16,11 +14,10 @@ const BUILD_TIME_SERVER_ENV: Record<string, string | undefined> = {
   RESEND_FROM_NAME: STATIC_RESEND_FROM_NAME,
 };
 
-let cachedAmplifySecrets: AmplifySecrets | undefined;
 let cachedSsmClient: SSMClient | undefined;
 const cachedSsmSecrets = new Map<string, Promise<string | undefined>>();
 
-function getDirectEnv(name: string): string | undefined {
+function getConfiguredEnv(name: string): string | undefined {
   const processValue = process.env[name];
   if (processValue) {
     return processValue;
@@ -36,9 +33,9 @@ function getDirectEnv(name: string): string | undefined {
 
 function getAwsRegion(): string {
   return (
-    getDirectEnv('AWS_REGION') ??
-    getDirectEnv('AWS_DEFAULT_REGION') ??
-    getDirectEnv('AMPLIFY_AWS_REGION') ??
+    getConfiguredEnv('AWS_REGION') ??
+    getConfiguredEnv('AWS_DEFAULT_REGION') ??
+    getConfiguredEnv('AMPLIFY_AWS_REGION') ??
     'ap-northeast-1'
   );
 }
@@ -48,44 +45,16 @@ function getSsmClient(): SSMClient {
   return cachedSsmClient;
 }
 
-function getAmplifySecrets(): AmplifySecrets {
-  if (cachedAmplifySecrets) {
-    return cachedAmplifySecrets;
-  }
-
-  const rawSecrets = getDirectEnv('secrets') ?? getDirectEnv('SECRETS');
-  if (!rawSecrets) {
-    cachedAmplifySecrets = {};
-    return cachedAmplifySecrets;
-  }
-
-  try {
-    const parsed: unknown = JSON.parse(rawSecrets);
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      cachedAmplifySecrets = {};
-      return cachedAmplifySecrets;
-    }
-
-    // Amplify secrets は通常の KEY=value ではなく process.env.secrets JSON で届く場合がある。
-    cachedAmplifySecrets = Object.fromEntries(
-      Object.entries(parsed).filter(
-        (entry): entry is [string, string] => typeof entry[1] === 'string',
-      ),
-    );
-    return cachedAmplifySecrets;
-  } catch {
-    cachedAmplifySecrets = {};
-    return cachedAmplifySecrets;
-  }
-}
-
 function getAmplifySecretParameterNames(name: string): string[] {
-  const configuredPrefix = getDirectEnv('AMPLIFY_SECRET_PATH_PREFIX')?.trim().replace(/\/$/, '');
+  const configuredPrefix = getConfiguredEnv('AMPLIFY_SECRET_PATH_PREFIX')
+    ?.trim()
+    .replace(/\/$/, '');
   if (configuredPrefix) {
     return [`${configuredPrefix}/${name}`];
   }
 
-  const appId = getDirectEnv('AMPLIFY_APP_ID')?.trim() || getDirectEnv('AWS_APP_ID')?.trim();
+  const appId =
+    getConfiguredEnv('AMPLIFY_APP_ID')?.trim() || getConfiguredEnv('AWS_APP_ID')?.trim();
   const sharedAppId = appId || DEFAULT_AMPLIFY_APP_ID;
 
   return sharedAppId ? [`/amplify/shared/${sharedAppId}/${name}`] : [];
@@ -127,14 +96,9 @@ async function getSsmSecret(name: string): Promise<string | undefined> {
 }
 
 export async function getServerEnv(name: string): Promise<string | undefined> {
-  const directValue = getDirectEnv(name);
-  if (directValue) {
-    return directValue;
-  }
-
-  const amplifySecret = getAmplifySecrets()[name];
-  if (amplifySecret) {
-    return amplifySecret;
+  const configuredValue = getConfiguredEnv(name);
+  if (configuredValue) {
+    return configuredValue;
   }
 
   return getSsmSecret(name);

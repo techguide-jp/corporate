@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { Resend, type CreateEmailOptions } from 'resend';
 import { getServerEnv } from '$lib/server/env';
 import { buildAdminEmail, buildAutoReplyEmail } from './emailTemplates';
 import type { ContactSubmission } from './validation';
@@ -31,44 +31,32 @@ export async function sendContactEmails(
   const adminEmail = buildAdminEmail(submission);
   const autoReplyEmail = buildAutoReplyEmail(submission);
 
-  const adminResult = await (async () => {
-    try {
-      return await resend.emails.send({
-        from,
-        to: [to],
-        replyTo: submission.email,
-        subject: adminEmail.subject,
-        text: adminEmail.text,
-        html: adminEmail.html,
-      });
-    } catch {
-      return { error: true };
-    }
-  })();
+  const adminSent = await sendEmail(resend, {
+    from,
+    to: [to],
+    replyTo: submission.email,
+    subject: adminEmail.subject,
+    text: adminEmail.text,
+    html: adminEmail.html,
+  });
 
-  if (adminResult.error) {
+  if (!adminSent) {
     return {
       ok: false,
       message: SEND_FAILURE_MESSAGE,
     };
   }
 
-  const autoReplyResult = await (async () => {
-    try {
-      return await resend.emails.send({
-        from,
-        to: [submission.email],
-        replyTo: to,
-        subject: autoReplyEmail.subject,
-        text: autoReplyEmail.text,
-        html: autoReplyEmail.html,
-      });
-    } catch {
-      return { error: true };
-    }
-  })();
+  const autoReplySent = await sendEmail(resend, {
+    from,
+    to: [submission.email],
+    replyTo: to,
+    subject: autoReplyEmail.subject,
+    text: autoReplyEmail.text,
+    html: autoReplyEmail.html,
+  });
 
-  if (autoReplyResult.error) {
+  if (!autoReplySent) {
     // 管理者通知が成功した時点で受付済みにし、再送による重複通知を避ける。
     return {
       ok: true,
@@ -77,4 +65,13 @@ export async function sendContactEmails(
   }
 
   return { ok: true };
+}
+
+async function sendEmail(resend: Resend, payload: CreateEmailOptions): Promise<boolean> {
+  try {
+    const result = await resend.emails.send(payload);
+    return !result.error;
+  } catch {
+    return false;
+  }
 }
