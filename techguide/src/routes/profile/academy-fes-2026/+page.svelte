@@ -92,16 +92,31 @@
       src: '/images/profile/academy-fes-2026/yuchan-hero.webp',
       alt: 'ゆーちゃんのプロフィール写真',
       caption: 'ゆーちゃんが体験を届ける入口',
+      wide: false,
     },
     {
       src: '/images/profile/academy-fes-2026/fes-moment.webp',
       alt: 'イベント会場前で撮影したメンバー写真',
       caption: '当日の体験づくりにも関わります',
+      wide: false,
     },
     {
       src: '/images/profile/academy-fes-2026/fes-community.webp',
       alt: 'コミュニティメンバーで撮影した集合写真',
       caption: '仲間と一緒に豊かさを広げる1日',
+      wide: false,
+    },
+    {
+      src: '/images/profile/academy-fes-2026/academy-group-standing.webp',
+      alt: '北原孝彦アカデミーの集合記念写真',
+      caption: 'アカデミーの仲間と集まった一枚',
+      wide: true,
+    },
+    {
+      src: '/images/profile/academy-fes-2026/academy-group-hall.webp',
+      alt: '会場全体で撮影した北原孝彦アカデミーの集合写真',
+      caption: '当日の熱量が伝わる会場の景色',
+      wide: true,
     },
   ];
 
@@ -382,7 +397,7 @@
 
       <div class="gallery-grid">
         {#each galleryImages as image (image.src)}
-          <figure class="gallery-item">
+          <figure class="gallery-item" class:gallery-item--wide={image.wide}>
             <img src={asset(image.src)} alt={image.alt} loading="eager" decoding="async" />
             <figcaption>{image.caption}</figcaption>
           </figure>
@@ -849,7 +864,7 @@
 
   .gallery-grid {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr 1fr;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 18px;
     align-items: stretch;
     margin-top: 36px;
@@ -857,6 +872,7 @@
 
   .gallery-item {
     display: grid;
+    grid-column: span 2;
     align-content: start;
     margin: 0;
     border: 1px solid var(--fes-line);
@@ -871,6 +887,14 @@
 
   .gallery-item:nth-child(2) img {
     aspect-ratio: 3 / 4;
+  }
+
+  .gallery-item--wide {
+    grid-column: span 3;
+  }
+
+  .gallery-item--wide img {
+    aspect-ratio: 16 / 9;
   }
 
   .gallery-item figcaption {
@@ -961,6 +985,11 @@
     .seminar-section__inner,
     .related-section__inner {
       grid-template-columns: 1fr;
+    }
+
+    .gallery-item,
+    .gallery-item--wide {
+      grid-column: auto;
     }
 
     .event-strip__item,
