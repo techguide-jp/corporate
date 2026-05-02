@@ -24,6 +24,7 @@
   for (const card of cards) {
     const dateIso = card.getAttribute('data-event-date-iso') ?? '';
     const href = card.getAttribute('data-event-href') ?? '';
+    const isExternal = card.getAttribute('data-event-external') === 'true';
     const statusLabel = card.getAttribute('data-event-status-label') ?? '';
     const ctaLabel = card.getAttribute('data-event-cta-label') ?? '';
     const isAccepting = card.getAttribute('data-event-accepting') === 'true';
@@ -52,8 +53,13 @@
       card.removeAttribute('rel');
     } else if (href) {
       card.setAttribute('href', href);
-      card.setAttribute('target', '_blank');
-      card.setAttribute('rel', 'external noreferrer');
+      if (isExternal) {
+        card.setAttribute('target', '_blank');
+        card.setAttribute('rel', 'external noreferrer');
+      } else {
+        card.removeAttribute('target');
+        card.removeAttribute('rel');
+      }
     }
   }
 })();
