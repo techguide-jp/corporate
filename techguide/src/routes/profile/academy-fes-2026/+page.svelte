@@ -2,7 +2,6 @@
   import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import Footer from '$lib/components/layout/Footer.svelte';
-  import Header from '$lib/components/layout/Header.svelte';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import { companyProfile, navItems } from '$lib/data/site';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
@@ -154,8 +153,6 @@
   imageAlt={pageSeo.imageAlt}
   jsonLd={pageStructuredData}
 />
-
-<Header items={navItems} />
 
 <main class="academy-fes-page">
   <section class="academy-hero" aria-labelledby="academy-fes-title">
@@ -463,7 +460,7 @@
     isolation: isolate;
     display: grid;
     align-items: center;
-    min-height: max(520px, calc(100svh - var(--header-height) - 72px));
+    min-height: max(520px, calc(100svh - 72px));
     overflow: hidden;
     background: #1f261e;
   }
@@ -988,7 +985,7 @@
     }
 
     .academy-hero {
-      min-height: max(560px, calc(100svh - var(--header-height) - 56px));
+      min-height: max(560px, calc(100svh - 56px));
     }
 
     .academy-hero__image {
