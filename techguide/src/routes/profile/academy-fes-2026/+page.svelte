@@ -24,7 +24,7 @@
     { label: '開催日', value: '2026年6月4日（木）' },
     { label: '会場', value: '東京流通センター 第一展示場' },
     { label: 'テーマ', value: 'Enrich the world 〜世界を豊かに〜' },
-    { label: '参加', value: '1ブース・1セミナー・アプリ開発' },
+    { label: '規模', value: '100ブース・100セミナー' },
   ];
 
   const involvementItems = [
@@ -85,6 +85,33 @@
     '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきた連続起業家です。',
     'UBMは北原さんの考え方や行動を学ぶ場、アカデミーは同じ視座で実践を重ねる場として位置づけられています。',
     'ゆーちゃんはUBMに所属し、アカデミーにもジョイン。今回のFesには、アプリ開発・ブース出展・セミナー登壇で関わります。',
+  ];
+
+  const diversityHighlights = [
+    '美容室・ネイル・エステ・アイラッシュ',
+    '飲食・コーヒー・料理代行・花・園芸',
+    '教育・スクール・コーチング・講座',
+    'IT・LP制作・SNS運用・動画制作',
+    '医療福祉・訪問看護・児童福祉',
+    '不動産・建築・内装・清掃・宿泊',
+    'コンサル・マーケティング・採用支援',
+    'ペット・フィットネス・イベント運営',
+  ];
+
+  const appFeatures = [
+    {
+      title: 'ブースを探す',
+      description:
+        'ブース名、商品名、タグから検索し、気になる出展者をすぐ見つけられるようにします。',
+    },
+    {
+      title: '場所と内容を確認する',
+      description: 'ブース番号、エリア、代表商品、画像、説明をスマホで見られるようにします。',
+    },
+    {
+      title: 'コラボやラリーを楽しむ',
+      description: 'ブース同士のコラボ情報や、QRを使ったスタンプラリーの進捗確認もできる設計です。',
+    },
   ];
 
   const galleryImages = [
@@ -292,6 +319,27 @@
     </div>
   </section>
 
+  <section class="section diversity-section">
+    <div class="container diversity-section__inner">
+      <div class="section-copy">
+        <p class="section-eyebrow">100 Booths / 100 Seminars</p>
+        <h2>多種多様な事業者が集まるから、思いがけない出会いがある。</h2>
+        <p>
+          当日は100ブース・100セミナーが実施されます。業種も、店舗ビジネス、教育、IT、医療福祉、クリエイティブ、コンサルティングまで幅広く、普段なら交わらない人たちの知識や経験に触れられる場です。
+        </p>
+      </div>
+
+      <div class="diversity-panel" aria-label="参加メンバーの業界例">
+        <p class="diversity-panel__label">参加メンバーの業界例</p>
+        <div class="diversity-tags">
+          {#each diversityHighlights as item (item)}
+            <span>{item}</span>
+          {/each}
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section app-section">
     <div class="container app-section__inner">
       <div class="app-section__media">
@@ -312,20 +360,14 @@
         <p>
           技術を目立たせるためではなく、人と人、人と体験がつながる確率を上げるためのアプリとして、フェス全体の体験を支えます。
         </p>
-        <a
-          class="text-link"
-          href="https://github.com/techguide-jp/akademy_fes"
-          target="_blank"
-          rel="external noreferrer"
-          onclick={() =>
-            handleOutboundClick(
-              'academy_fes_app',
-              '当日来場者向けアプリのリポジトリ',
-              'https://github.com/techguide-jp/akademy_fes',
-            )}
-        >
-          当日来場者向けアプリのリポジトリを見る
-        </a>
+        <div class="app-feature-list">
+          {#each appFeatures as feature (feature.title)}
+            <article class="app-feature">
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </article>
+          {/each}
+        </div>
       </div>
     </div>
   </section>
@@ -666,6 +708,7 @@
 
   .intro-section__inner,
   .kitahara-section__inner,
+  .diversity-section__inner,
   .app-section__inner,
   .booth-section__inner,
   .seminar-section__inner,
@@ -737,6 +780,7 @@
   }
 
   .involvement-section,
+  .diversity-section,
   .gallery-section,
   .related-section {
     background: linear-gradient(180deg, rgba(238, 247, 244, 0.9), rgba(255, 253, 248, 1));
@@ -795,6 +839,72 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+  }
+
+  .diversity-panel {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--fes-line);
+    border-radius: 8px;
+    background: var(--fes-surface);
+    box-shadow: 0 20px 36px rgba(38, 32, 24, 0.08);
+  }
+
+  .diversity-panel__label {
+    margin: 0;
+    color: var(--fes-blue);
+    font-size: 0.86rem;
+    font-weight: 900;
+  }
+
+  .diversity-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .diversity-tags span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid rgba(30, 117, 105, 0.22);
+    border-radius: 999px;
+    color: var(--fes-ink);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.35;
+    background: rgba(255, 255, 255, 0.74);
+  }
+
+  .app-feature-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .app-feature {
+    display: grid;
+    gap: 6px;
+    padding: 16px 18px;
+    border: 1px solid var(--fes-line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.74);
+  }
+
+  .app-feature h3 {
+    margin: 0;
+    color: var(--fes-blue);
+    font-family: var(--font-heading);
+    font-size: 1.08rem;
+    letter-spacing: 0;
+  }
+
+  .app-feature p {
+    margin: 0;
+    color: var(--fes-muted);
+    line-height: 1.65;
   }
 
   .text-link {
@@ -974,6 +1084,7 @@
     .gallery-grid,
     .intro-section__inner,
     .kitahara-section__inner,
+    .diversity-section__inner,
     .app-section__inner,
     .booth-section__inner,
     .seminar-section__inner,
