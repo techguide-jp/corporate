@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { asset } from '$app/paths';
+  import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
@@ -16,6 +16,7 @@
     profilePageContent,
   } from '$lib/data/site';
   import type { ProfileContactItem, ProfileEventItem } from '$lib/types/content';
+  import { getResolveArgs, isInternalHref } from '$lib/utils/paths';
 
   function handleOutboundClick(section: string, label: string, href: string) {
     trackEvent('outbound_link_click', {
@@ -27,6 +28,18 @@
 
   function resolveImageSrc(src: string) {
     return /^https?:\/\//.test(src) ? src : asset(src);
+  }
+
+  function resolveLinkHref(href: string) {
+    return isInternalHref(href) ? resolve(...getResolveArgs(href)) : href;
+  }
+
+  function handleProfileEventClick(item: ProfileEventView) {
+    if (!item.isInteractive || isInternalHref(item.href)) {
+      return;
+    }
+
+    handleOutboundClick('profile_events', item.title, item.href);
   }
 
   function getTokyoTodayIso(date = new Date()) {
@@ -170,6 +183,32 @@
       </span>
     </div>
   {/if}
+{/snippet}
+
+{#snippet profileEventCardContent(item: ProfileEventView)}
+  <div class="profile-events__date-block">
+    <p class="profile-events__date">{item.date}</p>
+    <span
+      class={`profile-events__status profile-events__status--${item.statusTone}`}
+      data-event-status
+    >
+      {item.computedStatus}
+    </span>
+  </div>
+
+  <div class="profile-events__body">
+    <h2>{item.title}</h2>
+    <p>{item.description}</p>
+  </div>
+
+  <span
+    class={`profile-events__meta${isInternalHref(item.href) ? ' profile-events__meta--internal' : ''}${
+      item.isEnded ? ' profile-events__meta--ended' : ''
+    }`}
+    data-event-meta
+  >
+    {item.metaLabel}
+  </span>
 {/snippet}
 
 <Header items={navItems} />
@@ -344,42 +383,54 @@
       <div class="profile-events">
         {#each profilePageContent.events.items as rawItem (rawItem.dateIso + rawItem.title)}
           {@const item = getEventView(rawItem, todayTokyoIso)}
-          <a
-            class={`profile-events__card${item.isEnded ? ' profile-events__card--ended' : ''}`}
-            data-profile-event-card
-            data-event-date-iso={rawItem.dateIso}
-            data-event-href={rawItem.href}
-            data-event-accepting={rawItem.isAccepting}
-            data-event-status-label={rawItem.status}
-            data-event-cta-label={rawItem.ctaLabel}
-            href={item.isInteractive ? item.href : undefined}
-            target={item.isInteractive ? '_blank' : undefined}
-            rel="external noreferrer"
-            onclick={() =>
-              item.isInteractive && handleOutboundClick('profile_events', item.title, item.href)}
-          >
-            <div class="profile-events__date-block">
-              <p class="profile-events__date">{item.date}</p>
-              <span
-                class={`profile-events__status profile-events__status--${item.statusTone}`}
-                data-event-status
+          {#if item.isInteractive}
+            {#if isInternalHref(item.href)}
+              <a
+                class="profile-events__card"
+                data-profile-event-card
+                data-event-date-iso={rawItem.dateIso}
+                data-event-href={resolve(...getResolveArgs(item.href))}
+                data-event-external={false}
+                data-event-accepting={rawItem.isAccepting}
+                data-event-status-label={rawItem.status}
+                data-event-cta-label={rawItem.ctaLabel}
+                href={resolve(...getResolveArgs(item.href))}
+                onclick={() => handleProfileEventClick(item)}
               >
-                {item.computedStatus}
-              </span>
-            </div>
-
-            <div class="profile-events__body">
-              <h2>{item.title}</h2>
-              <p>{item.description}</p>
-            </div>
-
-            <span
-              class={`profile-events__meta${item.isEnded ? ' profile-events__meta--ended' : ''}`}
-              data-event-meta
+                {@render profileEventCardContent(item)}
+              </a>
+            {:else}
+              <a
+                class="profile-events__card"
+                data-profile-event-card
+                data-event-date-iso={rawItem.dateIso}
+                data-event-href={rawItem.href}
+                data-event-external={true}
+                data-event-accepting={rawItem.isAccepting}
+                data-event-status-label={rawItem.status}
+                data-event-cta-label={rawItem.ctaLabel}
+                href={item.href}
+                target="_blank"
+                rel="external noreferrer"
+                onclick={() => handleProfileEventClick(item)}
+              >
+                {@render profileEventCardContent(item)}
+              </a>
+            {/if}
+          {:else}
+            <article
+              class={`profile-events__card${item.isEnded ? ' profile-events__card--ended' : ''}`}
+              data-profile-event-card
+              data-event-date-iso={rawItem.dateIso}
+              data-event-href={resolveLinkHref(rawItem.href)}
+              data-event-external={!isInternalHref(rawItem.href)}
+              data-event-accepting={rawItem.isAccepting}
+              data-event-status-label={rawItem.status}
+              data-event-cta-label={rawItem.ctaLabel}
             >
-              {item.metaLabel}
-            </span>
-          </a>
+              {@render profileEventCardContent(item)}
+            </article>
+          {/if}
         {/each}
       </div>
     </div>
@@ -1035,6 +1086,10 @@
 
   .profile-events__card:not([href]) .profile-events__meta::after {
     content: none;
+  }
+
+  .profile-events__meta--internal::after {
+    content: '→';
   }
 
   .profile-events__card--ended {

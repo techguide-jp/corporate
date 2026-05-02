@@ -439,9 +439,10 @@ export const profilePageContent: ProfilePageContent = {
         status: '申込受付中',
         isAccepting: true,
         title: '2000人フェス',
-        description: 'ブース出店とセミナー登壇で参加予定です。現在申込受付中です。',
-        href: 'https://s.lmes.jp/landing-qr/2009291141-5wwelfTJ?uLand=dCtUnJ',
-        ctaLabel: '申込ページを見る',
+        description:
+          '北原孝彦Academy Fes 2026に、アプリ開発・ブース出展・セミナー登壇で参加予定です。',
+        href: '/profile/academy-fes-2026',
+        ctaLabel: '紹介ページを見る',
       },
     ],
   },
