@@ -11,8 +11,8 @@
     description:
       '北原孝彦Academy Fes 2026に関わるゆーちゃんの紹介ページ。UBM所属・アカデミー参加の背景、来場者向けアプリ開発、セミナー、ロボで遊ぶ未来体験ブースを紹介します。',
     path: '/profile/academy-fes-2026',
-    image: '/images/profile/academy-fes-2026/yuchan-hero.webp',
-    imageAlt: '北原孝彦Academy Fes 2026に関わるゆーちゃん',
+    image: '/images/profile/academy-fes-2026/academy-group-standing.webp',
+    imageAlt: '北原孝彦アカデミーの集合記念写真',
   };
 
   const cta = {
@@ -107,12 +107,6 @@
       wide: false,
     },
     {
-      src: '/images/profile/academy-fes-2026/academy-group-standing.webp',
-      alt: '北原孝彦アカデミーの集合記念写真',
-      caption: 'アカデミーの仲間と集まった一枚',
-      wide: true,
-    },
-    {
       src: '/images/profile/academy-fes-2026/academy-group-hall.webp',
       alt: '会場全体で撮影した北原孝彦アカデミーの集合写真',
       caption: '当日の熱量が伝わる会場の景色',
@@ -146,7 +140,7 @@
   <link
     rel="preload"
     as="image"
-    href={asset('/images/profile/academy-fes-2026/yuchan-hero.webp')}
+    href={asset('/images/profile/academy-fes-2026/academy-group-standing.webp')}
   />
   <link
     rel="preload"
@@ -173,7 +167,7 @@
   <section class="academy-hero" aria-labelledby="academy-fes-title">
     <img
       class="academy-hero__image"
-      src={asset('/images/profile/academy-fes-2026/yuchan-hero.webp')}
+      src={asset('/images/profile/academy-fes-2026/academy-group-standing.webp')}
       alt=""
       aria-hidden="true"
       loading="eager"
@@ -491,7 +485,7 @@
 
   .academy-hero__image {
     object-fit: cover;
-    object-position: center 42%;
+    object-position: center center;
   }
 
   .academy-hero__shade {
@@ -890,7 +884,7 @@
   }
 
   .gallery-item--wide {
-    grid-column: span 3;
+    grid-column: span 6;
   }
 
   .gallery-item--wide img {
@@ -1018,7 +1012,7 @@
     }
 
     .academy-hero__image {
-      object-position: 58% 45%;
+      object-position: center center;
     }
 
     .academy-hero__shade {
