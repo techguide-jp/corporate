@@ -98,22 +98,6 @@
     'ペット・フィットネス・イベント運営',
   ];
 
-  const appFeatures = [
-    {
-      title: 'ブースを探す',
-      description:
-        'ブース名、商品名、タグから検索し、気になる出展者をすぐ見つけられるようにします。',
-    },
-    {
-      title: '場所と内容を確認する',
-      description: 'ブース番号、エリア、代表商品、画像、説明をスマホで見られるようにします。',
-    },
-    {
-      title: 'コラボやラリーを楽しむ',
-      description: 'ブース同士のコラボ情報や、QRを使ったスタンプラリーの進捗確認もできる設計です。',
-    },
-  ];
-
   const galleryImages = [
     {
       src: '/images/profile/academy-fes-2026/yuchan-hero.webp',
@@ -353,21 +337,13 @@
 
       <div class="section-copy">
         <p class="section-eyebrow">App development</p>
-        <h2>会場で「行ってみたい」が増えるアプリを作っています。</h2>
+        <h2>会場での迷いを減らし、出会いを増やすアプリを作っています。</h2>
         <p>
-          たくさんのブースとセミナーが並ぶ1日だからこそ、来場者が迷わず、興味を持った場所に動けることが大事だと考えています。
+          100ブース・100セミナーが並ぶ1日を、ただ情報量の多いイベントで終わらせない。来場者が「気になる」と感じた瞬間に、次の一歩を踏み出しやすくするためのアプリです。
         </p>
         <p>
-          技術を目立たせるためではなく、人と人、人と体験がつながる確率を上げるためのアプリとして、フェス全体の体験を支えます。
+          技術を目立たせるためではなく、人と人、人と体験がつながる確率を上げること。多様な出展者の魅力に自然に触れられるよう、当日の体験をそっと支えます。
         </p>
-        <div class="app-feature-list">
-          {#each appFeatures as feature (feature.title)}
-            <article class="app-feature">
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </article>
-          {/each}
-        </div>
       </div>
     </div>
   </section>
@@ -877,34 +853,6 @@
     font-weight: 800;
     line-height: 1.35;
     background: rgba(255, 255, 255, 0.74);
-  }
-
-  .app-feature-list {
-    display: grid;
-    gap: 12px;
-  }
-
-  .app-feature {
-    display: grid;
-    gap: 6px;
-    padding: 16px 18px;
-    border: 1px solid var(--fes-line);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.74);
-  }
-
-  .app-feature h3 {
-    margin: 0;
-    color: var(--fes-blue);
-    font-family: var(--font-heading);
-    font-size: 1.08rem;
-    letter-spacing: 0;
-  }
-
-  .app-feature p {
-    margin: 0;
-    color: var(--fes-muted);
-    line-height: 1.65;
   }
 
   .text-link {
