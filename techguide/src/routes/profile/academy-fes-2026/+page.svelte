@@ -10,7 +10,7 @@
   const pageSeo = {
     title: '北原孝彦Academy Fes 2026 | ゆーちゃん参加紹介 | TechGuide',
     description:
-      '北原孝彦Academy Fes 2026に関わるゆーちゃんの紹介ページ。来場者向けアプリ開発、セミナー、ロボで遊ぶ未来体験ブースを紹介します。',
+      '北原孝彦Academy Fes 2026に関わるゆーちゃんの紹介ページ。UBM所属・アカデミー参加の背景、来場者向けアプリ開発、セミナー、ロボで遊ぶ未来体験ブースを紹介します。',
     path: '/profile/academy-fes-2026',
     image: '/images/profile/academy-fes-2026/yuchan-hero.webp',
     imageAlt: '北原孝彦Academy Fes 2026に関わるゆーちゃん',
@@ -78,8 +78,14 @@
 
   const officialLinks = [
     { label: 'アカデミーとは', href: 'https://kitaharatakahiko.jp/academy/' },
-    { label: 'Instagram投稿', href: 'https://www.instagram.com/p/DXtbPpyk_Jw/' },
+    { label: '北原孝彦さんのYouTube', href: 'https://www.youtube.com/@kitahara64' },
     { label: '会場公式サイト', href: 'https://www.trc-event.jp/hall/' },
+  ];
+
+  const kitaharaPoints = [
+    '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきた連続起業家です。',
+    'UBMは北原さんの考え方や行動を学ぶ場、アカデミーは同じ視座で実践を重ねる場として位置づけられています。',
+    'ゆーちゃんはUBMに所属し、アカデミーにもジョイン。今回のFesには、アプリ開発・ブース出展・セミナー登壇で関わります。',
   ];
 
   const galleryImages = [
@@ -132,6 +138,11 @@
     rel="preload"
     as="image"
     href={asset('/images/profile/academy-fes-2026/fes-community.webp')}
+  />
+  <link
+    rel="preload"
+    as="image"
+    href={asset('/images/profile/academy-fes-2026/yuchan-kitahara.webp')}
   />
 </svelte:head>
 
@@ -211,6 +222,47 @@
         <p>
           このページでは、イベント全体の案内だけでなく、ゆーちゃんがどんな想いでアプリを作り、どんなブースやセミナーを準備しているかを中心に紹介します。
         </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section kitahara-section">
+    <div class="container kitahara-section__inner">
+      <figure class="kitahara-photo">
+        <img
+          src={asset('/images/profile/academy-fes-2026/yuchan-kitahara.webp')}
+          alt="北原孝彦さんとゆーちゃんの2ショット"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>北原孝彦さんと。UBMで学び、アカデミーにもジョインしました。</figcaption>
+      </figure>
+
+      <div class="section-copy">
+        <p class="section-eyebrow">Who is Kitahara?</p>
+        <h2>北原孝彦さんって誰？という方へ。</h2>
+        <p>
+          北原孝彦さんは、事業づくり・経営・行動の積み上げ方を実践ベースで発信している連続起業家です。
+        </p>
+        <ul class="kitahara-points">
+          {#each kitaharaPoints as point (point)}
+            <li>{point}</li>
+          {/each}
+        </ul>
+        <a
+          class="text-link"
+          href="https://www.youtube.com/@kitahara64"
+          target="_blank"
+          rel="external noreferrer"
+          onclick={() =>
+            handleOutboundClick(
+              'academy_fes_kitahara',
+              '北原孝彦さんのYouTube',
+              'https://www.youtube.com/@kitahara64',
+            )}
+        >
+          北原孝彦さんのYouTubeを見る
+        </a>
       </div>
     </div>
   </section>
@@ -338,41 +390,6 @@
             <figcaption>{image.caption}</figcaption>
           </figure>
         {/each}
-      </div>
-    </div>
-  </section>
-
-  <section class="section instagram-section">
-    <div class="container instagram-section__inner">
-      <div class="section-copy">
-        <p class="section-eyebrow">Instagram</p>
-        <h2>関連投稿もあわせて確認できます。</h2>
-        <p>
-          イベントの雰囲気や周辺情報は、Instagram投稿も参考にしてください。読み込みできない場合は、投稿リンクから直接確認できます。
-        </p>
-      </div>
-
-      <div class="instagram-embed" aria-label="Instagram投稿">
-        <iframe
-          class="instagram-embed__frame"
-          title="北原孝彦Academy Fes 2026 のInstagram投稿"
-          src="https://www.instagram.com/p/DXtbPpyk_Jw/embed/captioned/"
-          loading="eager"
-        ></iframe>
-        <a
-          class="instagram-embed__link"
-          href="https://www.instagram.com/p/DXtbPpyk_Jw/"
-          target="_blank"
-          rel="external noreferrer"
-          onclick={() =>
-            handleOutboundClick(
-              'academy_fes_instagram',
-              'Instagram投稿',
-              'https://www.instagram.com/p/DXtbPpyk_Jw/',
-            )}
-        >
-          Instagramで投稿を見る
-        </a>
       </div>
     </div>
   </section>
@@ -642,10 +659,10 @@
   }
 
   .intro-section__inner,
+  .kitahara-section__inner,
   .app-section__inner,
   .booth-section__inner,
   .seminar-section__inner,
-  .instagram-section__inner,
   .related-section__inner {
     display: grid;
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
@@ -657,6 +674,60 @@
     display: grid;
     gap: 16px;
     padding-top: 4px;
+  }
+
+  .kitahara-section {
+    background: linear-gradient(180deg, rgba(255, 253, 248, 1), rgba(247, 252, 250, 0.96));
+  }
+
+  .kitahara-photo {
+    overflow: hidden;
+    display: grid;
+    margin: 0;
+    border: 1px solid var(--fes-line);
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 20px 36px rgba(38, 32, 24, 0.08);
+  }
+
+  .kitahara-photo img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .kitahara-photo figcaption {
+    padding: 14px 16px;
+    color: var(--fes-muted);
+    font-size: 0.92rem;
+    font-weight: 800;
+    line-height: 1.6;
+  }
+
+  .kitahara-points {
+    display: grid;
+    gap: 12px;
+    margin: 2px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kitahara-points li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--fes-muted);
+    line-height: 1.7;
+  }
+
+  .kitahara-points li::before {
+    content: '';
+    position: absolute;
+    top: 0.72em;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--fes-green);
   }
 
   .involvement-section,
@@ -813,33 +884,6 @@
     line-height: 1.6;
   }
 
-  .instagram-section {
-    background: #fffdf8;
-  }
-
-  .instagram-embed {
-    display: grid;
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .instagram-embed__frame {
-    width: 100%;
-    min-height: 520px;
-    border: 1px solid var(--fes-line);
-    border-radius: 8px;
-    background: white;
-  }
-
-  .instagram-embed__link {
-    display: inline-flex;
-    width: fit-content;
-    color: var(--fes-blue);
-    font-weight: 900;
-    text-decoration: underline;
-    text-underline-offset: 6px;
-  }
-
   .related-links {
     display: grid;
     gap: 12px;
@@ -914,10 +958,10 @@
     .involvement-grid,
     .gallery-grid,
     .intro-section__inner,
+    .kitahara-section__inner,
     .app-section__inner,
     .booth-section__inner,
     .seminar-section__inner,
-    .instagram-section__inner,
     .related-section__inner {
       grid-template-columns: 1fr;
     }
@@ -994,10 +1038,6 @@
     .involvement-card,
     .seminar-panel {
       padding: 18px;
-    }
-
-    .instagram-embed__frame {
-      min-height: 460px;
     }
 
     .booth-section {
