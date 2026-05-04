@@ -83,7 +83,7 @@
   ];
 
   const kitaharaPoints = [
-    '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきた連続起業家です。',
+    '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきました。',
     'UBMは北原さんの考え方や行動を学ぶ場、アカデミーは同じ視座で実践を重ねる場として位置づけられています。',
     'ゆーちゃんはUBMに所属し、アカデミーにもジョイン。今回のFesには、アプリ開発・ブース出展・セミナー登壇で関わります。',
   ];
@@ -104,25 +104,21 @@
       src: '/images/profile/academy-fes-2026/scenes-small-group.webp',
       alt: '少人数で集まって撮影したアカデミー仲間の写真',
       caption: '少人数で深く話せる関係性',
-      wide: false,
     },
     {
       src: '/images/profile/academy-fes-2026/scenes-seminar.webp',
       alt: 'セミナー会場で仲間と撮影した写真',
       caption: '学びの場で出会う仲間',
-      wide: false,
     },
     {
       src: '/images/profile/academy-fes-2026/scenes-friends.webp',
       alt: 'イベント会場で仲間と撮影した写真',
       caption: '人と人が自然につながる瞬間',
-      wide: false,
     },
     {
       src: '/images/profile/academy-fes-2026/scenes-community-meal.webp',
       alt: '食事会でアカデミー仲間と撮影した写真',
       caption: 'イベント外でも続くつながり',
-      wide: true,
     },
   ];
 
@@ -365,26 +361,24 @@
         </p>
       </div>
 
-      <div class="booth-section__side">
-        <figure class="robot-card">
-          <img
-            src={asset('/images/profile/academy-fes-2026/reachy-mini.webp')}
-            alt="Reachy miniのイメージ"
-            loading="eager"
-            decoding="async"
-          />
-          <figcaption>当日はReachy miniを置く予定です。</figcaption>
-        </figure>
+      <figure class="robot-card">
+        <img
+          src={asset('/images/profile/academy-fes-2026/reachy-mini.webp')}
+          alt="Reachy miniのイメージ"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>当日はReachy miniを置く予定です。</figcaption>
+      </figure>
+    </div>
 
-        <div class="booth-list">
-          {#each boothItems as item (item.title)}
-            <article class="booth-item">
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </article>
-          {/each}
-        </div>
-      </div>
+    <div class="container booth-list">
+      {#each boothItems as item (item.title)}
+        <article class="booth-item">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      {/each}
     </div>
   </section>
 
@@ -428,7 +422,7 @@
 
       <div class="gallery-grid">
         {#each galleryImages as image (image.src)}
-          <figure class="gallery-item" class:gallery-item--wide={image.wide}>
+          <figure class="gallery-item">
             <img src={asset(image.src)} alt={image.alt} loading="eager" decoding="async" />
             <figcaption>{image.caption}</figcaption>
           </figure>
@@ -920,10 +914,8 @@
     background: linear-gradient(180deg, rgba(255, 253, 248, 1), rgba(247, 252, 250, 0.96));
   }
 
-  .booth-section__side {
-    display: grid;
-    gap: 16px;
-    min-width: 0;
+  .booth-section__inner {
+    align-items: center;
   }
 
   .robot-card {
@@ -952,7 +944,9 @@
 
   .booth-list {
     display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
+    margin-top: 22px;
   }
 
   .booth-item {
@@ -996,7 +990,7 @@
 
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
     align-items: stretch;
     margin-top: 36px;
@@ -1004,7 +998,7 @@
 
   .gallery-item {
     display: grid;
-    grid-column: span 2;
+    grid-template-rows: auto 1fr;
     align-content: start;
     margin: 0;
     border: 1px solid var(--fes-line);
@@ -1015,18 +1009,6 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-  }
-
-  .gallery-item:nth-child(2) img {
-    aspect-ratio: 3 / 4;
-  }
-
-  .gallery-item--wide {
-    grid-column: span 6;
-  }
-
-  .gallery-item--wide img {
-    aspect-ratio: 16 / 9;
   }
 
   .gallery-item figcaption {
@@ -1109,6 +1091,7 @@
 
     .event-strip__grid,
     .involvement-grid,
+    .booth-list,
     .gallery-grid,
     .intro-section__inner,
     .kitahara-section__inner,
@@ -1118,11 +1101,6 @@
     .seminar-section__inner,
     .related-section__inner {
       grid-template-columns: 1fr;
-    }
-
-    .gallery-item,
-    .gallery-item--wide {
-      grid-column: auto;
     }
 
     .event-strip__item,
