@@ -38,7 +38,7 @@
       label: 'Booth',
       title: 'ロボで遊ぶ未来体験',
       description:
-        'ロボットやIoTの実演を通して、プログラミングでできることを楽しく体験できるブースを出展します。AIロボ体験デモを中心に、その場で触れて分かる時間にします。',
+        'Reachy miniを置いて、AIロボとのやりとりを入り口に、楽しいだけで終わらない未来の可能性に触れられるブースを出展します。',
     },
     {
       label: 'Seminar',
@@ -51,7 +51,8 @@
   const boothItems = [
     {
       title: 'AIロボ体験デモ',
-      description: 'その場でAIロボとの関わりを体験できる無償コンテンツです。',
+      description:
+        'Reachy miniとのやりとりを通して、AIやロボットが身近な体験になる瞬間を味わえます。',
     },
     {
       title: 'AI/IT活用プチ相談',
@@ -100,27 +101,27 @@
 
   const galleryImages = [
     {
-      src: '/images/profile/academy-fes-2026/yuchan-hero.webp',
-      alt: 'ゆーちゃんのプロフィール写真',
-      caption: 'ゆーちゃんが体験を届ける入口',
+      src: '/images/profile/academy-fes-2026/scenes-small-group.webp',
+      alt: '少人数で集まって撮影したアカデミー仲間の写真',
+      caption: '少人数で深く話せる関係性',
       wide: false,
     },
     {
-      src: '/images/profile/academy-fes-2026/fes-moment.webp',
-      alt: 'イベント会場前で撮影したメンバー写真',
-      caption: '当日の体験づくりにも関わります',
+      src: '/images/profile/academy-fes-2026/scenes-seminar.webp',
+      alt: 'セミナー会場で仲間と撮影した写真',
+      caption: '学びの場で出会う仲間',
       wide: false,
     },
     {
-      src: '/images/profile/academy-fes-2026/fes-community.webp',
-      alt: 'コミュニティメンバーで撮影した集合写真',
-      caption: '仲間と一緒に豊かさを広げる1日',
+      src: '/images/profile/academy-fes-2026/scenes-friends.webp',
+      alt: 'イベント会場で仲間と撮影した写真',
+      caption: '人と人が自然につながる瞬間',
       wide: false,
     },
     {
-      src: '/images/profile/academy-fes-2026/academy-group-hall.webp',
-      alt: '会場全体で撮影した北原孝彦アカデミーの集合写真',
-      caption: '当日の熱量が伝わる会場の景色',
+      src: '/images/profile/academy-fes-2026/scenes-community-meal.webp',
+      alt: '食事会でアカデミー仲間と撮影した写真',
+      caption: 'イベント外でも続くつながり',
       wide: true,
     },
   ];
@@ -156,7 +157,7 @@
   <link
     rel="preload"
     as="image"
-    href={asset('/images/profile/academy-fes-2026/fes-community.webp')}
+    href={asset('/images/profile/academy-fes-2026/scenes-community-meal.webp')}
   />
   <link
     rel="preload"
@@ -266,6 +267,12 @@
             <li>{point}</li>
           {/each}
         </ul>
+        <div class="join-reason">
+          <h3>なぜUBMとアカデミーに入ったのか</h3>
+          <p>
+            技術だけで閉じず、事業を通じて目の前の人を豊かにする力を磨きたかったからです。北原さんの実践知に触れ、同じ熱量で挑戦する仲間の中に身を置くことで、AI/ITを「便利な道具」ではなく、現場の未来を広げる力にしていきたいと考えています。
+          </p>
+        </div>
         <a
           class="text-link"
           href="https://www.youtube.com/@kitahara64"
@@ -328,8 +335,8 @@
     <div class="container app-section__inner">
       <div class="app-section__media">
         <img
-          src={asset('/images/profile/academy-fes-2026/fes-community.webp')}
-          alt="北原孝彦Academy Fesに関わるメンバーの集合写真"
+          src={asset('/images/profile/academy-fes-2026/app-development-focus.webp')}
+          alt="当日来場者向けアプリを考えるゆーちゃん"
           loading="eager"
           decoding="async"
         />
@@ -354,17 +361,29 @@
         <p class="section-eyebrow">Booth</p>
         <h2>ロボで遊ぶ未来体験</h2>
         <p>
-          ロボットやIoTの実演を通して、プログラミングでできることを楽しく体験できるブースです。AIロボ体験デモは、その場でAIロボとの関わりを体験できます。
+          ただロボットを見るだけではなく、AIが現実の動きや表情を持ったときに何が起きるのかを感じられる場所にします。楽しさを入口に、これからの仕事や暮らしの可能性に触れてもらうブースです。
         </p>
       </div>
 
-      <div class="booth-list">
-        {#each boothItems as item (item.title)}
-          <article class="booth-item">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </article>
-        {/each}
+      <div class="booth-section__side">
+        <figure class="robot-card">
+          <img
+            src={asset('/images/profile/academy-fes-2026/reachy-mini.webp')}
+            alt="Reachy miniのイメージ"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>当日はReachy miniを置く予定です。</figcaption>
+        </figure>
+
+        <div class="booth-list">
+          {#each boothItems as item (item.title)}
+            <article class="booth-item">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </article>
+          {/each}
+        </div>
       </div>
     </div>
   </section>
@@ -755,11 +774,44 @@
     background: var(--fes-green);
   }
 
+  .join-reason {
+    display: grid;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 18px;
+    border: 1px solid rgba(30, 117, 105, 0.18);
+    border-left: 4px solid var(--fes-green);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.78);
+  }
+
+  .join-reason h3,
+  .join-reason p {
+    margin: 0;
+  }
+
+  .join-reason h3 {
+    font-family: var(--font-heading);
+    font-size: 1.12rem;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  .join-reason p {
+    color: var(--fes-muted);
+    line-height: 1.78;
+  }
+
   .involvement-section,
-  .diversity-section,
   .gallery-section,
   .related-section {
     background: linear-gradient(180deg, rgba(238, 247, 244, 0.9), rgba(255, 253, 248, 1));
+  }
+
+  .diversity-section {
+    background:
+      linear-gradient(180deg, rgba(238, 247, 244, 0.95), rgba(255, 253, 248, 0.96)),
+      url('/images/profile/academy-fes-2026/academy-group-hall.webp') center / cover;
   }
 
   .involvement-grid {
@@ -865,9 +917,37 @@
   }
 
   .booth-section {
-    background:
-      linear-gradient(90deg, rgba(255, 253, 248, 0.96), rgba(255, 253, 248, 0.82)),
-      url('/images/profile/academy-fes-2026/fes-moment.webp') center / cover fixed;
+    background: linear-gradient(180deg, rgba(255, 253, 248, 1), rgba(247, 252, 250, 0.96));
+  }
+
+  .booth-section__side {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .robot-card {
+    overflow: hidden;
+    display: grid;
+    margin: 0;
+    border: 1px solid var(--fes-line);
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 20px 36px rgba(38, 32, 24, 0.08);
+  }
+
+  .robot-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .robot-card figcaption {
+    padding: 12px 14px;
+    color: var(--fes-muted);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.55;
   }
 
   .booth-list {
@@ -993,7 +1073,7 @@
     color: white;
     background:
       linear-gradient(90deg, rgba(17, 24, 26, 0.88), rgba(17, 24, 26, 0.64)),
-      url('/images/profile/academy-fes-2026/fes-community.webp') center / cover;
+      url('/images/profile/academy-fes-2026/scenes-community-meal.webp') center / cover;
   }
 
   .final-cta__inner {
@@ -1117,12 +1197,6 @@
     .involvement-card,
     .seminar-panel {
       padding: 18px;
-    }
-
-    .booth-section {
-      background:
-        linear-gradient(180deg, rgba(255, 253, 248, 0.97), rgba(255, 253, 248, 0.88)),
-        url('/images/profile/academy-fes-2026/fes-moment.webp') center / cover;
     }
 
     .final-cta {
