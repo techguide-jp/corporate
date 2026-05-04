@@ -20,6 +20,27 @@
     href: 'https://s.lmes.jp/landing-qr/2009291141-5wwelfTJ?uLand=dCtUnJ',
   };
 
+  const preQuestionMessage = `【北原孝彦Academy Fes 2026 事前質問】
+
+気になっている内容：
+・AIロボ体験
+・AI/IT活用相談
+・Webサービス企画
+・セミナー内容
+・その他
+
+聞きたいこと・知りたいこと：
+
+当日ブースで話したいこと：
+`;
+
+  const preQuestionSearch = new URLSearchParams({
+    category: 'ai',
+    subject: '北原孝彦Academy Fes 2026 事前質問',
+    message: preQuestionMessage,
+  }).toString();
+  const preQuestionHref = `/contact/?${preQuestionSearch}` as `/contact/?${string}`;
+
   const eventFacts = [
     { label: '開催日', value: '2026年6月4日（木）' },
     { label: '会場', value: '東京流通センター 第一展示場' },
@@ -140,6 +161,14 @@
       section,
       link_label: label,
       destination_host: new URL(href).hostname,
+    });
+  }
+
+  function handlePreQuestionClick(placement: string) {
+    trackEvent('contact_cta_click', {
+      placement,
+      category: 'ai',
+      subject: 'academy_fes_2026_pre_question',
     });
   }
 </script>
@@ -399,6 +428,38 @@
     </div>
   </section>
 
+  <section class="section pre-question-section">
+    <div class="container pre-question-section__inner">
+      <div class="section-copy">
+        <p class="section-eyebrow">Before the event</p>
+        <h2>当日聞きたいことを、先に送っておけます。</h2>
+        <p>
+          AIロボ体験、AI/IT活用、Webサービス企画、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
+            class="text-emphasis">ブースで具体的に話せる状態</strong
+          >にしておきます。
+        </p>
+        <div class="pre-question-actions">
+          <a
+            class="academy-button academy-button--primary"
+            href={resolve(preQuestionHref)}
+            onclick={() => handlePreQuestionClick('academy_fes_pre_question')}
+          >
+            聞きたいことを事前に送る
+          </a>
+        </div>
+      </div>
+
+      <div class="pre-question-panel">
+        <p class="pre-question-panel__label">フォームで初期設定される内容</p>
+        <ul class="pre-question-list">
+          <li>お問い合わせカテゴリ：AI活用・業務改善の相談</li>
+          <li>件名：北原孝彦Academy Fes 2026 事前質問</li>
+          <li>本文：気になる内容、聞きたいこと、当日話したいこと</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <section class="section seminar-section">
     <div class="container seminar-section__inner">
       <div class="section-copy">
@@ -488,6 +549,13 @@
         onclick={() => handleOutboundClick('academy_fes_final', cta.label, cta.href)}
       >
         {cta.label}
+      </a>
+      <a
+        class="academy-button academy-button--quiet"
+        href={resolve(preQuestionHref)}
+        onclick={() => handlePreQuestionClick('academy_fes_final_pre_question')}
+      >
+        聞きたいことを事前に送る
       </a>
     </div>
   </section>
@@ -707,6 +775,7 @@
   .section-copy p:not(.section-eyebrow),
   .intro-section__text p,
   .involvement-card p,
+  .pre-question-panel li,
   .booth-item p,
   .final-cta p {
     margin: 0;
@@ -727,6 +796,7 @@
   .diversity-section__inner,
   .app-section__inner,
   .booth-section__inner,
+  .pre-question-section__inner,
   .seminar-section__inner,
   .related-section__inner {
     display: grid;
@@ -987,6 +1057,62 @@
     padding: 20px;
   }
 
+  .pre-question-section {
+    background: linear-gradient(180deg, rgba(247, 252, 250, 0.96), rgba(255, 253, 248, 1));
+  }
+
+  .pre-question-section__inner {
+    align-items: center;
+  }
+
+  .pre-question-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .pre-question-panel {
+    display: grid;
+    gap: 16px;
+    padding: 24px;
+    border: 1px solid rgba(30, 117, 105, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 36px rgba(38, 32, 24, 0.08);
+  }
+
+  .pre-question-panel__label {
+    margin: 0;
+    color: var(--fes-blue);
+    font-size: 0.86rem;
+    font-weight: 900;
+  }
+
+  .pre-question-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pre-question-list li {
+    position: relative;
+    padding-left: 18px;
+  }
+
+  .pre-question-list li::before {
+    content: '';
+    position: absolute;
+    top: 0.72em;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--fes-green);
+  }
+
   .seminar-panel {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1130,6 +1256,7 @@
     .diversity-section__inner,
     .app-section__inner,
     .booth-section__inner,
+    .pre-question-section__inner,
     .seminar-section__inner,
     .related-section__inner {
       grid-template-columns: 1fr;
