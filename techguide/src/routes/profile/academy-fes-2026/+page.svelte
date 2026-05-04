@@ -448,15 +448,6 @@
           </a>
         </div>
       </div>
-
-      <div class="pre-question-panel">
-        <p class="pre-question-panel__label">フォームで初期設定される内容</p>
-        <ul class="pre-question-list">
-          <li>お問い合わせカテゴリ：AI活用・業務改善の相談</li>
-          <li>件名：北原孝彦Academy Fes 2026 事前質問</li>
-          <li>本文：気になる内容、聞きたいこと、当日話したいこと</li>
-        </ul>
-      </div>
     </div>
   </section>
 
@@ -775,7 +766,6 @@
   .section-copy p:not(.section-eyebrow),
   .intro-section__text p,
   .involvement-card p,
-  .pre-question-panel li,
   .booth-item p,
   .final-cta p {
     margin: 0;
@@ -1062,55 +1052,17 @@
   }
 
   .pre-question-section__inner {
-    align-items: center;
+    grid-template-columns: minmax(0, 760px);
+    justify-content: center;
+    text-align: center;
   }
 
   .pre-question-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    justify-content: center;
     margin-top: 4px;
-  }
-
-  .pre-question-panel {
-    display: grid;
-    gap: 16px;
-    padding: 24px;
-    border: 1px solid rgba(30, 117, 105, 0.18);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 20px 36px rgba(38, 32, 24, 0.08);
-  }
-
-  .pre-question-panel__label {
-    margin: 0;
-    color: var(--fes-blue);
-    font-size: 0.86rem;
-    font-weight: 900;
-  }
-
-  .pre-question-list {
-    display: grid;
-    gap: 12px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .pre-question-list li {
-    position: relative;
-    padding-left: 18px;
-  }
-
-  .pre-question-list li::before {
-    content: '';
-    position: absolute;
-    top: 0.72em;
-    left: 0;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--fes-green);
   }
 
   .seminar-panel {
