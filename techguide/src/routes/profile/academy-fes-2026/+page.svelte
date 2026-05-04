@@ -451,7 +451,11 @@
     <div class="container pre-question-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">Before the event</p>
-        <h2>当日聞きたいことを、先に送っておけます。</h2>
+        <h2>
+          <span class="heading-keep">当日聞きたいことを、</span><span class="heading-keep"
+            >先に送っておけます。</span
+          >
+        </h2>
         <p>
           AIロボ体験、AI/IT活用、Webサービス企画、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
             class="text-emphasis">ブースで具体的に話せる状態</strong
@@ -780,6 +784,10 @@
 
   .section-copy--center h2 {
     margin-inline: auto;
+  }
+
+  .heading-keep {
+    display: inline-block;
   }
 
   .section-copy p:not(.section-eyebrow),
@@ -1112,9 +1120,13 @@
   }
 
   .pre-question-section__inner {
-    grid-template-columns: minmax(0, 760px);
+    grid-template-columns: minmax(0, 920px);
     justify-content: center;
     text-align: center;
+  }
+
+  .pre-question-section .section-copy h2 {
+    max-width: none;
   }
 
   .pre-question-actions {
