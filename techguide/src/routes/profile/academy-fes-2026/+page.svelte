@@ -99,6 +99,7 @@
 
   const officialLinks = [
     { label: 'アカデミーとは', href: 'https://kitaharatakahiko.jp/academy/' },
+    { label: 'UBM公式ページ', href: 'https://ubm.school/lp/index.html' },
     { label: '北原孝彦さんのYouTube', href: 'https://www.youtube.com/@kitahara64' },
     { label: '会場公式サイト', href: 'https://www.trc-event.jp/hall/' },
   ];
@@ -107,6 +108,13 @@
     '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきました。',
     'UBMは北原さんの考え方や行動を学ぶ場、アカデミーは同じ視座で実践を重ねる場として位置づけられています。',
     'ゆーちゃんはUBMに所属し、アカデミーにもジョイン。今回のFesには、アプリ開発・ブース出展・セミナー登壇で関わります。',
+  ];
+
+  const kitaharaAchievements = [
+    { label: 'グループ規模', value: 'グループ企業9社、全国360店舗、年間総売上60億円以上' },
+    { label: 'メディア影響力', value: 'SNS総フォロワー50万人、YouTube登録者17万人' },
+    { label: '店舗展開', value: '美容室Dears全国174店舗以上など、多業態で事業を展開' },
+    { label: '事業支援', value: '事業顧問150社以上。実践知をもとにした支援を展開' },
   ];
 
   const diversityHighlights = [
@@ -295,6 +303,17 @@
             <li>{point}</li>
           {/each}
         </ul>
+        <div class="kitahara-achievements" aria-label="北原さんが関わる事業の公開実績">
+          <p class="kitahara-achievements__note">UBM公式ページの公開情報より、一部の実績を抜粋。</p>
+          <div class="kitahara-achievement-grid">
+            {#each kitaharaAchievements as item (item.label)}
+              <div class="kitahara-achievement">
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
+            {/each}
+          </div>
+        </div>
         <div class="join-reason">
           <h3>なぜUBMとアカデミーに入ったのか</h3>
           <p>
@@ -855,6 +874,47 @@
     background: var(--fes-green);
   }
 
+  .kitahara-achievements {
+    display: grid;
+    gap: 12px;
+    margin-top: 2px;
+  }
+
+  .kitahara-achievements__note {
+    margin: 0;
+    color: var(--fes-muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.6;
+  }
+
+  .kitahara-achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .kitahara-achievement {
+    display: grid;
+    gap: 6px;
+    padding: 14px;
+    border: 1px solid rgba(30, 117, 105, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.76);
+  }
+
+  .kitahara-achievement span {
+    color: var(--fes-blue);
+    font-size: 0.76rem;
+    font-weight: 900;
+  }
+
+  .kitahara-achievement strong {
+    color: var(--fes-ink);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
   .join-reason {
     display: grid;
     gap: 10px;
@@ -1226,6 +1286,10 @@
     }
 
     .seminar-panel {
+      grid-template-columns: 1fr;
+    }
+
+    .kitahara-achievement-grid {
       grid-template-columns: 1fr;
     }
   }
