@@ -230,11 +230,14 @@
       </div>
       <div class="intro-section__text">
         <p>
-          北原孝彦アカデミーで学ぶメンバーが年に1回集まり、仲間とのつながりを育む場。テーマは「Enrich
-          the world 〜世界を豊かに〜」です。
+          北原孝彦アカデミーで学ぶメンバーが年に1回集まり、仲間とのつながりを育む場。テーマは<strong
+            class="text-emphasis">「Enrich the world 〜世界を豊かに〜」</strong
+          >です。
         </p>
         <p>
-          このページでは、イベント全体の案内だけでなく、ゆーちゃんがどんな想いでアプリを作り、どんなブースやセミナーを準備しているかを中心に紹介します。
+          このページでは、イベント全体の案内だけでなく、<strong class="text-emphasis"
+            >ゆーちゃんがどんな想いで関わるのか</strong
+          >を中心に紹介します。
         </p>
       </div>
     </div>
@@ -266,7 +269,11 @@
         <div class="join-reason">
           <h3>なぜUBMとアカデミーに入ったのか</h3>
           <p>
-            技術だけで閉じず、事業を通じて目の前の人を豊かにする力を磨きたかったからです。北原さんの実践知に触れ、同じ熱量で挑戦する仲間の中に身を置くことで、AI/ITを「便利な道具」ではなく、現場の未来を広げる力にしていきたいと考えています。
+            技術だけで閉じず、<strong class="text-emphasis"
+              >事業を通じて目の前の人を豊かにする力</strong
+            >を磨きたかったからです。北原さんの実践知に触れ、同じ熱量で挑戦する仲間の中に身を置くことで、AI/ITを「便利な道具」ではなく、<strong
+              class="text-emphasis">現場の未来を広げる力</strong
+            >にしていきたいと考えています。
           </p>
         </div>
         <a
@@ -312,7 +319,10 @@
         <p class="section-eyebrow">100 Booths / 100 Seminars</p>
         <h2>多種多様な事業者が集まるから、思いがけない出会いがある。</h2>
         <p>
-          当日は100ブース・100セミナーが実施されます。業種も、店舗ビジネス、教育、IT、医療福祉、クリエイティブ、コンサルティングまで幅広く、普段なら交わらない人たちの知識や経験に触れられる場です。
+          当日は<strong class="text-emphasis">100ブース・100セミナー</strong
+          >が実施されます。業種も、店舗ビジネス、教育、IT、医療福祉、クリエイティブ、コンサルティングまで幅広く、<strong
+            class="text-emphasis">普段なら交わらない人たちの知識や経験</strong
+          >に触れられる場です。
         </p>
       </div>
 
@@ -342,10 +352,14 @@
         <p class="section-eyebrow">App development</p>
         <h2>会場での迷いを減らし、出会いを増やすアプリを作っています。</h2>
         <p>
-          100ブース・100セミナーが並ぶ1日を、ただ情報量の多いイベントで終わらせない。来場者が「気になる」と感じた瞬間に、次の一歩を踏み出しやすくするためのアプリです。
+          100ブース・100セミナーが並ぶ1日を、ただ情報量の多いイベントで終わらせない。来場者が<strong
+            class="text-emphasis">「気になる」と感じた瞬間</strong
+          >に、次の一歩を踏み出しやすくするためのアプリです。
         </p>
         <p>
-          技術を目立たせるためではなく、人と人、人と体験がつながる確率を上げること。多様な出展者の魅力に自然に触れられるよう、当日の体験をそっと支えます。
+          技術を目立たせるためではなく、<strong class="text-emphasis"
+            >人と人、人と体験がつながる確率を上げること</strong
+          >。多様な出展者の魅力に自然に触れられるよう、当日の体験をそっと支えます。
         </p>
       </div>
     </div>
@@ -357,7 +371,10 @@
         <p class="section-eyebrow">Booth</p>
         <h2>ロボで遊ぶ未来体験</h2>
         <p>
-          ただロボットを見るだけではなく、AIが現実の動きや表情を持ったときに何が起きるのかを感じられる場所にします。楽しさを入口に、これからの仕事や暮らしの可能性に触れてもらうブースです。
+          ただロボットを見るだけではなく、AIが現実の動きや表情を持ったときに何が起きるのかを感じられる場所にします。<strong
+            class="text-emphasis">楽しさを入口</strong
+          >に、<strong class="text-emphasis">これからの仕事や暮らしの可能性</strong
+          >に触れてもらうブースです。
         </p>
       </div>
 
@@ -388,7 +405,9 @@
         <p class="section-eyebrow">Seminar</p>
         <h2>持ち帰ってすぐ試せるテーマを検討中です。</h2>
         <p>
-          正式テーマは調整中です。AI、目標達成、自動化を軸に、聞いて終わりではなく、自分の仕事や行動に落とし込める内容として準備しています。
+          正式テーマは調整中です。AI、目標達成、自動化を軸に、聞いて終わりではなく、<strong
+            class="text-emphasis">自分の仕事や行動に落とし込める内容</strong
+          >として準備しています。
         </p>
       </div>
 
@@ -695,6 +714,14 @@
     line-height: 1.85;
   }
 
+  .text-emphasis {
+    color: var(--fes-coral);
+    font-weight: 900;
+    background: linear-gradient(180deg, transparent 62%, rgba(213, 151, 73, 0.22) 0);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
   .intro-section__inner,
   .kitahara-section__inner,
   .diversity-section__inner,
@@ -911,7 +938,12 @@
   }
 
   .booth-section {
-    background: linear-gradient(180deg, rgba(255, 253, 248, 1), rgba(247, 252, 250, 0.96));
+    background-image:
+      linear-gradient(90deg, rgba(255, 253, 248, 0.96), rgba(247, 252, 250, 0.88)),
+      url('/images/profile/academy-fes-2026/academy-group-hall.webp');
+    background-position: center, center;
+    background-size: auto, cover;
+    background-attachment: scroll, fixed;
   }
 
   .booth-section__inner {
@@ -1165,6 +1197,10 @@
     .final-cta h2 {
       max-width: none;
       font-size: 1.9rem;
+    }
+
+    .booth-section {
+      background-attachment: scroll, scroll;
     }
 
     .involvement-grid,
