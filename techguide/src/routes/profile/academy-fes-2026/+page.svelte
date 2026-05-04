@@ -286,15 +286,28 @@
 
   <section class="section kitahara-section">
     <div class="container kitahara-section__inner">
-      <figure class="kitahara-photo">
-        <img
-          src={asset('/images/profile/academy-fes-2026/yuchan-kitahara.webp')}
-          alt="北原孝彦さんとゆーちゃんの2ショット"
-          loading="eager"
-          decoding="async"
-        />
-        <figcaption>北原孝彦さんと。UBMで学び、アカデミーにもジョインしました。</figcaption>
-      </figure>
+      <div class="kitahara-media">
+        <figure class="kitahara-photo">
+          <img
+            src={asset('/images/profile/academy-fes-2026/yuchan-kitahara.webp')}
+            alt="北原孝彦さんとゆーちゃんの2ショット"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>北原孝彦さんと。UBMで学び、アカデミーにもジョインしました。</figcaption>
+        </figure>
+
+        <div class="join-reason">
+          <h3>なぜUBMとアカデミーに入ったのか</h3>
+          <p>
+            技術だけで閉じず、<strong class="text-emphasis"
+              >事業を通じて目の前の人を豊かにする力</strong
+            >を磨きたかったからです。北原さんの実践知に触れ、同じ熱量で挑戦する仲間の中に身を置くことで、AI/ITを「便利な道具」ではなく、<strong
+              class="text-emphasis">現場の未来を広げる力</strong
+            >にしていきたいと考えています。
+          </p>
+        </div>
+      </div>
 
       <div class="section-copy">
         <p class="section-eyebrow">Who is Kitahara?</p>
@@ -317,16 +330,6 @@
               </div>
             {/each}
           </div>
-        </div>
-        <div class="join-reason">
-          <h3>なぜUBMとアカデミーに入ったのか</h3>
-          <p>
-            技術だけで閉じず、<strong class="text-emphasis"
-              >事業を通じて目の前の人を豊かにする力</strong
-            >を磨きたかったからです。北原さんの実践知に触れ、同じ熱量で挑戦する仲間の中に身を置くことで、AI/ITを「便利な道具」ではなく、<strong
-              class="text-emphasis">現場の未来を広げる力</strong
-            >にしていきたいと考えています。
-          </p>
         </div>
         <a
           class="text-link"
@@ -861,6 +864,18 @@
 
   .kitahara-section {
     background: linear-gradient(180deg, rgba(255, 253, 248, 1), rgba(247, 252, 250, 0.96));
+  }
+
+  .kitahara-section__inner {
+    grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+    gap: 48px;
+    align-items: center;
+  }
+
+  .kitahara-media {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
   }
 
   .kitahara-photo {
