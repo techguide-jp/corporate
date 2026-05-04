@@ -20,6 +20,27 @@
     href: 'https://s.lmes.jp/landing-qr/2009291141-5wwelfTJ?uLand=dCtUnJ',
   };
 
+  const preQuestionMessage = `【北原孝彦Academy Fes 2026 事前質問】
+
+気になっている内容：
+・AIロボ体験
+・AI/IT活用相談
+・Webサービス企画
+・セミナー内容
+・その他
+
+聞きたいこと・知りたいこと：
+
+当日ブースで話したいこと：
+`;
+
+  const preQuestionSearch = new URLSearchParams({
+    category: 'ai',
+    subject: '北原孝彦Academy Fes 2026 事前質問',
+    message: preQuestionMessage,
+  }).toString();
+  const preQuestionHref = `/contact/?${preQuestionSearch}` as `/contact/?${string}`;
+
   const eventFacts = [
     { label: '開催日', value: '2026年6月4日（木）' },
     { label: '会場', value: '東京流通センター 第一展示場' },
@@ -38,7 +59,7 @@
       label: 'Booth',
       title: 'ロボで遊ぶ未来体験',
       description:
-        'ロボットやIoTの実演を通して、プログラミングでできることを楽しく体験できるブースを出展します。AIロボ体験デモを中心に、その場で触れて分かる時間にします。',
+        'Reachy miniを置いて、AIロボとのやりとりを入り口に、楽しいだけで終わらない未来の可能性に触れられるブースを出展します。',
     },
     {
       label: 'Seminar',
@@ -51,7 +72,8 @@
   const boothItems = [
     {
       title: 'AIロボ体験デモ',
-      description: 'その場でAIロボとの関わりを体験できる無償コンテンツです。',
+      description:
+        'Reachy miniとのやりとりを通して、AIやロボットが身近な体験になる瞬間を味わえます。',
     },
     {
       title: 'AI/IT活用プチ相談',
@@ -77,14 +99,22 @@
 
   const officialLinks = [
     { label: 'アカデミーとは', href: 'https://kitaharatakahiko.jp/academy/' },
+    { label: 'UBM公式ページ', href: 'https://ubm.school/lp/index.html' },
     { label: '北原孝彦さんのYouTube', href: 'https://www.youtube.com/@kitahara64' },
     { label: '会場公式サイト', href: 'https://www.trc-event.jp/hall/' },
   ];
 
   const kitaharaPoints = [
-    '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきた連続起業家です。',
+    '美容師としてキャリアを始め、店舗ビジネスとオンラインビジネスを広げてきました。',
     'UBMは北原さんの考え方や行動を学ぶ場、アカデミーは同じ視座で実践を重ねる場として位置づけられています。',
     'ゆーちゃんはUBMに所属し、アカデミーにもジョイン。今回のFesには、アプリ開発・ブース出展・セミナー登壇で関わります。',
+  ];
+
+  const kitaharaAchievements = [
+    { label: 'グループ規模', value: 'グループ企業9社、全国360店舗、年間総売上60億円以上' },
+    { label: 'メディア影響力', value: 'SNS総フォロワー50万人、YouTube登録者17万人' },
+    { label: '店舗展開', value: '美容室Dears全国174店舗以上など、多業態で事業を展開' },
+    { label: '事業支援', value: '事業顧問150社以上。実践知をもとにした支援を展開' },
   ];
 
   const diversityHighlights = [
@@ -100,28 +130,24 @@
 
   const galleryImages = [
     {
-      src: '/images/profile/academy-fes-2026/yuchan-hero.webp',
-      alt: 'ゆーちゃんのプロフィール写真',
-      caption: 'ゆーちゃんが体験を届ける入口',
-      wide: false,
+      src: '/images/profile/academy-fes-2026/scenes-small-group.webp',
+      alt: '少人数で集まって撮影したアカデミー仲間の写真',
+      caption: '少人数で深く話せる関係性',
     },
     {
-      src: '/images/profile/academy-fes-2026/fes-moment.webp',
-      alt: 'イベント会場前で撮影したメンバー写真',
-      caption: '当日の体験づくりにも関わります',
-      wide: false,
+      src: '/images/profile/academy-fes-2026/scenes-seminar.webp',
+      alt: 'セミナー会場で仲間と撮影した写真',
+      caption: '学びの場で出会う仲間',
     },
     {
-      src: '/images/profile/academy-fes-2026/fes-community.webp',
-      alt: 'コミュニティメンバーで撮影した集合写真',
-      caption: '仲間と一緒に豊かさを広げる1日',
-      wide: false,
+      src: '/images/profile/academy-fes-2026/scenes-friends.webp',
+      alt: 'イベント会場で仲間と撮影した写真',
+      caption: '人と人が自然につながる瞬間',
     },
     {
-      src: '/images/profile/academy-fes-2026/academy-group-hall.webp',
-      alt: '会場全体で撮影した北原孝彦アカデミーの集合写真',
-      caption: '当日の熱量が伝わる会場の景色',
-      wide: true,
+      src: '/images/profile/academy-fes-2026/scenes-community-meal.webp',
+      alt: '食事会でアカデミー仲間と撮影した写真',
+      caption: 'イベント外でも続くつながり',
     },
   ];
 
@@ -145,6 +171,14 @@
       destination_host: new URL(href).hostname,
     });
   }
+
+  function handlePreQuestionClick(placement: string) {
+    trackEvent('contact_cta_click', {
+      placement,
+      category: 'ai',
+      subject: 'academy_fes_2026_pre_question',
+    });
+  }
 </script>
 
 <svelte:head>
@@ -156,7 +190,7 @@
   <link
     rel="preload"
     as="image"
-    href={asset('/images/profile/academy-fes-2026/fes-community.webp')}
+    href={asset('/images/profile/academy-fes-2026/scenes-community-meal.webp')}
   />
   <link
     rel="preload"
@@ -229,15 +263,22 @@
     <div class="container intro-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">About this page</p>
-        <h2>公式情報ではなく、ゆーちゃん視点でフェスとの関わりを紹介します。</h2>
+        <h2>
+          <span class="heading-keep">ゆーちゃん視点で、</span>
+          <span class="heading-keep">フェスとの</span>
+          <span class="heading-keep">関わりを紹介します。</span>
+        </h2>
       </div>
       <div class="intro-section__text">
         <p>
-          北原孝彦アカデミーで学ぶメンバーが年に1回集まり、仲間とのつながりを育む場。テーマは「Enrich
-          the world 〜世界を豊かに〜」です。
+          北原孝彦アカデミーで学ぶメンバーが年に1回集まり、仲間とのつながりを育む場。テーマは<strong
+            class="text-emphasis">「Enrich the world 〜世界を豊かに〜」</strong
+          >です。
         </p>
         <p>
-          このページでは、イベント全体の案内だけでなく、ゆーちゃんがどんな想いでアプリを作り、どんなブースやセミナーを準備しているかを中心に紹介します。
+          このページでは、イベント全体の案内だけでなく、<strong class="text-emphasis"
+            >ゆーちゃんがどんな想いで関わるのか</strong
+          >を中心に紹介します。
         </p>
       </div>
     </div>
@@ -245,15 +286,28 @@
 
   <section class="section kitahara-section">
     <div class="container kitahara-section__inner">
-      <figure class="kitahara-photo">
-        <img
-          src={asset('/images/profile/academy-fes-2026/yuchan-kitahara.webp')}
-          alt="北原孝彦さんとゆーちゃんの2ショット"
-          loading="eager"
-          decoding="async"
-        />
-        <figcaption>北原孝彦さんと。UBMで学び、アカデミーにもジョインしました。</figcaption>
-      </figure>
+      <div class="kitahara-media">
+        <figure class="kitahara-photo">
+          <img
+            src={asset('/images/profile/academy-fes-2026/yuchan-kitahara.webp')}
+            alt="北原孝彦さんとゆーちゃんの2ショット"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption>北原孝彦さんと。UBMで学び、アカデミーにもジョインしました。</figcaption>
+        </figure>
+
+        <div class="join-reason">
+          <h3>なぜUBMとアカデミーに入ったのか</h3>
+          <p>
+            技術だけで閉じず、<strong class="text-emphasis"
+              >事業を通じて目の前の人を豊かにする力</strong
+            >を磨きたかったからです。北原さんの実践知に触れ、同じ熱量で挑戦する仲間の中に身を置くことで、AI/ITを「便利な道具」ではなく、<strong
+              class="text-emphasis">現場の未来を広げる力</strong
+            >にしていきたいと考えています。
+          </p>
+        </div>
+      </div>
 
       <div class="section-copy">
         <p class="section-eyebrow">Who is Kitahara?</p>
@@ -266,6 +320,17 @@
             <li>{point}</li>
           {/each}
         </ul>
+        <div class="kitahara-achievements" aria-label="北原さんが関わる事業の公開実績">
+          <p class="kitahara-achievements__note">UBM公式ページの公開情報より、一部の実績を抜粋。</p>
+          <div class="kitahara-achievement-grid">
+            {#each kitaharaAchievements as item (item.label)}
+              <div class="kitahara-achievement">
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
+            {/each}
+          </div>
+        </div>
         <a
           class="text-link"
           href="https://www.youtube.com/@kitahara64"
@@ -288,7 +353,11 @@
     <div class="container">
       <div class="section-copy section-copy--center">
         <p class="section-eyebrow">Yuchan at Fes</p>
-        <h2>アプリ、ブース、セミナーの3つで関わります。</h2>
+        <h2>
+          <span class="heading-keep">アプリ、ブース、</span>
+          <span class="heading-keep">セミナーの3つで</span>
+          <span class="heading-keep">関わります。</span>
+        </h2>
       </div>
 
       <div class="involvement-grid">
@@ -307,9 +376,16 @@
     <div class="container diversity-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">100 Booths / 100 Seminars</p>
-        <h2>多種多様な事業者が集まるから、思いがけない出会いがある。</h2>
+        <h2>
+          <span class="heading-keep">多種多様な事業者が</span>
+          <span class="heading-keep">集まるから、</span>
+          <span class="heading-keep">思いがけない出会いがある。</span>
+        </h2>
         <p>
-          当日は100ブース・100セミナーが実施されます。業種も、店舗ビジネス、教育、IT、医療福祉、クリエイティブ、コンサルティングまで幅広く、普段なら交わらない人たちの知識や経験に触れられる場です。
+          当日は<strong class="text-emphasis">100ブース・100セミナー</strong
+          >が実施されます。業種も、店舗ビジネス、教育、IT、医療福祉、クリエイティブ、コンサルティングまで幅広く、<strong
+            class="text-emphasis">普段なら交わらない人たちの知識や経験</strong
+          >に触れられる場です。
         </p>
       </div>
 
@@ -328,8 +404,8 @@
     <div class="container app-section__inner">
       <div class="app-section__media">
         <img
-          src={asset('/images/profile/academy-fes-2026/fes-community.webp')}
-          alt="北原孝彦Academy Fesに関わるメンバーの集合写真"
+          src={asset('/images/profile/academy-fes-2026/app-development-focus.webp')}
+          alt="当日来場者向けアプリを考えるゆーちゃん"
           loading="eager"
           decoding="async"
         />
@@ -337,12 +413,20 @@
 
       <div class="section-copy">
         <p class="section-eyebrow">App development</p>
-        <h2>会場での迷いを減らし、出会いを増やすアプリを作っています。</h2>
+        <h2>
+          <span class="heading-keep">会場での迷いを減らし、</span>
+          <span class="heading-keep">出会いを増やすアプリを</span>
+          <span class="heading-keep">作っています。</span>
+        </h2>
         <p>
-          100ブース・100セミナーが並ぶ1日を、ただ情報量の多いイベントで終わらせない。来場者が「気になる」と感じた瞬間に、次の一歩を踏み出しやすくするためのアプリです。
+          100ブース・100セミナーが並ぶ1日を、ただ情報量の多いイベントで終わらせない。来場者が<strong
+            class="text-emphasis">「気になる」と感じた瞬間</strong
+          >に、次の一歩を踏み出しやすくするためのアプリです。
         </p>
         <p>
-          技術を目立たせるためではなく、人と人、人と体験がつながる確率を上げること。多様な出展者の魅力に自然に触れられるよう、当日の体験をそっと支えます。
+          技術を目立たせるためではなく、<strong class="text-emphasis"
+            >人と人、人と体験がつながる確率を上げること</strong
+          >。多様な出展者の魅力に自然に触れられるよう、当日の体験をそっと支えます。
         </p>
       </div>
     </div>
@@ -354,17 +438,57 @@
         <p class="section-eyebrow">Booth</p>
         <h2>ロボで遊ぶ未来体験</h2>
         <p>
-          ロボットやIoTの実演を通して、プログラミングでできることを楽しく体験できるブースです。AIロボ体験デモは、その場でAIロボとの関わりを体験できます。
+          ただロボットを見るだけではなく、AIが現実の動きや表情を持ったときに何が起きるのかを感じられる場所にします。<strong
+            class="text-emphasis">楽しさを入口</strong
+          >に、<strong class="text-emphasis">これからの仕事や暮らしの可能性</strong
+          >に触れてもらうブースです。
         </p>
       </div>
 
-      <div class="booth-list">
-        {#each boothItems as item (item.title)}
-          <article class="booth-item">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </article>
-        {/each}
+      <figure class="robot-card">
+        <img
+          src={asset('/images/profile/academy-fes-2026/reachy-mini.webp')}
+          alt="Reachy miniのイメージ"
+          loading="eager"
+          decoding="async"
+        />
+        <figcaption>当日はReachy miniを置く予定です。</figcaption>
+      </figure>
+    </div>
+
+    <div class="container booth-list">
+      {#each boothItems as item (item.title)}
+        <article class="booth-item">
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      {/each}
+    </div>
+  </section>
+
+  <section class="section pre-question-section">
+    <div class="container pre-question-section__inner">
+      <div class="section-copy">
+        <p class="section-eyebrow">Before the event</p>
+        <h2>
+          <span class="heading-keep">当日聞きたいことを、</span><span class="heading-keep"
+            >先に送っておけます。</span
+          >
+        </h2>
+        <p>
+          AIロボ体験、AI/IT活用、Webサービス企画、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
+            class="text-emphasis">ブースで具体的に話せる状態</strong
+          >にしておきます。
+        </p>
+        <div class="pre-question-actions">
+          <a
+            class="academy-button academy-button--primary"
+            href={resolve(preQuestionHref)}
+            onclick={() => handlePreQuestionClick('academy_fes_pre_question')}
+          >
+            聞きたいことを事前に送る
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -373,9 +497,14 @@
     <div class="container seminar-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">Seminar</p>
-        <h2>持ち帰ってすぐ試せるテーマを検討中です。</h2>
+        <h2>
+          <span class="heading-keep">持ち帰ってすぐ試せる</span>
+          <span class="heading-keep">テーマを検討中です。</span>
+        </h2>
         <p>
-          正式テーマは調整中です。AI、目標達成、自動化を軸に、聞いて終わりではなく、自分の仕事や行動に落とし込める内容として準備しています。
+          正式テーマは調整中です。AI、目標達成、自動化を軸に、聞いて終わりではなく、<strong
+            class="text-emphasis">自分の仕事や行動に落とし込める内容</strong
+          >として準備しています。
         </p>
       </div>
 
@@ -409,7 +538,7 @@
 
       <div class="gallery-grid">
         {#each galleryImages as image (image.src)}
-          <figure class="gallery-item" class:gallery-item--wide={image.wide}>
+          <figure class="gallery-item">
             <img src={asset(image.src)} alt={image.alt} loading="eager" decoding="async" />
             <figcaption>{image.caption}</figcaption>
           </figure>
@@ -457,6 +586,13 @@
       >
         {cta.label}
       </a>
+      <a
+        class="academy-button academy-button--quiet"
+        href={resolve(preQuestionHref)}
+        onclick={() => handlePreQuestionClick('academy_fes_final_pre_question')}
+      >
+        聞きたいことを事前に送る
+      </a>
     </div>
   </section>
 </main>
@@ -476,6 +612,7 @@
 
     color: var(--fes-ink);
     background: #fffdf8;
+    overflow-x: clip;
   }
 
   .academy-fes-page :global(.container) {
@@ -487,7 +624,7 @@
     isolation: isolate;
     display: grid;
     align-items: center;
-    min-height: max(520px, calc(100svh - 72px));
+    min-height: clamp(560px, calc(100svh - 72px), 820px);
     overflow: hidden;
     background: #1f261e;
   }
@@ -521,6 +658,7 @@
   .academy-hero__content {
     display: grid;
     gap: 20px;
+    min-width: 0;
     max-width: 680px;
     padding-block: 64px;
     color: white;
@@ -548,6 +686,7 @@
     font-weight: 900;
     letter-spacing: 0;
     line-height: 1.12;
+    text-wrap: balance;
   }
 
   .academy-hero h1 {
@@ -562,6 +701,7 @@
     font-weight: 700;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.92);
+    overflow-wrap: anywhere;
   }
 
   .academy-hero__actions {
@@ -575,12 +715,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    max-width: 100%;
     min-height: 54px;
     padding: 0 22px;
     border-radius: 999px;
     font-weight: 900;
     line-height: 1.3;
     text-align: center;
+    overflow-wrap: anywhere;
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease,
@@ -610,6 +752,7 @@
     color: rgba(255, 255, 255, 0.76);
     font-size: 0.9rem;
     line-height: 1.7;
+    overflow-wrap: anywhere;
   }
 
   .event-strip {
@@ -625,6 +768,7 @@
   .event-strip__item {
     display: grid;
     gap: 5px;
+    min-width: 0;
     min-height: 110px;
     padding: 22px 20px;
     border-right: 1px solid var(--fes-line);
@@ -645,31 +789,38 @@
     color: var(--fes-ink);
     font-size: 1rem;
     line-height: 1.45;
+    overflow-wrap: anywhere;
   }
 
   .section {
-    padding-block: 88px;
+    padding-block: clamp(72px, 7vw, 96px);
   }
 
   .section-copy {
     display: grid;
     gap: 14px;
+    min-width: 0;
   }
 
   .section-copy--center {
-    max-width: 740px;
+    max-width: 820px;
     margin-inline: auto;
     text-align: center;
   }
 
   .section-copy h2,
   .final-cta h2 {
-    max-width: 18ch;
-    font-size: 2.4rem;
+    max-width: 21ch;
+    font-size: clamp(2rem, 3vw, 2.4rem);
   }
 
   .section-copy--center h2 {
     margin-inline: auto;
+  }
+
+  .heading-keep {
+    display: inline-block;
+    white-space: nowrap;
   }
 
   .section-copy p:not(.section-eyebrow),
@@ -680,6 +831,15 @@
     margin: 0;
     color: var(--fes-muted);
     line-height: 1.85;
+    overflow-wrap: anywhere;
+  }
+
+  .text-emphasis {
+    color: var(--fes-coral);
+    font-weight: 900;
+    background: linear-gradient(180deg, transparent 62%, rgba(213, 151, 73, 0.22) 0);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 
   .intro-section__inner,
@@ -687,6 +847,7 @@
   .diversity-section__inner,
   .app-section__inner,
   .booth-section__inner,
+  .pre-question-section__inner,
   .seminar-section__inner,
   .related-section__inner {
     display: grid;
@@ -705,9 +866,22 @@
     background: linear-gradient(180deg, rgba(255, 253, 248, 1), rgba(247, 252, 250, 0.96));
   }
 
+  .kitahara-section__inner {
+    grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+    gap: 48px;
+    align-items: center;
+  }
+
+  .kitahara-media {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+  }
+
   .kitahara-photo {
     overflow: hidden;
     display: grid;
+    min-width: 0;
     margin: 0;
     border: 1px solid var(--fes-line);
     border-radius: 8px;
@@ -755,11 +929,85 @@
     background: var(--fes-green);
   }
 
+  .kitahara-achievements {
+    display: grid;
+    gap: 12px;
+    margin-top: 2px;
+  }
+
+  .kitahara-achievements__note {
+    margin: 0;
+    color: var(--fes-muted);
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.6;
+  }
+
+  .kitahara-achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .kitahara-achievement {
+    display: grid;
+    gap: 6px;
+    padding: 14px;
+    border: 1px solid rgba(30, 117, 105, 0.18);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.76);
+  }
+
+  .kitahara-achievement span {
+    color: var(--fes-blue);
+    font-size: 0.76rem;
+    font-weight: 900;
+  }
+
+  .kitahara-achievement strong {
+    color: var(--fes-ink);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .join-reason {
+    display: grid;
+    gap: 10px;
+    margin-top: 4px;
+    padding: 18px;
+    border: 1px solid rgba(30, 117, 105, 0.18);
+    border-left: 4px solid var(--fes-green);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.78);
+  }
+
+  .join-reason h3,
+  .join-reason p {
+    margin: 0;
+  }
+
+  .join-reason h3 {
+    font-family: var(--font-heading);
+    font-size: 1.12rem;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  .join-reason p {
+    color: var(--fes-muted);
+    line-height: 1.78;
+  }
+
   .involvement-section,
-  .diversity-section,
   .gallery-section,
   .related-section {
     background: linear-gradient(180deg, rgba(238, 247, 244, 0.9), rgba(255, 253, 248, 1));
+  }
+
+  .diversity-section {
+    background:
+      linear-gradient(180deg, rgba(238, 247, 244, 0.95), rgba(255, 253, 248, 0.96)),
+      url('/images/profile/academy-fes-2026/academy-group-hall.webp') center / cover;
   }
 
   .involvement-grid {
@@ -782,6 +1030,7 @@
   .involvement-card {
     display: grid;
     gap: 14px;
+    min-width: 0;
     min-height: 100%;
     padding: 24px;
   }
@@ -802,11 +1051,13 @@
     font-size: 1.28rem;
     line-height: 1.35;
     letter-spacing: 0;
+    overflow-wrap: anywhere;
   }
 
   .app-section__media,
   .gallery-item {
     overflow: hidden;
+    min-width: 0;
     border-radius: 8px;
     background: rgba(238, 247, 244, 0.94);
   }
@@ -853,6 +1104,7 @@
     font-weight: 800;
     line-height: 1.35;
     background: rgba(255, 255, 255, 0.74);
+    overflow-wrap: anywhere;
   }
 
   .text-link {
@@ -865,26 +1117,84 @@
   }
 
   .booth-section {
-    background:
-      linear-gradient(90deg, rgba(255, 253, 248, 0.96), rgba(255, 253, 248, 0.82)),
-      url('/images/profile/academy-fes-2026/fes-moment.webp') center / cover fixed;
+    background-image:
+      linear-gradient(90deg, rgba(255, 253, 248, 0.96), rgba(247, 252, 250, 0.88)),
+      url('/images/profile/academy-fes-2026/academy-group-hall.webp');
+    background-position: center, center;
+    background-size: auto, cover;
+    background-attachment: scroll, fixed;
+  }
+
+  .booth-section__inner {
+    align-items: center;
+  }
+
+  .robot-card {
+    overflow: hidden;
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    border: 1px solid var(--fes-line);
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 20px 36px rgba(38, 32, 24, 0.08);
+  }
+
+  .robot-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .robot-card figcaption {
+    padding: 12px 14px;
+    color: var(--fes-muted);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.55;
   }
 
   .booth-list {
     display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
+    margin-top: 22px;
   }
 
   .booth-item {
     display: grid;
     gap: 8px;
+    min-width: 0;
     padding: 20px;
+  }
+
+  .pre-question-section {
+    background: linear-gradient(180deg, rgba(247, 252, 250, 0.96), rgba(255, 253, 248, 1));
+  }
+
+  .pre-question-section__inner {
+    grid-template-columns: minmax(0, 920px);
+    justify-content: center;
+    text-align: center;
+  }
+
+  .pre-question-section .section-copy h2 {
+    max-width: none;
+  }
+
+  .pre-question-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 4px;
   }
 
   .seminar-panel {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
+    min-width: 0;
     padding: 24px;
   }
 
@@ -916,7 +1226,7 @@
 
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
     align-items: stretch;
     margin-top: 36px;
@@ -924,8 +1234,9 @@
 
   .gallery-item {
     display: grid;
-    grid-column: span 2;
+    grid-template-rows: auto 1fr;
     align-content: start;
+    min-width: 0;
     margin: 0;
     border: 1px solid var(--fes-line);
     background: white;
@@ -935,18 +1246,6 @@
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-  }
-
-  .gallery-item:nth-child(2) img {
-    aspect-ratio: 3 / 4;
-  }
-
-  .gallery-item--wide {
-    grid-column: span 6;
-  }
-
-  .gallery-item--wide img {
-    aspect-ratio: 16 / 9;
   }
 
   .gallery-item figcaption {
@@ -971,6 +1270,7 @@
     padding: 16px 18px;
     color: var(--fes-ink);
     font-weight: 900;
+    overflow-wrap: anywhere;
     transition:
       transform 0.2s ease,
       border-color 0.2s ease,
@@ -993,7 +1293,7 @@
     color: white;
     background:
       linear-gradient(90deg, rgba(17, 24, 26, 0.88), rgba(17, 24, 26, 0.64)),
-      url('/images/profile/academy-fes-2026/fes-community.webp') center / cover;
+      url('/images/profile/academy-fes-2026/scenes-community-meal.webp') center / cover;
   }
 
   .final-cta__inner {
@@ -1020,7 +1320,13 @@
     justify-self: center;
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1100px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 820px) {
     .academy-hero__shade {
       background:
         linear-gradient(90deg, rgba(17, 18, 15, 0.82), rgba(17, 18, 15, 0.42)),
@@ -1029,20 +1335,17 @@
 
     .event-strip__grid,
     .involvement-grid,
+    .booth-list,
     .gallery-grid,
     .intro-section__inner,
     .kitahara-section__inner,
     .diversity-section__inner,
     .app-section__inner,
     .booth-section__inner,
+    .pre-question-section__inner,
     .seminar-section__inner,
     .related-section__inner {
       grid-template-columns: 1fr;
-    }
-
-    .gallery-item,
-    .gallery-item--wide {
-      grid-column: auto;
     }
 
     .event-strip__item,
@@ -1056,7 +1359,7 @@
       border-bottom: 0;
     }
 
-    .seminar-panel {
+    .kitahara-achievement-grid {
       grid-template-columns: 1fr;
     }
   }
@@ -1067,7 +1370,7 @@
     }
 
     .academy-hero {
-      min-height: max(560px, calc(100svh - 56px));
+      min-height: clamp(620px, calc(100svh - 56px), 760px);
     }
 
     .academy-hero__image {
@@ -1100,13 +1403,26 @@
     }
 
     .section {
-      padding-block: 64px;
+      padding-block: 56px;
     }
 
     .section-copy h2,
     .final-cta h2 {
       max-width: none;
-      font-size: 1.9rem;
+      font-size: clamp(1.65rem, 6.4vw, 1.95rem);
+    }
+
+    .section-copy {
+      gap: 12px;
+    }
+
+    .event-strip__item {
+      min-height: auto;
+      padding: 18px 14px;
+    }
+
+    .booth-section {
+      background-attachment: scroll, scroll;
     }
 
     .involvement-grid,
@@ -1115,14 +1431,14 @@
     }
 
     .involvement-card,
-    .seminar-panel {
+    .booth-item,
+    .seminar-panel,
+    .diversity-panel {
       padding: 18px;
     }
 
-    .booth-section {
-      background:
-        linear-gradient(180deg, rgba(255, 253, 248, 0.97), rgba(255, 253, 248, 0.88)),
-        url('/images/profile/academy-fes-2026/fes-moment.webp') center / cover;
+    .gallery-item figcaption {
+      padding: 12px 14px;
     }
 
     .final-cta {

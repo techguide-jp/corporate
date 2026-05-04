@@ -5,7 +5,6 @@
   import {
     CONTACT_CATEGORIES,
     RECRUIT_CATEGORY_ID,
-    createEmptyContactFormValues,
     type ContactFieldErrors,
     type ContactCategoryId,
     type ContactFormValues,
@@ -36,7 +35,7 @@
   let turnstileRetryCount = 0;
 
   const values = $derived.by<ContactFormValues>(() => ({
-    ...createEmptyContactFormValues(data.selectedCategory),
+    ...data.initialValues,
     ...form?.values,
   }));
   const fieldErrors = $derived.by<ContactFieldErrors>(() => form?.fieldErrors ?? {});

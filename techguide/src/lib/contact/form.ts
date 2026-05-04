@@ -67,3 +67,23 @@ export function createEmptyContactFormValues(
     portfolioUrl: '',
   };
 }
+
+function getInitialTextValue(value: string | null, maxLength: number) {
+  if (!value) {
+    return '';
+  }
+
+  return value.trim().slice(0, maxLength);
+}
+
+export function createContactFormValuesFromSearchParams(
+  searchParams: URLSearchParams,
+): ContactFormValues {
+  const category = getInitialCategory(searchParams.get('category'));
+
+  return {
+    ...createEmptyContactFormValues(category),
+    subject: getInitialTextValue(searchParams.get('subject'), 120),
+    message: getInitialTextValue(searchParams.get('message'), 2000),
+  };
+}
