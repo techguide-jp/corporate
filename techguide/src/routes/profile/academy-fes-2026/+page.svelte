@@ -263,7 +263,11 @@
     <div class="container intro-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">About this page</p>
-        <h2>公式情報ではなく、ゆーちゃん視点でフェスとの関わりを紹介します。</h2>
+        <h2>
+          <span class="heading-keep">ゆーちゃん視点で、</span>
+          <span class="heading-keep">フェスとの</span>
+          <span class="heading-keep">関わりを紹介します。</span>
+        </h2>
       </div>
       <div class="intro-section__text">
         <p>
@@ -346,7 +350,11 @@
     <div class="container">
       <div class="section-copy section-copy--center">
         <p class="section-eyebrow">Yuchan at Fes</p>
-        <h2>アプリ、ブース、セミナーの3つで関わります。</h2>
+        <h2>
+          <span class="heading-keep">アプリ、ブース、</span>
+          <span class="heading-keep">セミナーの3つで</span>
+          <span class="heading-keep">関わります。</span>
+        </h2>
       </div>
 
       <div class="involvement-grid">
@@ -365,7 +373,11 @@
     <div class="container diversity-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">100 Booths / 100 Seminars</p>
-        <h2>多種多様な事業者が集まるから、思いがけない出会いがある。</h2>
+        <h2>
+          <span class="heading-keep">多種多様な事業者が</span>
+          <span class="heading-keep">集まるから、</span>
+          <span class="heading-keep">思いがけない出会いがある。</span>
+        </h2>
         <p>
           当日は<strong class="text-emphasis">100ブース・100セミナー</strong
           >が実施されます。業種も、店舗ビジネス、教育、IT、医療福祉、クリエイティブ、コンサルティングまで幅広く、<strong
@@ -398,7 +410,11 @@
 
       <div class="section-copy">
         <p class="section-eyebrow">App development</p>
-        <h2>会場での迷いを減らし、出会いを増やすアプリを作っています。</h2>
+        <h2>
+          <span class="heading-keep">会場での迷いを減らし、</span>
+          <span class="heading-keep">出会いを増やすアプリを</span>
+          <span class="heading-keep">作っています。</span>
+        </h2>
         <p>
           100ブース・100セミナーが並ぶ1日を、ただ情報量の多いイベントで終わらせない。来場者が<strong
             class="text-emphasis">「気になる」と感じた瞬間</strong
@@ -478,7 +494,10 @@
     <div class="container seminar-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">Seminar</p>
-        <h2>持ち帰ってすぐ試せるテーマを検討中です。</h2>
+        <h2>
+          <span class="heading-keep">持ち帰ってすぐ試せる</span>
+          <span class="heading-keep">テーマを検討中です。</span>
+        </h2>
         <p>
           正式テーマは調整中です。AI、目標達成、自動化を軸に、聞いて終わりではなく、<strong
             class="text-emphasis">自分の仕事や行動に落とし込める内容</strong
@@ -590,6 +609,7 @@
 
     color: var(--fes-ink);
     background: #fffdf8;
+    overflow-x: clip;
   }
 
   .academy-fes-page :global(.container) {
@@ -601,7 +621,7 @@
     isolation: isolate;
     display: grid;
     align-items: center;
-    min-height: max(520px, calc(100svh - 72px));
+    min-height: clamp(560px, calc(100svh - 72px), 820px);
     overflow: hidden;
     background: #1f261e;
   }
@@ -635,6 +655,7 @@
   .academy-hero__content {
     display: grid;
     gap: 20px;
+    min-width: 0;
     max-width: 680px;
     padding-block: 64px;
     color: white;
@@ -662,6 +683,7 @@
     font-weight: 900;
     letter-spacing: 0;
     line-height: 1.12;
+    text-wrap: balance;
   }
 
   .academy-hero h1 {
@@ -676,6 +698,7 @@
     font-weight: 700;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.92);
+    overflow-wrap: anywhere;
   }
 
   .academy-hero__actions {
@@ -689,12 +712,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    max-width: 100%;
     min-height: 54px;
     padding: 0 22px;
     border-radius: 999px;
     font-weight: 900;
     line-height: 1.3;
     text-align: center;
+    overflow-wrap: anywhere;
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease,
@@ -724,6 +749,7 @@
     color: rgba(255, 255, 255, 0.76);
     font-size: 0.9rem;
     line-height: 1.7;
+    overflow-wrap: anywhere;
   }
 
   .event-strip {
@@ -739,6 +765,7 @@
   .event-strip__item {
     display: grid;
     gap: 5px;
+    min-width: 0;
     min-height: 110px;
     padding: 22px 20px;
     border-right: 1px solid var(--fes-line);
@@ -759,27 +786,29 @@
     color: var(--fes-ink);
     font-size: 1rem;
     line-height: 1.45;
+    overflow-wrap: anywhere;
   }
 
   .section {
-    padding-block: 88px;
+    padding-block: clamp(72px, 7vw, 96px);
   }
 
   .section-copy {
     display: grid;
     gap: 14px;
+    min-width: 0;
   }
 
   .section-copy--center {
-    max-width: 740px;
+    max-width: 820px;
     margin-inline: auto;
     text-align: center;
   }
 
   .section-copy h2,
   .final-cta h2 {
-    max-width: 18ch;
-    font-size: 2.4rem;
+    max-width: 21ch;
+    font-size: clamp(2rem, 3vw, 2.4rem);
   }
 
   .section-copy--center h2 {
@@ -788,6 +817,7 @@
 
   .heading-keep {
     display: inline-block;
+    white-space: nowrap;
   }
 
   .section-copy p:not(.section-eyebrow),
@@ -798,6 +828,7 @@
     margin: 0;
     color: var(--fes-muted);
     line-height: 1.85;
+    overflow-wrap: anywhere;
   }
 
   .text-emphasis {
@@ -835,6 +866,7 @@
   .kitahara-photo {
     overflow: hidden;
     display: grid;
+    min-width: 0;
     margin: 0;
     border: 1px solid var(--fes-line);
     border-radius: 8px;
@@ -983,6 +1015,7 @@
   .involvement-card {
     display: grid;
     gap: 14px;
+    min-width: 0;
     min-height: 100%;
     padding: 24px;
   }
@@ -1003,11 +1036,13 @@
     font-size: 1.28rem;
     line-height: 1.35;
     letter-spacing: 0;
+    overflow-wrap: anywhere;
   }
 
   .app-section__media,
   .gallery-item {
     overflow: hidden;
+    min-width: 0;
     border-radius: 8px;
     background: rgba(238, 247, 244, 0.94);
   }
@@ -1054,6 +1089,7 @@
     font-weight: 800;
     line-height: 1.35;
     background: rgba(255, 255, 255, 0.74);
+    overflow-wrap: anywhere;
   }
 
   .text-link {
@@ -1081,6 +1117,7 @@
   .robot-card {
     overflow: hidden;
     display: grid;
+    min-width: 0;
     margin: 0;
     border: 1px solid var(--fes-line);
     border-radius: 8px;
@@ -1112,6 +1149,7 @@
   .booth-item {
     display: grid;
     gap: 8px;
+    min-width: 0;
     padding: 20px;
   }
 
@@ -1141,6 +1179,7 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
+    min-width: 0;
     padding: 24px;
   }
 
@@ -1182,6 +1221,7 @@
     display: grid;
     grid-template-rows: auto 1fr;
     align-content: start;
+    min-width: 0;
     margin: 0;
     border: 1px solid var(--fes-line);
     background: white;
@@ -1215,6 +1255,7 @@
     padding: 16px 18px;
     color: var(--fes-ink);
     font-weight: 900;
+    overflow-wrap: anywhere;
     transition:
       transform 0.2s ease,
       border-color 0.2s ease,
@@ -1264,7 +1305,13 @@
     justify-self: center;
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1100px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 820px) {
     .academy-hero__shade {
       background:
         linear-gradient(90deg, rgba(17, 18, 15, 0.82), rgba(17, 18, 15, 0.42)),
@@ -1297,10 +1344,6 @@
       border-bottom: 0;
     }
 
-    .seminar-panel {
-      grid-template-columns: 1fr;
-    }
-
     .kitahara-achievement-grid {
       grid-template-columns: 1fr;
     }
@@ -1312,7 +1355,7 @@
     }
 
     .academy-hero {
-      min-height: max(560px, calc(100svh - 56px));
+      min-height: clamp(620px, calc(100svh - 56px), 760px);
     }
 
     .academy-hero__image {
@@ -1345,13 +1388,22 @@
     }
 
     .section {
-      padding-block: 64px;
+      padding-block: 56px;
     }
 
     .section-copy h2,
     .final-cta h2 {
       max-width: none;
-      font-size: 1.9rem;
+      font-size: clamp(1.65rem, 6.4vw, 1.95rem);
+    }
+
+    .section-copy {
+      gap: 12px;
+    }
+
+    .event-strip__item {
+      min-height: auto;
+      padding: 18px 14px;
     }
 
     .booth-section {
@@ -1364,8 +1416,14 @@
     }
 
     .involvement-card,
-    .seminar-panel {
+    .booth-item,
+    .seminar-panel,
+    .diversity-panel {
       padding: 18px;
+    }
+
+    .gallery-item figcaption {
+      padding: 12px 14px;
     }
 
     .final-cta {
