@@ -241,6 +241,6 @@ export const recruitContent: RecruitContent = {
     description:
       '経歴や現在の働き方、週あたりの稼働可能時間、利用しているAIツールなどを添えてお送りください。',
     buttonLabel: 'フォームから相談する',
-    href: '/contact?category=recruit',
+    href: '/contact/?category=recruit',
   },
 };

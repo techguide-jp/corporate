@@ -14,7 +14,7 @@
     <p class="text-balance">{contact.heading}</p>
     <span>{contact.description}</span>
     <ActionButton
-      href="/contact"
+      href="/contact/"
       label="お問い合わせ"
       tone="light"
       size="lg"

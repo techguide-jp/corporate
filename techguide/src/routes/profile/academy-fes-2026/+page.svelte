@@ -10,7 +10,7 @@
     title: '北原孝彦Academy Fes 2026 | ゆーちゃん参加紹介 | TechGuide',
     description:
       '北原孝彦Academy Fes 2026に関わるゆーちゃんの紹介ページ。UBM所属・アカデミー参加の背景、来場者向けアプリ開発、セミナー、ロボで遊ぶ未来体験ブースを紹介します。',
-    path: '/profile/academy-fes-2026',
+    path: '/profile/academy-fes-2026/',
     image: '/images/profile/academy-fes-2026/academy-group-standing.webp',
     imageAlt: '北原孝彦アカデミーの集合記念写真',
   };
@@ -239,7 +239,7 @@
         >
           {cta.label}
         </a>
-        <a class="academy-button academy-button--quiet" href={resolve('/profile')}
+        <a class="academy-button academy-button--quiet" href={resolve('/profile/')}
           >プロフィールへ戻る</a
         >
       </div>

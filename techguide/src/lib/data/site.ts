@@ -65,13 +65,13 @@ export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile' | 'recr
 };
 
 export const navItems: NavItem[] = [
-  { label: '支援内容', href: '/services' },
+  { label: '支援内容', href: '/services/' },
   { label: 'プロダクト', href: '/#products' },
   { label: '実績', href: '/#works' },
   { label: '会社情報', href: '/#company' },
-  { label: '代表について', href: '/profile' },
-  { label: '採用', href: '/recruit' },
-  { label: 'お問い合わせ', href: '/contact' },
+  { label: '代表について', href: '/profile/' },
+  { label: '採用', href: '/recruit/' },
+  { label: 'お問い合わせ', href: '/contact/' },
 ];
 
 export const hero: HeroContent = {
@@ -83,10 +83,10 @@ export const hero: HeroContent = {
   description:
     '中小企業や立ち上げ期のチームに向けて、IT導入、LP制作、AI活用まで実行しやすい形に整えて伴走します。',
   actions: [
-    { label: '支援内容を見る', href: '/services', tone: 'warm' },
+    { label: '支援内容を見る', href: '/services/', tone: 'warm' },
     {
       label: 'お問い合わせ',
-      href: '/contact',
+      href: '/contact/',
       tone: 'light',
       analytics: {
         eventName: 'contact_cta_click',
@@ -145,7 +145,7 @@ export const services: ServiceItem[] = [
     title: '導入前整理・IT活用支援',
     description:
       '課題整理、優先順位づけ、業務導線の整理を通じて、今の体制で無理なく始められる一歩を明確にします。',
-    href: '/services#consulting',
+    href: '/services/#consulting',
     kind: 'consulting',
     image: '/images/services/consulting-visual.webp',
     imageAlt: '導入前整理・IT活用支援',
@@ -154,7 +154,7 @@ export const services: ServiceItem[] = [
     title: '受託開発・LP/導線改善',
     description:
       '事業の目的と利用者の行動を踏まえ、伝わる構成と成果につながる導線を設計し、制作から改善まで伴走します。',
-    href: '/services#development',
+    href: '/services/#development',
     kind: 'development',
     image: '/images/services/development-visual.webp',
     imageAlt: '受託開発・LP/導線改善',
@@ -163,7 +163,7 @@ export const services: ServiceItem[] = [
     title: 'AI活用・技術教育・組織支援',
     description:
       'AIの現場活用に加え、エンジニアが事業理解を持って対話・提案できるようにする技術教育を通じて、噛み合う組織づくりを支援します。',
-    href: '/services#ai',
+    href: '/services/#ai',
     kind: 'ai',
     image: '/images/services/ai-visual.webp',
     imageAlt: 'AI活用・技術教育・組織支援',
@@ -441,7 +441,7 @@ export const profilePageContent: ProfilePageContent = {
         title: '2000人フェス',
         description:
           '北原孝彦Academy Fes 2026に、アプリ開発・ブース出展・セミナー登壇で参加予定です。',
-        href: '/profile/academy-fes-2026',
+        href: '/profile/academy-fes-2026/',
         ctaLabel: '紹介ページを見る',
       },
     ],
