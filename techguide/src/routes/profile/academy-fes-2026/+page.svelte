@@ -69,19 +69,21 @@
     },
   ];
 
-  const boothItems = [
+  const boothExperienceDirections = [
     {
-      title: 'AIロボ体験デモ',
+      title: 'AIロボに触れてみる',
       description:
-        'Reachy miniとのやりとりを通して、AIやロボットが身近な体験になる瞬間を味わえます。',
+        'Reachy miniとのやりとりを通して、AIやロボットが身近な体験になる瞬間を味わえるように準備しています。',
     },
     {
-      title: 'AI/IT活用プチ相談',
-      description: '業務や活動にAI・ITをどう使えるか、短い時間で方向性を整理します。',
+      title: '自分の仕事に置き換えて考える',
+      description:
+        'AIやITを日々の業務・活動にどう使えるか、会話の中でヒントを持ち帰れる場にしたいと考えています。',
     },
     {
-      title: 'Webサービス企画設計相談予約',
-      description: 'アイデアを試作サービスとして形にするための相談につなげます。',
+      title: 'アイデアを形にする入口をつくる',
+      description:
+        'Webサービス化や小さな自動化など、必要に応じて次の相談につながるきっかけを作ります。',
     },
   ];
 
@@ -456,8 +458,11 @@
       </figure>
     </div>
 
-    <div class="container booth-list">
-      {#each boothItems as item (item.title)}
+    <div class="container booth-list" aria-label="現時点で準備しているブース体験の方向性">
+      <p class="booth-list__note">
+        以下は現時点で準備している体験の方向性です。内容や数は、当日までに調整・追加される可能性があります。
+      </p>
+      {#each boothExperienceDirections as item (item.title)}
         <article class="booth-item">
           <h3>{item.title}</h3>
           <p>{item.description}</p>
@@ -476,7 +481,7 @@
           >
         </h2>
         <p>
-          AIロボ体験、AI/IT活用、Webサービス企画、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
+          AIロボ、AI/IT活用、Webサービス化、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
             class="text-emphasis">ブースで具体的に話せる状態</strong
           >にしておきます。
         </p>
@@ -575,7 +580,7 @@
       <p class="section-eyebrow">Join booth</p>
       <h2 id="academy-fes-cta-title">当日は、ゆーちゃんのブースで会いましょう。</h2>
       <p>
-        AIロボ体験、AI/IT活用の相談、Webサービスの企画設計に興味がある方は、まずブースへの導線からチェックしてください。
+        AIロボ、AI/IT活用、Webサービス化の可能性に興味がある方は、まずブースへの導線からチェックしてください。
       </p>
       <a
         class="academy-button academy-button--primary"
@@ -1159,6 +1164,15 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     margin-top: 22px;
+  }
+
+  .booth-list__note {
+    grid-column: 1 / -1;
+    margin: 0 0 2px;
+    color: var(--fes-muted);
+    font-size: 0.92rem;
+    font-weight: 800;
+    line-height: 1.7;
   }
 
   .booth-item {
