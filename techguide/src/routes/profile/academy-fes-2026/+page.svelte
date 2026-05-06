@@ -17,7 +17,7 @@
 
   const cta = {
     label: 'ゆーちゃんのブースを見に行く',
-    href: 'https://s.lmes.jp/landing-qr/2009291141-5wwelfTJ?uLand=dCtUnJ',
+    href: 'https://kitahara-academy.hp.peraichi.com/',
   };
 
   const preQuestionMessage = `【北原孝彦Academy Fes 2026 事前質問】
