@@ -430,7 +430,7 @@ export const profilePageContent: ProfilePageContent = {
         isAccepting: false,
         title: 'キミキミフェス〜チャレンジ〜',
         description: 'TicketCraft の「公開中のイベントと過去の制作実例」に掲載予定のイベントです。',
-        href: 'https://ticketcraft.jp/#event-showcase',
+        href: 'https://ticketcraft.jp/r/REFJM72EV5QZT',
         ctaLabel: '公開ページを見る',
       },
       {
