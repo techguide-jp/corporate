@@ -426,12 +426,12 @@ export const profilePageContent: ProfilePageContent = {
       {
         date: '2026.05.31',
         dateIso: '2026-05-31',
-        status: '公開予定',
-        isAccepting: false,
+        status: '申込受付中',
+        isAccepting: true,
         title: 'キミキミフェス〜チャレンジ〜',
         description: 'TicketCraft の「公開中のイベントと過去の制作実例」に掲載予定のイベントです。',
         href: 'https://ticketcraft.jp/r/REFJM72EV5QZT',
-        ctaLabel: '公開ページを見る',
+        ctaLabel: '申込ページを見る',
       },
       {
         date: '2026.06.04',
