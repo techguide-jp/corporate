@@ -9,7 +9,7 @@
   const pageSeo = {
     title: '北原孝彦Academy Fes 2026 | ゆーちゃん参加紹介 | TechGuide',
     description:
-      '北原孝彦Academy Fes 2026に関わるゆーちゃんの紹介ページ。UBM所属・アカデミー参加の背景、来場者向けアプリ開発、セミナー、ロボで遊ぶ未来体験ブースを紹介します。',
+      '北原孝彦Academy Fes 2026に関わるゆーちゃんの紹介ページ。UBM所属・アカデミー参加の背景、来場者向けアプリ開発、セミナー、AIロボで遊ぶ未来体験ブースを紹介します。',
     path: '/profile/academy-fes-2026/',
     image: '/images/profile/academy-fes-2026/academy-group-standing.webp',
     imageAlt: '北原孝彦アカデミーの集合記念写真',
@@ -57,9 +57,9 @@
     },
     {
       label: 'Booth',
-      title: 'ロボで遊ぶ未来体験',
+      title: 'AIロボで遊ぶ未来体験',
       description:
-        'Reachy miniを置いて、AIロボとのやりとりを入り口に、楽しいだけで終わらない未来の可能性に触れられるブースを出展します。',
+        'スマホが表情を持ち、会話し、反応するAIロボとのやりとりを入り口に、楽しいだけで終わらない未来の可能性に触れられるブースを出展します。',
     },
     {
       label: 'Seminar',
@@ -71,14 +71,14 @@
 
   const boothExperienceDirections = [
     {
-      title: 'AIロボに触れてみる',
+      title: 'AIロボに話しかけてみる',
       description:
-        'Reachy miniとのやりとりを通して、AIやロボットが身近な体験になる瞬間を味わえるように準備しています。',
+        'AIロボとの会話や表情の変化を通して、AIやロボットが身近な相棒になる感覚を味わえるように準備しています。',
     },
     {
       title: '自分の仕事に置き換えて考える',
       description:
-        'AIやITを日々の業務・活動にどう使えるか、会話の中でヒントを持ち帰れる場にしたいと考えています。',
+        '身近なAI体験をきっかけに、AIやITを日々の業務・活動にどう使えるか、会話の中でヒントを持ち帰れる場にしたいと考えています。',
     },
     {
       title: 'アイデアを形にする入口をつくる',
@@ -96,10 +96,16 @@
     '外注しやすい形に仕事を分解する考え方',
   ];
 
+  const looiProductLink = {
+    label: '当日使うAIロボの紹介ページ',
+    href: 'https://www.makuake.com/project/looirobot/',
+  };
+
   const officialLinks = [
     { label: 'アカデミーとは', href: 'https://kitaharatakahiko.jp/academy/' },
     { label: 'UBM公式ページ', href: 'https://ubm.school/lp/index.html' },
     { label: '北原孝彦さんのYouTube', href: 'https://www.youtube.com/@kitahara64' },
+    looiProductLink,
     { label: '会場公式サイト', href: 'https://www.trc-event.jp/hall/' },
   ];
 
@@ -435,10 +441,10 @@
     <div class="container booth-section__inner">
       <div class="section-copy">
         <p class="section-eyebrow">Booth</p>
-        <h2>ロボで遊ぶ未来体験</h2>
+        <h2>AIロボで遊ぶ未来体験</h2>
         <p>
-          ただロボットを見るだけではなく、AIが現実の動きや表情を持ったときに何が起きるのかを感じられる場所にします。<strong
-            class="text-emphasis">楽しさを入口</strong
+          ただロボットを見るだけではなく、スマホに表情やリアクションが生まれ、会話の相手になると何が起きるのかを感じられる場所にします。<strong
+            class="text-emphasis">AIロボとの楽しさを入口</strong
           >に、<strong class="text-emphasis">これからの仕事や暮らしの可能性</strong
           >に触れてもらうブースです。
         </p>
@@ -446,12 +452,12 @@
 
       <figure class="robot-card">
         <img
-          src={asset('/images/profile/academy-fes-2026/reachy-mini.webp')}
-          alt="Reachy miniのイメージ"
+          src={asset('/images/profile/academy-fes-2026/looi-robot.webp')}
+          alt="AIロボのイメージ"
           loading="eager"
           decoding="async"
         />
-        <figcaption>当日はReachy miniを置く予定です。</figcaption>
+        <figcaption>当日はAIロボを置く予定です。</figcaption>
       </figure>
     </div>
 
@@ -478,7 +484,7 @@
           >
         </h2>
         <p>
-          AIロボ、AI/IT活用、Webサービス化、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
+          AIロボ体験、AI/IT活用、Webサービス化、セミナー内容など、気になっていることがあれば事前に送ってください。当日はその内容をきっかけに、<strong
             class="text-emphasis">ブースで具体的に話せる状態</strong
           >にしておきます。
         </p>
