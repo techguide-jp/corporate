@@ -63,9 +63,9 @@
     },
     {
       label: 'Seminar',
-      title: 'AI・目標達成・自動化のテーマで準備中',
+      title: '小さな仕組み化と外注化のセミナーに登壇',
       description:
-        'ChatGPTの使い方、やる気に頼らない行動設計、1人ビジネスでも始められる小さなシステム化など、持ち帰ってすぐ試せる内容を検討しています。',
+        '「まだ自分で回せる」と抱え込みすぎる前に、忙しくなる前から整えたい仕組み化と外注化について話します。',
     },
   ];
 
@@ -87,16 +87,13 @@
     },
   ];
 
-  const seminarThemes = [
-    'AIを使いこなす人・使われる人の違い',
-    'やる気に頼らない目標達成法',
-    'あなたの仕事は、どこまで自動化できるのか？',
-  ];
+  const seminarTitle =
+    '「まだ自分で回せる」が一番危ない ◆◆忙しくなる前に始める、小さな仕組み化と外注化◆◆';
 
   const seminarTakeaways = [
-    '目的から逆算してChatGPTへの指示を設計する方法',
-    'やる気に頼らず、行動が続く環境をつくる考え方',
-    '業務フローを可視化して、自動化できるポイントを見つける視点',
+    '自分で抱え続ける仕事と、仕組みに任せる仕事を切り分ける視点',
+    '忙しくなる前に、日々の業務を小さく整える手順',
+    '外注しやすい形に仕事を分解する考え方',
   ];
 
   const officialLinks = [
@@ -503,24 +500,20 @@
       <div class="section-copy">
         <p class="section-eyebrow">Seminar</p>
         <h2>
-          <span class="heading-keep">持ち帰ってすぐ試せる</span>
-          <span class="heading-keep">テーマを検討中です。</span>
+          <span class="heading-keep">忙しくなる前に始める</span>
+          <span class="heading-keep">小さな仕組み化と外注化。</span>
         </h2>
         <p>
-          正式テーマは調整中です。AI、目標達成、自動化を軸に、聞いて終わりではなく、<strong
-            class="text-emphasis">自分の仕事や行動に落とし込める内容</strong
-          >として準備しています。
+          「まだ自分で回せる」と感じている時期こそ、仕事を抱え込みすぎないための準備を始めるタイミングです。聞いて終わりではなく、<strong
+            class="text-emphasis">自分の業務に落とし込める内容</strong
+          >として届けます。
         </p>
       </div>
 
       <div class="seminar-panel">
         <div>
-          <h3>テーマ候補</h3>
-          <ul class="plain-list">
-            {#each seminarThemes as theme (theme)}
-              <li>{theme}</li>
-            {/each}
-          </ul>
+          <h3>セミナータイトル</h3>
+          <p class="seminar-title">{seminarTitle}</p>
         </div>
         <div>
           <h3>持ち帰れること</h3>
@@ -1210,6 +1203,15 @@
     gap: 24px;
     min-width: 0;
     padding: 24px;
+  }
+
+  .seminar-title {
+    margin: 14px 0 0;
+    color: var(--fes-ink);
+    font-size: 1.12rem;
+    font-weight: 900;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
   }
 
   .plain-list {
