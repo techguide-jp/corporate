@@ -372,7 +372,7 @@
     </div>
   </section>
 
-  <section class="section section--tight">
+  <section id="profile-events" class="section section--tight">
     <div class="container">
       <SectionHeading
         eyebrow="Events"
