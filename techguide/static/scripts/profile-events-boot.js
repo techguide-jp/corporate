@@ -15,11 +15,14 @@
   document.documentElement.dataset.profileTodayIso = todayTokyoIso;
 
   const cards = document.querySelectorAll('[data-profile-event-card]');
+  const eventCards = [];
   const statusClasses = [
     'profile-events__status--accepting',
     'profile-events__status--upcoming',
     'profile-events__status--ended',
   ];
+
+  let index = 0;
 
   for (const card of cards) {
     const dateIso = card.getAttribute('data-event-date-iso') ?? '';
@@ -30,6 +33,9 @@
     const isAccepting = card.getAttribute('data-event-accepting') === 'true';
     const isEnded = todayTokyoIso !== '' && dateIso < todayTokyoIso;
     const statusTone = isEnded ? 'ended' : isAccepting ? 'accepting' : 'upcoming';
+
+    eventCards.push({ card, isEnded, index });
+    index += 1;
 
     const status = card.querySelector('[data-event-status]');
     const meta = card.querySelector('[data-event-meta]');
@@ -61,5 +67,19 @@
         card.removeAttribute('rel');
       }
     }
+  }
+
+  const container = document.querySelector('.profile-events');
+
+  if (container instanceof HTMLElement) {
+    eventCards
+      .sort((a, b) => {
+        if (a.isEnded !== b.isEnded) {
+          return a.isEnded ? 1 : -1;
+        }
+
+        return a.index - b.index;
+      })
+      .forEach(({ card }) => container.append(card));
   }
 })();

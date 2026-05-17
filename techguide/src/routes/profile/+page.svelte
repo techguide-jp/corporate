@@ -80,6 +80,25 @@
     };
   }
 
+  function getSortedEventViews(
+    items: ProfileEventItem[],
+    todayTokyoIso: string,
+  ): ProfileEventView[] {
+    return items
+      .map((item, index) => ({
+        item: getEventView(item, todayTokyoIso),
+        index,
+      }))
+      .sort((a, b) => {
+        if (a.item.isEnded !== b.item.isEnded) {
+          return a.item.isEnded ? 1 : -1;
+        }
+
+        return a.index - b.index;
+      })
+      .map(({ item }) => item);
+  }
+
   const profileStructuredData = [
     buildWebPageJsonLd({
       name: pageSeo.profile.title,
@@ -105,6 +124,7 @@
   // Static HTML uses the prerender/build date so event links remain usable without JS.
   // Browsers then upgrade this with the boot script's current Tokyo date before hydration.
   const todayTokyoIso = getInitialTodayTokyoIso();
+  const profileEventViews = getSortedEventViews(profilePageContent.events.items, todayTokyoIso);
 </script>
 
 <svelte:head>
@@ -381,19 +401,18 @@
       />
 
       <div class="profile-events">
-        {#each profilePageContent.events.items as rawItem (rawItem.dateIso + rawItem.title)}
-          {@const item = getEventView(rawItem, todayTokyoIso)}
+        {#each profileEventViews as item (item.dateIso + item.title)}
           {#if item.isInteractive}
             {#if isInternalHref(item.href)}
               <a
                 class="profile-events__card"
                 data-profile-event-card
-                data-event-date-iso={rawItem.dateIso}
+                data-event-date-iso={item.dateIso}
                 data-event-href={resolve(...getResolveArgs(item.href))}
                 data-event-external={false}
-                data-event-accepting={rawItem.isAccepting}
-                data-event-status-label={rawItem.status}
-                data-event-cta-label={rawItem.ctaLabel}
+                data-event-accepting={item.isAccepting}
+                data-event-status-label={item.status}
+                data-event-cta-label={item.ctaLabel}
                 href={resolve(...getResolveArgs(item.href))}
                 onclick={() => handleProfileEventClick(item)}
               >
@@ -403,12 +422,12 @@
               <a
                 class="profile-events__card"
                 data-profile-event-card
-                data-event-date-iso={rawItem.dateIso}
-                data-event-href={rawItem.href}
+                data-event-date-iso={item.dateIso}
+                data-event-href={item.href}
                 data-event-external={true}
-                data-event-accepting={rawItem.isAccepting}
-                data-event-status-label={rawItem.status}
-                data-event-cta-label={rawItem.ctaLabel}
+                data-event-accepting={item.isAccepting}
+                data-event-status-label={item.status}
+                data-event-cta-label={item.ctaLabel}
                 href={item.href}
                 target="_blank"
                 rel="external noreferrer"
@@ -421,12 +440,12 @@
             <article
               class={`profile-events__card${item.isEnded ? ' profile-events__card--ended' : ''}`}
               data-profile-event-card
-              data-event-date-iso={rawItem.dateIso}
-              data-event-href={resolveLinkHref(rawItem.href)}
-              data-event-external={!isInternalHref(rawItem.href)}
-              data-event-accepting={rawItem.isAccepting}
-              data-event-status-label={rawItem.status}
-              data-event-cta-label={rawItem.ctaLabel}
+              data-event-date-iso={item.dateIso}
+              data-event-href={resolveLinkHref(item.href)}
+              data-event-external={!isInternalHref(item.href)}
+              data-event-accepting={item.isAccepting}
+              data-event-status-label={item.status}
+              data-event-cta-label={item.ctaLabel}
             >
               {@render profileEventCardContent(item)}
             </article>
