@@ -429,7 +429,8 @@ export const profilePageContent: ProfilePageContent = {
         status: '申込受付中',
         isAccepting: true,
         title: 'キミキミフェス〜チャレンジ〜',
-        description: 'TicketCraft の「公開中のイベントと過去の制作実例」に掲載予定のイベントです。',
+        description:
+          '一人ひとりのチャレンジを応援するフェスです。新しい出会いや体験を通じて、次の一歩を踏み出すきっかけをつくります。',
         href: 'https://ticketcraft.jp/r/REFJM72EV5QZT',
         ctaLabel: '申込ページを見る',
       },
