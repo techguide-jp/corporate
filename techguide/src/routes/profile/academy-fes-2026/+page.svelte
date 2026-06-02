@@ -46,6 +46,7 @@
     { label: '会場', value: '東京流通センター 第一展示場' },
     { label: 'テーマ', value: 'Enrich the world 〜世界を豊かに〜' },
     { label: '規模', value: '100ブース・100セミナー' },
+    { label: 'ゆーちゃん登壇', value: '11:00開始' },
   ];
 
   const involvementItems = [
@@ -89,6 +90,7 @@
 
   const seminarTitle =
     '「まだ自分で回せる」が一番危ない ◆◆忙しくなる前に始める、小さな仕組み化と外注化◆◆';
+  const seminarStartTime = '11:00開始';
 
   const seminarTakeaways = [
     '自分で抱え続ける仕事と、仕組みに任せる仕事を切り分ける視点',
@@ -522,6 +524,10 @@
           <p class="seminar-title">{seminarTitle}</p>
         </div>
         <div>
+          <h3>実施時間</h3>
+          <p class="seminar-time">{seminarStartTime}</p>
+        </div>
+        <div>
           <h3>持ち帰れること</h3>
           <ul class="plain-list">
             {#each seminarTakeaways as takeaway (takeaway)}
@@ -766,7 +772,7 @@
 
   .event-strip__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .event-strip__item {
@@ -1205,12 +1211,13 @@
 
   .seminar-panel {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
     min-width: 0;
     padding: 24px;
   }
 
+  .seminar-time,
   .seminar-title {
     margin: 14px 0 0;
     color: var(--fes-ink);
@@ -1356,6 +1363,7 @@
     }
 
     .event-strip__grid,
+    .seminar-panel,
     .involvement-grid,
     .booth-list,
     .gallery-grid,
