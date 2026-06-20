@@ -189,6 +189,14 @@ export const productItems: ShowcaseItem[] = [
 
 export const workItems: ShowcaseItem[] = [
   {
+    title: '北原孝彦アカデミーフェス 2026',
+    description:
+      '100ブース・100セミナーが集まる大型イベントのサイト。来場者・出展者導線、会場情報、当日の回遊導線を整理しました。',
+    image: '/images/showcase/academy-fes-2026-hero.webp',
+    href: 'https://fes.kitaharatakahiko-academy.com/',
+    ctaLabel: 'サイトを見る',
+  },
+  {
     title: 'AROMINE',
     description: 'セルフコンディショニングブランドの講座・申込LP',
     image: '/images/showcase/aromine-hero.webp',
@@ -451,6 +459,14 @@ export const profilePageContent: ProfilePageContent = {
   portfolioSubtitle:
     'LP、コミュニティ運営、イベント導線、試作開発まで、実際に公開している制作物を中心に掲載しています。',
   portfolioItems: [
+    {
+      title: '北原孝彦アカデミーフェス 2026',
+      description:
+        '100ブース・100セミナーが集まる大型イベントのサイト。来場者・出展者導線、会場情報、当日の回遊導線を整理しました。',
+      image: '/images/showcase/academy-fes-2026-hero.webp',
+      href: 'https://fes.kitaharatakahiko-academy.com/',
+      ctaLabel: 'サイトを見る',
+    },
     {
       title: '守成クラブ品川グループHP',
       description:
