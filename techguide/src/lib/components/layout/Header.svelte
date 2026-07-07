@@ -3,7 +3,7 @@
   import { page } from '$app/state';
   import { untrack } from 'svelte';
   import type { NavItem } from '$lib/types/content';
-  import { getResolveArgs } from '$lib/utils/paths';
+  import { getResolveArgs, isNavigationItemActive } from '$lib/utils/paths';
 
   interface Props {
     items: NavItem[];
@@ -16,16 +16,12 @@
     menuOpen = false;
   }
 
-  function normalizePathname(pathname: string) {
-    return pathname === '/' ? pathname : pathname.replace(/\/$/, '');
-  }
-
   function isActive(href: string) {
-    if (href.startsWith('/#')) {
-      return page.url.pathname === '/' && page.url.hash === href.slice(1);
-    }
-
-    return normalizePathname(page.url.pathname) === normalizePathname(href);
+    return isNavigationItemActive({
+      currentHash: page.url.hash,
+      currentPathname: page.url.pathname,
+      href,
+    });
   }
 
   function ariaCurrentValue(href: string) {
