@@ -12,18 +12,15 @@
   }
 
   let { cta, slug, category, variant = 'panel' }: Props = $props();
+  const ctaHref = $derived(cta.href);
 
   const destinationHost = $derived.by(() => {
-    if (isInternalHref(cta.href)) {
+    if (isInternalHref(ctaHref)) {
       return undefined;
     }
 
-    return new URL(cta.href).hostname;
+    return new URL(ctaHref).hostname;
   });
-
-  const resolvedHref = $derived(
-    isInternalHref(cta.href) ? resolve(...getResolveArgs(cta.href)) : cta.href,
-  );
 
   function handleClick() {
     trackEvent(cta.eventName, {
@@ -43,15 +40,27 @@
     <p>{cta.description}</p>
   {/if}
 
-  <a
-    class={`article-cta__button article-cta__button--${cta.tone ?? 'warm'}`}
-    href={resolvedHref}
-    target={cta.isExternal ? '_blank' : undefined}
-    rel={cta.isExternal ? 'external noreferrer' : undefined}
-    onclick={handleClick}
-  >
-    {cta.label}
-  </a>
+  {#if isInternalHref(ctaHref)}
+    <a
+      class={`article-cta__button article-cta__button--${cta.tone ?? 'warm'}`}
+      href={resolve(...getResolveArgs(ctaHref))}
+      onclick={handleClick}
+    >
+      {cta.label}
+    </a>
+  {:else}
+    <!-- eslint-disable svelte/no-navigation-without-resolve -->
+    <a
+      class={`article-cta__button article-cta__button--${cta.tone ?? 'warm'}`}
+      href={new URL(ctaHref).href}
+      target={cta.isExternal ? '_blank' : undefined}
+      rel={cta.isExternal ? 'external noreferrer' : undefined}
+      onclick={handleClick}
+    >
+      {cta.label}
+    </a>
+    <!-- eslint-enable svelte/no-navigation-without-resolve -->
+  {/if}
 </div>
 
 <style>

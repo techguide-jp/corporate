@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import type { AnalyticsMetadata } from '$lib/analytics';
   import type { Article } from '$lib/articles/types';
+  import { getResolveArgs, type InternalHref } from '$lib/utils/paths';
   import CategoryBadge from './CategoryBadge.svelte';
 
   interface Props {
@@ -11,7 +13,7 @@
   }
 
   let { article, trackingEventName = 'article_card_click', placement = 'index' }: Props = $props();
-  const articleHref = $derived(`/articles/${article.slug}/`);
+  const articleHref = $derived(`/articles/${article.slug}/` as InternalHref);
   const thumbnail = $derived(article.thumbnail ?? {
     src: article.seo.ogImage,
     alt: article.seo.imageAlt,
@@ -28,7 +30,7 @@
 </script>
 
 <article class="article-card">
-  <a class="article-card__link-wrapper" href={articleHref} onclick={handleClick}>
+  <a class="article-card__link-wrapper" href={resolve(...getResolveArgs(articleHref))} onclick={handleClick}>
     {#if thumbnail.src && thumbnail.alt}
       <img class="article-card__thumbnail" src={thumbnail.src} alt={thumbnail.alt} loading="lazy" />
     {/if}

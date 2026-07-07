@@ -10,7 +10,7 @@
 </script>
 
 <div class="article-content">
-  {#each article.blocks as block}
+  {#each article.blocks as block, index (index)}
     {#if block.type === 'heading'}
       {#if block.level === 3}
         <h3 id={block.id}>{block.text}</h3>
