@@ -35,7 +35,7 @@
 
     <div class="article-card__overlay">
       <div class="article-card__meta">
-        <CategoryBadge category={article.category} />
+        <CategoryBadge category={article.category} variant="overlay" />
         <time datetime={article.publishedAt}>{article.publishedAt}</time>
         {#if article.readingTimeMinutes}
           <span>{article.readingTimeMinutes}分</span>
@@ -109,8 +109,8 @@
     min-height: inherit;
     padding: clamp(20px, 3vw, 28px);
     background:
-      linear-gradient(180deg, rgba(34, 28, 20, 0.14) 0%, rgba(34, 28, 20, 0.42) 45%, rgba(34, 28, 20, 0.82) 100%),
-      linear-gradient(90deg, rgba(34, 28, 20, 0.52) 0%, rgba(34, 28, 20, 0.14) 55%, rgba(34, 28, 20, 0.42) 100%);
+      linear-gradient(180deg, rgba(27, 22, 16, 0.18) 0%, rgba(27, 22, 16, 0.54) 44%, rgba(27, 22, 16, 0.88) 100%),
+      linear-gradient(90deg, rgba(27, 22, 16, 0.62) 0%, rgba(27, 22, 16, 0.18) 55%, rgba(27, 22, 16, 0.5) 100%);
   }
 
   .article-card__meta {
@@ -152,12 +152,12 @@
   .article-card__tags span {
     min-height: 28px;
     padding: 4px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.56);
     border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.84);
+    background: rgba(255, 255, 255, 0.86);
+    color: rgba(48, 35, 21, 0.96);
     font-size: 0.78rem;
-    font-weight: 700;
+    font-weight: 800;
     backdrop-filter: blur(8px);
   }
 

@@ -4,12 +4,13 @@
 
   interface Props {
     category: ArticleCategory;
+    variant?: 'default' | 'overlay';
   }
 
-  let { category }: Props = $props();
+  let { category, variant = 'default' }: Props = $props();
 </script>
 
-<span class="category-badge">{getArticleCategoryLabel(category)}</span>
+<span class={`category-badge category-badge--${variant}`}>{getArticleCategoryLabel(category)}</span>
 
 <style>
   .category-badge {
@@ -24,5 +25,12 @@
     font-size: 0.78rem;
     font-weight: 800;
     line-height: 1.2;
+  }
+
+  .category-badge--overlay {
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    background: rgba(255, 255, 255, 0.9);
+    color: rgba(50, 36, 20, 0.98);
+    box-shadow: 0 8px 18px rgba(23, 18, 12, 0.18);
   }
 </style>

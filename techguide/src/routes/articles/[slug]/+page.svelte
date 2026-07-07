@@ -73,30 +73,48 @@
 <main>
   <article class="article-detail">
     <div class="container article-detail__container">
-      <header class="article-detail__header">
-        <div class="article-detail__meta">
-          <CategoryBadge category={article.category} />
-          <span>{categoryLabel}</span>
-          <time datetime={article.publishedAt}>{article.publishedAt}</time>
-          {#if article.readingTimeMinutes}
-            <span>{article.readingTimeMinutes}分</span>
-          {/if}
-        </div>
-
-        <h1>{article.title}</h1>
-        <p>{article.lead}</p>
-
-        <div class="article-detail__tags" aria-label="タグ">
-          {#each article.tags as tag (tag)}
-            <span>{tag}</span>
-          {/each}
-        </div>
-      </header>
-
       {#if article.thumbnail}
-        <figure class="article-detail__thumbnail">
+        <header class="article-detail__hero">
           <img src={article.thumbnail.src} alt={article.thumbnail.alt} />
-        </figure>
+          <div class="article-detail__hero-overlay">
+            <div class="article-detail__meta article-detail__meta--overlay">
+              <CategoryBadge category={article.category} variant="overlay" />
+              <time datetime={article.publishedAt}>{article.publishedAt}</time>
+              {#if article.readingTimeMinutes}
+                <span>{article.readingTimeMinutes}分</span>
+              {/if}
+            </div>
+
+            <h1>{article.title}</h1>
+            <p>{article.lead}</p>
+
+            <div class="article-detail__tags article-detail__tags--overlay" aria-label="タグ">
+              {#each article.tags as tag (tag)}
+                <span>{tag}</span>
+              {/each}
+            </div>
+          </div>
+        </header>
+      {:else}
+        <header class="article-detail__header">
+          <div class="article-detail__meta">
+            <CategoryBadge category={article.category} />
+            <span>{categoryLabel}</span>
+            <time datetime={article.publishedAt}>{article.publishedAt}</time>
+            {#if article.readingTimeMinutes}
+              <span>{article.readingTimeMinutes}分</span>
+            {/if}
+          </div>
+
+          <h1>{article.title}</h1>
+          <p>{article.lead}</p>
+
+          <div class="article-detail__tags" aria-label="タグ">
+            {#each article.tags as tag (tag)}
+              <span>{tag}</span>
+            {/each}
+          </div>
+        </header>
       {/if}
 
       <ArticleContent {article} />
@@ -153,7 +171,7 @@
     font-family: var(--font-heading);
     font-size: clamp(2rem, 4.2vw, 3.4rem);
     line-height: 1.14;
-    letter-spacing: -0.04em;
+    letter-spacing: 0;
   }
 
   .article-detail__header p {
@@ -178,18 +196,60 @@
     font-weight: 700;
   }
 
-  .article-detail__thumbnail {
+  .article-detail__hero {
+    display: grid;
+    position: relative;
     overflow: hidden;
     margin: 0 0 clamp(34px, 5vw, 52px);
     border-radius: var(--radius-card);
+    background: rgba(76, 55, 31, 0.88);
     box-shadow: var(--shadow-soft);
   }
 
-  .article-detail__thumbnail img {
+  .article-detail__hero img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     object-fit: cover;
     background: rgba(250, 246, 236, 0.9);
+  }
+
+  .article-detail__hero-overlay {
+    display: grid;
+    position: relative;
+    gap: 18px;
+    align-content: end;
+    min-height: clamp(480px, 56vw, 640px);
+    padding: clamp(24px, 5vw, 54px);
+    background:
+      linear-gradient(180deg, rgba(27, 22, 16, 0.18) 0%, rgba(27, 22, 16, 0.5) 42%, rgba(27, 22, 16, 0.9) 100%),
+      linear-gradient(90deg, rgba(27, 22, 16, 0.7) 0%, rgba(27, 22, 16, 0.22) 60%, rgba(27, 22, 16, 0.52) 100%);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .article-detail__meta--overlay {
+    color: rgba(255, 255, 255, 0.84);
+  }
+
+  .article-detail__hero-overlay h1 {
+    max-width: 780px;
+    color: rgba(255, 255, 255, 0.98);
+    text-shadow: 0 2px 20px rgba(15, 12, 8, 0.3);
+  }
+
+  .article-detail__hero-overlay p {
+    max-width: 720px;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: clamp(1.02rem, 1.5vw, 1.16rem);
+  }
+
+  .article-detail__tags--overlay span {
+    border-color: rgba(255, 255, 255, 0.56);
+    background: rgba(255, 255, 255, 0.86);
+    color: rgba(48, 35, 21, 0.96);
+    font-weight: 800;
+    backdrop-filter: blur(8px);
   }
 
   .article-detail__ctas {
@@ -197,5 +257,16 @@
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 18px;
     margin-top: clamp(38px, 6vw, 58px);
+  }
+
+  @media (max-width: 560px) {
+    .article-detail__hero-overlay {
+      min-height: 560px;
+      padding: 22px;
+    }
+
+    .article-detail__hero-overlay h1 {
+      font-size: 1.82rem;
+    }
   }
 </style>
