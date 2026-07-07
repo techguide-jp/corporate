@@ -10,10 +10,17 @@ type GtagParams = Record<string, string | number | boolean | undefined>;
 
 export interface AnalyticsMetadata {
   eventName:
+    | 'article_card_click'
+    | 'article_category_filter_click'
+    | 'article_cta_click'
+    | 'article_detail_view'
+    | 'article_list_view'
+    | 'article_related_click'
     | 'contact_cta_click'
     | 'contact_page_view'
     | 'contact_form_fallback_click'
-    | 'outbound_link_click';
+    | 'outbound_link_click'
+    | 'ready_mock_outbound_click';
   params?: GtagParams;
 }
 

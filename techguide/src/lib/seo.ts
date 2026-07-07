@@ -14,6 +14,15 @@ interface WebPageInput {
   type?: 'WebPage' | 'CollectionPage' | 'ContactPage';
 }
 
+interface ArticleInput {
+  headline: string;
+  description: string;
+  path: string;
+  publishedAt: string;
+  updatedAt?: string;
+  image?: string;
+}
+
 function normalizePath(path: string) {
   if (!path || path === '/') {
     return '/';
@@ -162,5 +171,41 @@ export function buildBreadcrumbJsonLd(items: BreadcrumbItem[]): JsonLdObject {
       name: item.name,
       item: buildAbsoluteUrl(item.path),
     })),
+  };
+}
+
+export function buildArticleJsonLd({
+  headline,
+  description,
+  path,
+  publishedAt,
+  updatedAt,
+  image = siteMetadata.defaultOgImage,
+}: ArticleInput): JsonLdObject {
+  const url = buildAbsoluteUrl(path);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline,
+    description,
+    url,
+    inLanguage: siteMetadata.language,
+    datePublished: publishedAt,
+    dateModified: updatedAt ?? publishedAt,
+    image: buildAbsoluteUrl(image),
+    author: {
+      '@id': `${buildAbsoluteUrl('/')}#organization`,
+    },
+    publisher: {
+      '@id': `${buildAbsoluteUrl('/')}#organization`,
+    },
+    isPartOf: {
+      '@id': `${buildAbsoluteUrl('/')}#website`,
+    },
+    mainEntityOfPage: {
+      '@id': `${url}#webpage`,
+    },
   };
 }

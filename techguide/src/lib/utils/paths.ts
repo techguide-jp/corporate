@@ -13,3 +13,30 @@ export function getResolveArgs(href: InternalHref): ResolveArgs {
 export function isInternalHref(href: string): href is InternalHref {
   return href.startsWith('/');
 }
+
+export function normalizePathname(pathname: string) {
+  const path = pathname.split(/[?#]/)[0] || '/';
+
+  return path === '/' ? path : path.replace(/\/+$/, '');
+}
+
+export function isNavigationItemActive({
+  currentHash,
+  currentPathname,
+  href,
+}: {
+  currentHash: string;
+  currentPathname: string;
+  href: string;
+}) {
+  if (href.startsWith('/#')) {
+    return currentPathname === '/' && currentHash === href.slice(1);
+  }
+
+  const currentPath = normalizePathname(currentPathname);
+  const targetPath = normalizePathname(href);
+
+  return (
+    currentPath === targetPath || (targetPath !== '/' && currentPath.startsWith(`${targetPath}/`))
+  );
+}
