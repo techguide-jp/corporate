@@ -14,6 +14,10 @@ export const articles: readonly Article[] = [
     status: 'published',
     publishedAt: '2026-07-08',
     readingTimeMinutes: 6,
+    thumbnail: {
+      src: '/images/articles/why-we-start-with-planning.webp',
+      alt: '作る前の整理をテーマにしたワイヤーフレームと付箋の打ち合わせ風景',
+    },
     lead: 'TechGuideでは、相談を受けたときにすぐ「何を作るか」だけを決めにいくことはしません。まず、何を解決したいのか、誰が使うのか、どの状態になれば前進と言えるのかを一緒に整理します。',
     blocks: [
       {
@@ -142,8 +146,8 @@ export const articles: readonly Article[] = [
       title: 'TechGuideが「作る前の整理」から支援する理由 | TechGuide',
       description:
         'TechGuideがいきなり開発に入らず、目的・利用者・運用・判断基準の整理から支援する理由を紹介します。',
-      ogImage: '/images/services/consulting-visual.webp',
-      imageAlt: '導入前整理の打ち合わせイメージ',
+      ogImage: '/images/articles/why-we-start-with-planning.webp',
+      imageAlt: '作る前の整理をテーマにしたワイヤーフレームと付箋の打ち合わせ風景',
     },
   },
 ];

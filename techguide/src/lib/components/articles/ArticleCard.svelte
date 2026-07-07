@@ -12,6 +12,10 @@
 
   let { article, trackingEventName = 'article_card_click', placement = 'index' }: Props = $props();
   const articleHref = $derived(`/articles/${article.slug}/`);
+  const thumbnail = $derived(article.thumbnail ?? {
+    src: article.seo.ogImage,
+    alt: article.seo.imageAlt,
+  });
 
   function handleClick() {
     trackEvent(trackingEventName, {
@@ -24,40 +28,75 @@
 </script>
 
 <article class="article-card">
-  <div class="article-card__meta">
-    <CategoryBadge category={article.category} />
-    <time datetime={article.publishedAt}>{article.publishedAt}</time>
-    {#if article.readingTimeMinutes}
-      <span>{article.readingTimeMinutes}分</span>
+  <a class="article-card__link-wrapper" href={articleHref} onclick={handleClick}>
+    {#if thumbnail.src && thumbnail.alt}
+      <img class="article-card__thumbnail" src={thumbnail.src} alt={thumbnail.alt} loading="lazy" />
     {/if}
-  </div>
 
-  <div class="article-card__body">
-    <h2>
-      <a href={articleHref} onclick={handleClick}>{article.title}</a>
-    </h2>
-    <p>{article.description}</p>
-  </div>
+    <div class="article-card__content">
+      <div class="article-card__meta">
+        <CategoryBadge category={article.category} />
+        <time datetime={article.publishedAt}>{article.publishedAt}</time>
+        {#if article.readingTimeMinutes}
+          <span>{article.readingTimeMinutes}分</span>
+        {/if}
+      </div>
 
-  <div class="article-card__tags" aria-label="タグ">
-    {#each article.tags as tag (tag)}
-      <span>{tag}</span>
-    {/each}
-  </div>
+      <div class="article-card__body">
+        <h2>{article.title}</h2>
+        <p>{article.description}</p>
+      </div>
 
-  <a class="article-card__link" href={articleHref} onclick={handleClick}>記事を読む</a>
+      <div class="article-card__tags" aria-label="タグ">
+        {#each article.tags as tag (tag)}
+          <span>{tag}</span>
+        {/each}
+      </div>
+
+      <span class="article-card__read-more">記事を読む</span>
+    </div>
+  </a>
 </article>
 
 <style>
   .article-card {
-    display: grid;
-    gap: 18px;
     height: 100%;
-    padding: clamp(22px, 3vw, 30px);
+  }
+
+  .article-card__link-wrapper {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    overflow: hidden;
     border: 1px solid rgba(117, 92, 56, 0.14);
     border-radius: var(--radius-card);
     background: rgba(255, 255, 255, 0.94);
     box-shadow: var(--shadow-soft);
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .article-card__link-wrapper:hover {
+    border-color: rgba(198, 146, 64, 0.34);
+    box-shadow: 0 24px 48px rgba(101, 72, 31, 0.14);
+    transform: translateY(-2px);
+  }
+
+  .article-card__thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(250, 246, 236, 0.9);
+  }
+
+  .article-card__content {
+    display: grid;
+    gap: 18px;
+    padding: clamp(20px, 3vw, 28px);
   }
 
   .article-card__meta {
@@ -82,7 +121,7 @@
     letter-spacing: -0.03em;
   }
 
-  h2 a:hover {
+  .article-card__link-wrapper:hover h2 {
     color: var(--color-primary-deep);
   }
 
@@ -107,7 +146,7 @@
     font-weight: 700;
   }
 
-  .article-card__link {
+  .article-card__read-more {
     align-self: end;
     width: fit-content;
     color: rgba(135, 99, 45, 0.95);

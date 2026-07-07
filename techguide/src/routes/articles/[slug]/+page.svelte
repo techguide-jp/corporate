@@ -93,6 +93,12 @@
         </div>
       </header>
 
+      {#if article.thumbnail}
+        <figure class="article-detail__thumbnail">
+          <img src={article.thumbnail.src} alt={article.thumbnail.alt} />
+        </figure>
+      {/if}
+
       <ArticleContent {article} />
 
       {#if article.primaryCta || article.secondaryCta}
@@ -170,6 +176,20 @@
     color: var(--color-ink-soft);
     font-size: 0.82rem;
     font-weight: 700;
+  }
+
+  .article-detail__thumbnail {
+    overflow: hidden;
+    margin: 0 0 clamp(34px, 5vw, 52px);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .article-detail__thumbnail img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(250, 246, 236, 0.9);
   }
 
   .article-detail__ctas {

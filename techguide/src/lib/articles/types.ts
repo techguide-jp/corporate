@@ -64,6 +64,11 @@ export interface ArticleSeo {
   imageAlt?: string;
 }
 
+export interface ArticleThumbnail {
+  src: string;
+  alt: string;
+}
+
 export interface Article {
   slug: string;
   title: string;
@@ -74,6 +79,7 @@ export interface Article {
   publishedAt: string;
   updatedAt?: string;
   readingTimeMinutes?: number;
+  thumbnail?: ArticleThumbnail;
   lead: string;
   blocks: ArticleContentBlock[];
   primaryCta?: ArticleCta;
