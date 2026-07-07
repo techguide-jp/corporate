@@ -77,9 +77,9 @@ export const pageSeo: Record<
 
 export const navItems: NavItem[] = [
   { label: '支援内容', href: '/services/' },
-  { label: '記事', href: '/articles/' },
   { label: 'プロダクト', href: '/#products' },
   { label: '実績', href: '/#works' },
+  { label: '記事', href: '/articles/' },
   { label: '会社情報', href: '/#company' },
   { label: '代表について', href: '/profile/' },
   { label: '採用', href: '/recruit/' },
