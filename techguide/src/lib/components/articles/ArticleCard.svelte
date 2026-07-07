@@ -14,10 +14,12 @@
 
   let { article, trackingEventName = 'article_card_click', placement = 'index' }: Props = $props();
   const articleHref = $derived(`/articles/${article.slug}/` as InternalHref);
-  const thumbnail = $derived(article.thumbnail ?? {
-    src: article.seo.ogImage,
-    alt: article.seo.imageAlt,
-  });
+  const thumbnail = $derived(
+    article.thumbnail ?? {
+      src: article.seo.ogImage,
+      alt: article.seo.imageAlt,
+    },
+  );
 
   function handleClick() {
     trackEvent(trackingEventName, {
@@ -30,7 +32,11 @@
 </script>
 
 <article class="article-card">
-  <a class="article-card__link-wrapper" href={resolve(...getResolveArgs(articleHref))} onclick={handleClick}>
+  <a
+    class="article-card__link-wrapper"
+    href={resolve(...getResolveArgs(articleHref))}
+    onclick={handleClick}
+  >
     {#if thumbnail.src && thumbnail.alt}
       <img class="article-card__thumbnail" src={thumbnail.src} alt={thumbnail.alt} loading="lazy" />
     {/if}
@@ -111,8 +117,18 @@
     min-height: inherit;
     padding: clamp(20px, 3vw, 28px);
     background:
-      linear-gradient(180deg, rgba(27, 22, 16, 0.18) 0%, rgba(27, 22, 16, 0.54) 44%, rgba(27, 22, 16, 0.88) 100%),
-      linear-gradient(90deg, rgba(27, 22, 16, 0.62) 0%, rgba(27, 22, 16, 0.18) 55%, rgba(27, 22, 16, 0.5) 100%);
+      linear-gradient(
+        180deg,
+        rgba(27, 22, 16, 0.18) 0%,
+        rgba(27, 22, 16, 0.54) 44%,
+        rgba(27, 22, 16, 0.88) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(27, 22, 16, 0.62) 0%,
+        rgba(27, 22, 16, 0.18) 55%,
+        rgba(27, 22, 16, 0.5) 100%
+      );
   }
 
   .article-card__meta {

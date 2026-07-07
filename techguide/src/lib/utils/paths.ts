@@ -36,5 +36,7 @@ export function isNavigationItemActive({
   const currentPath = normalizePathname(currentPathname);
   const targetPath = normalizePathname(href);
 
-  return currentPath === targetPath || (targetPath !== '/' && currentPath.startsWith(`${targetPath}/`));
+  return (
+    currentPath === targetPath || (targetPath !== '/' && currentPath.startsWith(`${targetPath}/`))
+  );
 }

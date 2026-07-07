@@ -223,8 +223,18 @@
     min-height: clamp(480px, 56vw, 640px);
     padding: clamp(24px, 5vw, 54px);
     background:
-      linear-gradient(180deg, rgba(27, 22, 16, 0.18) 0%, rgba(27, 22, 16, 0.5) 42%, rgba(27, 22, 16, 0.9) 100%),
-      linear-gradient(90deg, rgba(27, 22, 16, 0.7) 0%, rgba(27, 22, 16, 0.22) 60%, rgba(27, 22, 16, 0.52) 100%);
+      linear-gradient(
+        180deg,
+        rgba(27, 22, 16, 0.18) 0%,
+        rgba(27, 22, 16, 0.5) 42%,
+        rgba(27, 22, 16, 0.9) 100%
+      ),
+      linear-gradient(
+        90deg,
+        rgba(27, 22, 16, 0.7) 0%,
+        rgba(27, 22, 16, 0.22) 60%,
+        rgba(27, 22, 16, 0.52) 100%
+      );
     color: rgba(255, 255, 255, 0.95);
   }
 
