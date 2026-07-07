@@ -28,7 +28,10 @@ export const siteMetadata: SiteMetadata = {
   sameAs: [],
 };
 
-export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile' | 'recruit', PageSeo> = {
+export const pageSeo: Record<
+  'home' | 'services' | 'articles' | 'contact' | 'profile' | 'recruit',
+  PageSeo
+> = {
   home: {
     title: siteMetadata.defaultTitle,
     description: siteMetadata.defaultDescription,
@@ -41,6 +44,14 @@ export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile' | 'recr
     path: '/services/',
     image: '/images/services/development-visual.webp',
     imageAlt: 'TechGuide の支援内容を紹介するページのビジュアル',
+  },
+  articles: {
+    title: '記事 | TechGuide',
+    description:
+      'TechGuideが大切にしているIT導入、業務改善、AI活用、試作開発、事業と技術の橋渡しの考え方をまとめています。',
+    path: '/articles/',
+    image: '/images/services/consulting-visual.webp',
+    imageAlt: 'TechGuideの記事一覧ページのビジュアル',
   },
   contact: {
     title: 'お問い合わせ | TechGuide',
@@ -66,6 +77,7 @@ export const pageSeo: Record<'home' | 'services' | 'contact' | 'profile' | 'recr
 
 export const navItems: NavItem[] = [
   { label: '支援内容', href: '/services/' },
+  { label: '記事', href: '/articles/' },
   { label: 'プロダクト', href: '/#products' },
   { label: '実績', href: '/#works' },
   { label: '会社情報', href: '/#company' },
