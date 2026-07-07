@@ -3,6 +3,8 @@ import type { Article } from './types';
 const readyMockReferralParams =
   'utm_source=techguide&utm_medium=owned_article&utm_campaign=ready_mock_referral';
 
+const readyMockHomeHref = `https://www.ready-mock.com/?${readyMockReferralParams}&utm_content=ready_mock_text_link`;
+
 export const articles: readonly Article[] = [
   {
     slug: 'why-we-start-with-planning',
@@ -113,7 +115,18 @@ export const articles: readonly Article[] = [
           '相談段階の曖昧さを整理する',
           '事業側と技術側の言葉をそろえる',
           '試作、本開発、既存ツール活用を切り分ける',
-          '必要に応じてReady-mockやLP制作、受託開発へ接続する',
+          [
+            '必要に応じて',
+            {
+              type: 'link',
+              text: 'Ready-mock',
+              href: readyMockHomeHref,
+              eventName: 'ready_mock_outbound_click',
+              target: 'ready-mock',
+              isExternal: true,
+            },
+            'やLP制作、受託開発へ接続する',
+          ],
           '公開後の改善や運用まで見据える',
         ],
       },
@@ -246,7 +259,17 @@ export const articles: readonly Article[] = [
           '既存ツールで足りる',
           'フォーム、スプレッドシート、通知で小さく始める',
           'Notionなどで運用を整理する',
-          'Ready-mockで試作して判断材料を作る',
+          [
+            {
+              type: 'link',
+              text: 'Ready-mock',
+              href: readyMockHomeHref,
+              eventName: 'ready_mock_outbound_click',
+              target: 'ready-mock',
+              isExternal: true,
+            },
+            'で試作して判断材料を作る',
+          ],
           '個別開発として本格的に作る',
         ],
       },

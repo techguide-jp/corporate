@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Article } from '$lib/articles/types';
   import ArticleCta from './ArticleCta.svelte';
+  import ArticleInlineText from './ArticleInlineText.svelte';
 
   interface Props {
     article: Article;
@@ -18,11 +19,15 @@
         <h2 id={block.id}>{block.text}</h2>
       {/if}
     {:else if block.type === 'paragraph'}
-      <p>{block.text}</p>
+      <p>
+        <ArticleInlineText content={block.text} slug={article.slug} category={article.category} />
+      </p>
     {:else if block.type === 'list'}
       <ul>
         {#each block.items as item (item)}
-          <li>{item}</li>
+          <li>
+            <ArticleInlineText content={item} slug={article.slug} category={article.category} />
+          </li>
         {/each}
       </ul>
     {:else if block.type === 'quote'}

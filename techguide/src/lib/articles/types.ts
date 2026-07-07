@@ -31,6 +31,18 @@ export interface ArticleCta {
   isExternal?: boolean;
 }
 
+export interface ArticleTextLink {
+  type: 'link';
+  text: string;
+  href: string;
+  eventName: AnalyticsMetadata['eventName'];
+  target: ArticleCtaTarget;
+  isExternal?: boolean;
+}
+
+export type ArticleTextSegment = string | ArticleTextLink;
+export type ArticleTextContent = string | readonly ArticleTextSegment[];
+
 export type ArticleContentBlock =
   | {
       type: 'heading';
@@ -40,11 +52,11 @@ export type ArticleContentBlock =
     }
   | {
       type: 'paragraph';
-      text: string;
+      text: ArticleTextContent;
     }
   | {
       type: 'list';
-      items: string[];
+      items: ArticleTextContent[];
     }
   | {
       type: 'quote';
