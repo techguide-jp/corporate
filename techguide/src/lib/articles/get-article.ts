@@ -25,10 +25,16 @@ function isPublishedArticle(article: Article, currentDate = getCurrentPublicatio
   return article.status === 'published' && article.publishedAt <= currentDate;
 }
 
+function compareByPublishedAtDesc(a: Article, b: Article) {
+  return b.publishedAt.localeCompare(a.publishedAt);
+}
+
 export function getPublishedArticles() {
   const currentDate = getCurrentPublicationDate();
 
-  return articles.filter((article) => isPublishedArticle(article, currentDate));
+  return articles
+    .filter((article) => isPublishedArticle(article, currentDate))
+    .sort(compareByPublishedAtDesc);
 }
 
 export function getArticleBySlug(slug: string) {
