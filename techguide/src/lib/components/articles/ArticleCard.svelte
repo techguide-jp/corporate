@@ -20,6 +20,7 @@
       alt: article.seo.imageAlt,
     },
   );
+  const visibleTags = $derived(article.tags.slice(0, 3));
 
   function handleClick() {
     trackEvent(trackingEventName, {
@@ -56,7 +57,7 @@
       </div>
 
       <div class="article-card__tags" aria-label="タグ">
-        {#each article.tags as tag (tag)}
+        {#each visibleTags as tag (tag)}
           <span>{tag}</span>
         {/each}
       </div>
@@ -136,6 +137,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
+    min-height: 32px;
     color: rgba(255, 255, 255, 0.82);
     font-size: 0.86rem;
     font-weight: 700;
@@ -143,14 +145,21 @@
 
   .article-card__body {
     display: grid;
+    align-content: start;
     gap: 10px;
+    min-height: 154px;
   }
 
   h2 {
+    display: -webkit-box;
+    overflow: hidden;
     font-family: var(--font-heading);
     font-size: 1.55rem;
     line-height: 1.28;
     letter-spacing: 0;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
   .article-card__link-wrapper:hover h2 {
@@ -158,16 +167,25 @@
   }
 
   p {
+    display: -webkit-box;
+    overflow: hidden;
     color: rgba(255, 255, 255, 0.82);
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   .article-card__tags {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 8px;
+    min-height: 30px;
+    overflow: hidden;
   }
 
   .article-card__tags span {
+    flex: 0 0 auto;
     min-height: 28px;
     padding: 4px 10px;
     border: 1px solid rgba(255, 255, 255, 0.56);
@@ -195,6 +213,10 @@
 
     h2 {
       font-size: 1.34rem;
+    }
+
+    .article-card__body {
+      min-height: 138px;
     }
   }
 </style>
