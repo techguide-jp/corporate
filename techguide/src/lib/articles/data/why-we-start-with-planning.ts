@@ -3,7 +3,7 @@ import type { Article } from '../types';
 
 export const whyWeStartWithPlanningArticle: Article = {
   slug: 'why-we-start-with-planning',
-  title: 'TechGuideが「作る前の整理」から支援する理由',
+  title: '「作る前の整理」から支援する理由',
   description:
     'TechGuideがいきなり開発に入らず、目的・利用者・運用・判断基準の整理から支援する理由をまとめました。',
   category: 'techguide-approach',
@@ -151,7 +151,7 @@ export const whyWeStartWithPlanningArticle: Article = {
   },
   relatedSlugs: ['before-tool-selection', 'designing-for-maintenance-and-improvement'],
   seo: {
-    title: 'TechGuideが「作る前の整理」から支援する理由 | TechGuide',
+    title: '「作る前の整理」から支援する理由 | TechGuide',
     description:
       'TechGuideがいきなり開発に入らず、目的・利用者・運用・判断基準の整理から支援する理由を紹介します。',
     ogImage: '/images/articles/why-we-start-with-planning.webp',

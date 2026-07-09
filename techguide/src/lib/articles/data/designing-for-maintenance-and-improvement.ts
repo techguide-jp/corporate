@@ -2,7 +2,7 @@ import type { Article } from '../types';
 
 export const designingForMaintenanceAndImprovementArticle: Article = {
   slug: 'designing-for-maintenance-and-improvement',
-  title: 'TechGuideが、保守と改善まで考えて設計する理由',
+  title: '保守と改善まで考えて設計する理由',
   description:
     'TechGuideが作って終わりにせず、公開後の保守・変更・改善まで見据えて設計する理由をまとめました。',
   category: 'techguide-approach',
@@ -128,7 +128,7 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
   },
   relatedSlugs: ['why-we-start-with-planning', 'before-tool-selection'],
   seo: {
-    title: 'TechGuideが、保守と改善まで考えて設計する理由 | TechGuide',
+    title: '保守と改善まで考えて設計する理由 | TechGuide',
     description:
       'TechGuideが作って終わりにせず、公開後の保守・変更・改善まで見据えて設計する理由を紹介します。',
     ogImage: '/images/articles/designing-for-maintenance-and-improvement.webp',
