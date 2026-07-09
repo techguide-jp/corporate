@@ -149,7 +149,7 @@ export const whyWeStartWithPlanningArticle: Article = {
     tone: 'light',
     isExternal: true,
   },
-  relatedSlugs: ['before-tool-selection'],
+  relatedSlugs: ['before-tool-selection', 'designing-for-maintenance-and-improvement'],
   seo: {
     title: 'TechGuideが「作る前の整理」から支援する理由 | TechGuide',
     description:

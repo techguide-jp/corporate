@@ -158,7 +158,7 @@ export const beforeToolSelectionArticle: Article = {
     tone: 'light',
     isExternal: true,
   },
-  relatedSlugs: ['why-we-start-with-planning'],
+  relatedSlugs: ['why-we-start-with-planning', 'designing-for-maintenance-and-improvement'],
   seo: {
     title: 'IT導入で、最初にツール選定から入らない理由 | TechGuide',
     description:
