@@ -169,7 +169,7 @@
 
   h1 {
     font-family: var(--font-heading);
-    font-size: clamp(2rem, 4.2vw, 3.4rem);
+    font-size: clamp(1.9rem, 3.6vw, 3rem);
     line-height: 1.14;
     letter-spacing: 0;
   }
@@ -276,7 +276,7 @@
     }
 
     .article-detail__hero-overlay h1 {
-      font-size: 1.82rem;
+      font-size: 1.68rem;
     }
   }
 </style>
