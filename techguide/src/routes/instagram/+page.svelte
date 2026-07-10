@@ -635,6 +635,7 @@
 
   .work-card__image-link img {
     width: 100%;
+    height: auto;
     aspect-ratio: 16 / 10;
     object-fit: cover;
     transition: transform 0.25s ease;
