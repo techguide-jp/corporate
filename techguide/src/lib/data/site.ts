@@ -28,8 +28,10 @@ export const siteMetadata: SiteMetadata = {
   sameAs: [],
 };
 
+export const instagramProfileUrl = 'https://www.instagram.com/yuchan_314/';
+
 export const pageSeo: Record<
-  'home' | 'services' | 'articles' | 'contact' | 'profile' | 'recruit',
+  'home' | 'services' | 'articles' | 'contact' | 'instagram' | 'profile' | 'recruit',
   PageSeo
 > = {
   home: {
@@ -58,6 +60,14 @@ export const pageSeo: Record<
     description:
       'IT導入、LP制作、受託開発、AI活用・技術教育に関するご相談窓口です。課題整理から制作・改善まで、TechGuide が伴走します。',
     path: '/contact/',
+  },
+  instagram: {
+    title: '仕事と申し込み導線を整える | TechGuide',
+    description:
+      '業務自動化、申し込みフォーム、LP制作、新しいサービスの試作など、今の困りごとに合った相談先を選べます。',
+    path: '/instagram/',
+    image: '/images/instagram/instagram-hero.webp',
+    imageAlt: '仕事や申し込み導線を、小さく整えたい方へ',
   },
   profile: {
     title: 'プロフィール | 高橋雄太（ゆーちゃん） | TechGuide',
@@ -566,7 +576,7 @@ export const profilePageContent: ProfilePageContent = {
       platformImageAlt: 'Instagram',
       title: '起業家向け発信',
       description: '「ITをもっと身近に」をテーマに、IT活用や伴走支援に関する発信をしています。',
-      href: 'https://www.instagram.com/yuchan_314/',
+      href: instagramProfileUrl,
       ctaLabel: 'Instagramを見る',
     },
     {

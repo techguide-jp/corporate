@@ -19,8 +19,17 @@ export interface AnalyticsMetadata {
     | 'contact_cta_click'
     | 'contact_page_view'
     | 'contact_form_fallback_click'
+    | 'business_automation_click'
+    | 'form_flow_click'
+    | 'general_contact_click'
+    | 'instagram_contact_click'
+    | 'lpboost_click'
     | 'outbound_link_click'
-    | 'ready_mock_outbound_click';
+    | 'ready_mock_click'
+    | 'ready_mock_outbound_click'
+    | 'work_academy_fes_click'
+    | 'work_aromine_click'
+    | 'work_shusei_click';
   params?: GtagParams;
 }
 

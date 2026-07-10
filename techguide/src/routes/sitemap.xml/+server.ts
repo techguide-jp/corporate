@@ -8,6 +8,7 @@ const sitemapEntries = [
   { path: pageSeo.home.path, changefreq: 'weekly', priority: '1.0' },
   { path: pageSeo.services.path, changefreq: 'weekly', priority: '0.8' },
   { path: pageSeo.articles.path, changefreq: 'weekly', priority: '0.7' },
+  { path: pageSeo.instagram.path, changefreq: 'monthly', priority: '0.7' },
   { path: pageSeo.profile.path, changefreq: 'monthly', priority: '0.6' },
   { path: '/profile/academy-fes-2026/', changefreq: 'weekly', priority: '0.6' },
   { path: pageSeo.recruit.path, changefreq: 'weekly', priority: '0.7' },
