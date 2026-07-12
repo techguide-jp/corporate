@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { asset } from '$app/paths';
+  import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import type { ShowcaseItem } from '$lib/types/content';
+  import { getResolveArgs, isInternalHref } from '$lib/utils/paths';
 
   interface Props {
     id: string;
@@ -14,7 +15,11 @@
 
   let { id, title, subtitle, items, surface = 'plain' }: Props = $props();
 
-  function handleOutboundClick(item: ShowcaseItem) {
+  function handleItemClick(item: ShowcaseItem) {
+    if (isInternalHref(item.href)) {
+      return;
+    }
+
     trackEvent('outbound_link_click', {
       section: id,
       link_label: item.title,
@@ -30,29 +35,45 @@
     <div class="showcase__grid">
       {#each items as item (item.href)}
         <article class="showcase-card">
-          <a
-            class="showcase-card__image-link"
-            href={item.href}
-            target="_blank"
-            rel="external noreferrer"
-            aria-label={`${item.title} を開く`}
-            onclick={() => handleOutboundClick(item)}
-          >
-            <img src={asset(item.image)} alt={item.title} loading="lazy" />
-          </a>
+          {#if isInternalHref(item.href)}
+            <a
+              class="showcase-card__image-link"
+              href={resolve(...getResolveArgs(item.href))}
+              aria-label={`${item.title} を開く`}
+            >
+              <img src={asset(item.image)} alt={item.title} loading="lazy" />
+            </a>
+          {:else}
+            <a
+              class="showcase-card__image-link"
+              href={item.href}
+              target="_blank"
+              rel="external noreferrer"
+              aria-label={`${item.title} を開く`}
+              onclick={() => handleItemClick(item)}
+            >
+              <img src={asset(item.image)} alt={item.title} loading="lazy" />
+            </a>
+          {/if}
 
           <div class="showcase-card__body">
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <a
-              class="showcase-card__link"
-              href={item.href}
-              target="_blank"
-              rel="external noreferrer"
-              onclick={() => handleOutboundClick(item)}
-            >
-              {item.ctaLabel}
-            </a>
+            {#if isInternalHref(item.href)}
+              <a class="showcase-card__link" href={resolve(...getResolveArgs(item.href))}>
+                {item.ctaLabel}
+              </a>
+            {:else}
+              <a
+                class="showcase-card__link showcase-card__link--external"
+                href={item.href}
+                target="_blank"
+                rel="external noreferrer"
+                onclick={() => handleItemClick(item)}
+              >
+                {item.ctaLabel}
+              </a>
+            {/if}
           </div>
         </article>
       {/each}
@@ -132,6 +153,11 @@
   }
 
   .showcase-card__link::after {
+    content: '→';
+    font-size: 0.95em;
+  }
+
+  .showcase-card__link--external::after {
     content: '↗';
     font-size: 0.95em;
   }
