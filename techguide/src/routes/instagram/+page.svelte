@@ -5,14 +5,16 @@
   import { companyProfile, instagramProfileUrl, pageSeo, profilePageContent } from '$lib/data/site';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
 
-  interface ChoiceItem {
+  interface ChoiceItemBase {
     label: string;
     title: string;
     description: string;
     ctaLabel: string;
-    href: string;
     eventName: AnalyticsMetadata['eventName'];
   }
+
+  type ChoiceItem = ChoiceItemBase &
+    ({ href: string; path?: never } | { href?: never; path: '/macclipy/' });
 
   interface WorkItem {
     title: string;
@@ -60,6 +62,15 @@
       ctaLabel: '小さな試作を相談する',
       href: 'https://www.ready-mock.com/',
       eventName: 'ready_mock_click',
+    },
+    {
+      label: '無料Macアプリ',
+      title: 'コピー履歴をすぐ呼び出したい',
+      description:
+        '過去にコピーしたテキストを、メニューバーやショートカットからすぐに呼び出せるMacアプリです。',
+      ctaLabel: 'MacClipyを見る',
+      path: '/macclipy/',
+      eventName: 'macclipy_click',
     },
   ];
 
@@ -167,15 +178,26 @@
             </div>
             <h3>{item.title}</h3>
             <p>{item.description}</p>
-            <a
-              class="choice-card__action"
-              href={item.href}
-              rel="external noreferrer"
-              onclick={() => handleTrackedClick(item.eventName, 'problem_choices')}
-            >
-              <span>{item.ctaLabel}</span>
-              <span class="arrow-icon" aria-hidden="true">→</span>
-            </a>
+            {#if item.path}
+              <a
+                class="choice-card__action"
+                href={resolve(item.path)}
+                onclick={() => handleTrackedClick(item.eventName, 'problem_choices')}
+              >
+                <span>{item.ctaLabel}</span>
+                <span class="arrow-icon" aria-hidden="true">→</span>
+              </a>
+            {:else}
+              <a
+                class="choice-card__action"
+                href={item.href}
+                rel="external noreferrer"
+                onclick={() => handleTrackedClick(item.eventName, 'problem_choices')}
+              >
+                <span>{item.ctaLabel}</span>
+                <span class="arrow-icon" aria-hidden="true">→</span>
+              </a>
+            {/if}
           </article>
         {/each}
       </div>
@@ -442,6 +464,10 @@
     border-radius: 8px;
     background: var(--color-surface);
     box-shadow: 0 12px 28px rgba(111, 83, 41, 0.07);
+  }
+
+  .choice-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .choice-card__topline {
@@ -847,6 +873,10 @@
 
     .choice-card {
       padding: 21px 18px 20px;
+    }
+
+    .choice-card:last-child:nth-child(odd) {
+      grid-column: auto;
     }
 
     .choice-card__topline {
