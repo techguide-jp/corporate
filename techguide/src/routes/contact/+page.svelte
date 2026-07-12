@@ -4,6 +4,7 @@
   import { trackEvent } from '$lib/analytics';
   import {
     CONTACT_CATEGORIES,
+    MACCLIPY_CATEGORY_ID,
     RECRUIT_CATEGORY_ID,
     type ContactFieldErrors,
     type ContactCategoryId,
@@ -40,6 +41,7 @@
   }));
   const fieldErrors = $derived.by<ContactFieldErrors>(() => form?.fieldErrors ?? {});
   const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
+  const isMacClipy = $derived(selectedCategory === MACCLIPY_CATEGORY_ID);
   const hasTurnstile = $derived(data.turnstileSiteKey.length > 0);
   const showSuccessPanel = $derived(!isSubmitting && form?.ok === true);
   const hideContactForm = $derived(isSubmitting || showSuccessPanel);
@@ -266,23 +268,37 @@
 
       <div class:contact-page__content--feedback={hideContactForm} class="contact-page__content">
         <div class="contact-page__details" hidden={hideContactForm}>
-          <section class="contact-page__panel">
-            <h2>このようなご相談に対応しています</h2>
-            <ul class="contact-page__support-list">
-              {#each contactPageContent.inquiryExamples as item (item)}
-                <li>{item}</li>
-              {/each}
-            </ul>
-          </section>
+          {#if isMacClipy}
+            <section class="contact-page__panel">
+              <h2>MacClipyについてお問い合わせいただけます</h2>
+              <p>
+                不具合、使い方、機能へのご要望を受け付けています。不具合の場合は、分かる範囲で次の情報もお知らせください。
+              </p>
+              <ul class="contact-page__support-list">
+                <li>お使いのmacOSとMacClipyのバージョン</li>
+                <li>問題が発生するまでの操作手順</li>
+                <li>表示されたメッセージや発生頻度</li>
+              </ul>
+            </section>
+          {:else}
+            <section class="contact-page__panel">
+              <h2>このようなご相談に対応しています</h2>
+              <ul class="contact-page__support-list">
+                {#each contactPageContent.inquiryExamples as item (item)}
+                  <li>{item}</li>
+                {/each}
+              </ul>
+            </section>
 
-          <section class="contact-page__panel">
-            <h2>{contactPageContent.processTitle}</h2>
-            <ol class="contact-page__process-list">
-              {#each contactPageContent.processSteps as step (step)}
-                <li>{step}</li>
-              {/each}
-            </ol>
-          </section>
+            <section class="contact-page__panel">
+              <h2>{contactPageContent.processTitle}</h2>
+              <ol class="contact-page__process-list">
+                {#each contactPageContent.processSteps as step (step)}
+                  <li>{step}</li>
+                {/each}
+              </ol>
+            </section>
+          {/if}
 
           <section class="contact-page__panel contact-page__panel--compact">
             <h2>返信について</h2>
@@ -430,7 +446,9 @@
               aria-describedby="message-help">{values.message ?? ''}</textarea
             >
             <em id="message-help">
-              現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。
+              {isMacClipy
+                ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
+                : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
             </em>
             {#if fieldErrors.message}
               <small>{fieldErrors.message}</small>

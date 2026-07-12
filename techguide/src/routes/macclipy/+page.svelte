@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { asset } from '$app/paths';
+  import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
@@ -10,6 +10,8 @@
 
   const downloadHref = 'https://github.com/techguide-jp/mac-clipy/releases/latest';
   const sourceHref = 'https://github.com/techguide-jp/mac-clipy';
+  const companyHref = resolve('/#company');
+  const contactHref = resolve('/contact/?category=macclipy&subject=MacClipyについて');
   const images = {
     hero: '/images/macclipy/macclipy-web-hero-rich.webp',
     workflow: '/images/macclipy/macclipy-workflow-rich.webp',
@@ -63,6 +65,10 @@
       link_label: 'MacClipyを無料でダウンロード',
       destination_host: 'github.com',
     });
+  }
+
+  function trackContact() {
+    trackEvent('contact_cta_click', { placement: 'macclipy_support' });
   }
 </script>
 
@@ -225,6 +231,25 @@
           最新版をダウンロード
         </a>
         <p>Developer ID署名・Apple公証済みのDMGをGitHub Releasesから配布しています。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section support" aria-labelledby="support-title">
+    <div class="container support__inner">
+      <div class="support__copy">
+        <p class="section-label">Operator &amp; support</p>
+        <h2 id="support-title">運営・サポート</h2>
+        <p>
+          MacClipyは、{companyProfile.name}が開発・運営しています。不具合、使い方、機能へのご要望は専用フォームからお問い合わせいただけます。
+        </p>
+      </div>
+
+      <div class="support__actions">
+        <a class="support__company-link" href={companyHref}>運営者情報を見る</a>
+        <a class="download-button" href={contactHref} onclick={trackContact}>
+          MacClipyについて問い合わせる
+        </a>
       </div>
     </div>
   </section>
