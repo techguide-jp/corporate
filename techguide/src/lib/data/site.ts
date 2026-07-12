@@ -31,7 +31,7 @@ export const siteMetadata: SiteMetadata = {
 export const instagramProfileUrl = 'https://www.instagram.com/yuchan_314/';
 
 export const pageSeo: Record<
-  'home' | 'services' | 'articles' | 'contact' | 'instagram' | 'profile' | 'recruit',
+  'home' | 'services' | 'articles' | 'contact' | 'instagram' | 'profile' | 'recruit' | 'macclipy',
   PageSeo
 > = {
   home: {
@@ -82,6 +82,14 @@ export const pageSeo: Record<
     description:
       'TechGuideのWebエンジニア（業務委託・副業）募集ページ。週5時間〜・フルリモートで、設計から改善まで関われる開発パートナーを募集しています。',
     path: '/recruit/',
+  },
+  macclipy: {
+    title: 'MacClipy | macOS用クリップボード履歴アプリ | TechGuide',
+    description:
+      'MacClipyは、コピー履歴をメニューバーやショートカットからすぐに呼び出せるmacOS用クリップボード管理アプリです。無料でダウンロードできます。',
+    path: '/macclipy/',
+    image: '/images/macclipy/product-hero.png',
+    imageAlt: 'MacClipyのアプリアイコン',
   },
 };
 
@@ -193,6 +201,13 @@ export const services: ServiceItem[] = [
 ];
 
 export const productItems: ShowcaseItem[] = [
+  {
+    title: 'MacClipy',
+    description: 'コピー履歴をすぐに呼び出せるmacOS用クリップボード管理アプリ',
+    image: '/images/macclipy/product-hero.png',
+    href: '/macclipy/',
+    ctaLabel: '無料でダウンロード',
+  },
   {
     title: 'TicketCraft',
     description: '申込・決済・受付・配信を一本化するイベント運営プロダクト',
