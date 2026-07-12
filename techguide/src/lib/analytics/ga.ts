@@ -24,6 +24,7 @@ export interface AnalyticsMetadata {
     | 'general_contact_click'
     | 'instagram_contact_click'
     | 'lpboost_click'
+    | 'macclipy_click'
     | 'outbound_link_click'
     | 'ready_mock_click'
     | 'ready_mock_outbound_click'
