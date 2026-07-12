@@ -10,6 +10,13 @@
 
   const downloadHref = 'https://github.com/techguide-jp/mac-clipy/releases/latest';
   const sourceHref = 'https://github.com/techguide-jp/mac-clipy';
+  const images = {
+    hero: '/images/macclipy/macclipy-web-hero-rich.webp',
+    workflow: '/images/macclipy/macclipy-workflow-rich.webp',
+    features: '/images/macclipy/macclipy-features-rich.webp',
+    privacy: '/images/macclipy/macclipy-privacy-rich.webp',
+    install: '/images/macclipy/macclipy-install-rich.webp',
+  };
 
   const features = [
     {
@@ -73,16 +80,19 @@
 
 <main class="macclipy-page">
   <section class="hero">
-    <img
-      class="hero__icon"
-      src={asset('/images/macclipy/app-icon.png')}
-      alt=""
-      width="1024"
-      height="1024"
-    />
+    <div class="hero__media" aria-hidden="true">
+      <img src={asset(images.hero)} alt="" width="1920" height="1080" fetchpriority="high" />
+    </div>
     <div class="hero__ambient" aria-hidden="true"></div>
 
     <div class="container hero__inner">
+      <img
+        class="hero__badge"
+        src={asset('/images/macclipy/app-icon.png')}
+        alt=""
+        width="1024"
+        height="1024"
+      />
       <p class="hero__eyebrow">TechGuide Product</p>
       <h1>MacClipy</h1>
       <p class="hero__lead">コピーしたものを、<br />必要な瞬間にすぐ取り出す。</p>
@@ -119,42 +129,15 @@
         </p>
       </div>
 
-      <div class="app-preview" aria-label="MacClipyの操作イメージ">
-        <div class="app-preview__bar">
-          <span class="window-dot window-dot--red"></span>
-          <span class="window-dot window-dot--yellow"></span>
-          <span class="window-dot window-dot--green"></span>
-          <span class="app-preview__title">MacClipy</span>
-          <span class="key-hint">⇧⌘V</span>
-        </div>
-        <div class="app-preview__search">
-          <span aria-hidden="true">⌕</span>
-          <span>履歴を検索</span>
-        </div>
-        <div class="app-preview__tabs" aria-hidden="true">
-          <span class="app-preview__tab app-preview__tab--active">すべて</span>
-          <span class="app-preview__tab">お気に入り</span>
-        </div>
-        <ul class="history-list">
-          <li class="history-list__item history-list__item--active">
-            <span class="history-list__content">次回のミーティングは金曜日の10時からです。</span>
-            <span class="history-list__meta">たった今</span>
-          </li>
-          <li class="history-list__item">
-            <span class="history-list__content">https://techguide.jp/</span>
-            <span class="history-list__meta">2分前</span>
-          </li>
-          <li class="history-list__item">
-            <span class="history-list__content">確認後、改めてご連絡します。</span>
-            <span class="history-list__meta">8分前</span>
-          </li>
-        </ul>
-        <div class="app-preview__footer">
-          <span>↑↓ 選択</span>
-          <span>Return 貼り付け</span>
-          <span>⌘D お気に入り</span>
-        </div>
-      </div>
+      <figure class="section-visual section-visual--raised">
+        <img
+          src={asset(images.workflow)}
+          alt="MacBook上でMacClipyのコピー履歴パネルを開いている操作イメージ"
+          width="1600"
+          height="1000"
+          loading="lazy"
+        />
+      </figure>
     </div>
   </section>
 
@@ -165,15 +148,49 @@
         <h2 id="features-title">毎日のコピーを、<span class="nowrap">もっと軽く。</span></h2>
       </div>
 
-      <div class="features__grid">
-        {#each features as feature (feature.number)}
-          <article class="feature">
-            <span class="feature__number">{feature.number}</span>
-            <h3>{feature.title}</h3>
-            <p>{feature.description}</p>
-          </article>
-        {/each}
+      <div class="features__layout">
+        <figure class="section-visual">
+          <img
+            src={asset(images.features)}
+            alt="検索、お気に入り、フォルダ整理、除外アプリを並べたMacClipyの機能イメージ"
+            width="1600"
+            height="1000"
+            loading="lazy"
+          />
+        </figure>
+
+        <div class="features__grid">
+          {#each features as feature (feature.number)}
+            <article class="feature">
+              <span class="feature__number">{feature.number}</span>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </article>
+          {/each}
+        </div>
       </div>
+    </div>
+  </section>
+
+  <section class="section privacy" aria-labelledby="privacy-title">
+    <div class="container privacy__inner">
+      <div class="privacy__copy">
+        <p class="section-label">Local first</p>
+        <h2 id="privacy-title">履歴はMac内に。<br />残したくないアプリは除外。</h2>
+        <p>
+          コピー履歴データはMac内に保存されます。パスワード管理アプリやプライベートな作業アプリは、履歴保存の対象外に設定できます。
+        </p>
+      </div>
+
+      <figure class="section-visual">
+        <img
+          src={asset(images.privacy)}
+          alt="Mac内保存と除外アプリ設定を表すMacClipyの安心機能イメージ"
+          width="1600"
+          height="1000"
+          loading="lazy"
+        />
+      </figure>
     </div>
   </section>
 
@@ -183,6 +200,16 @@
         <p class="section-label">Get started</p>
         <h2 id="install-title">3ステップで使い始められます。</h2>
       </div>
+
+      <figure class="section-visual install__visual">
+        <img
+          src={asset(images.install)}
+          alt="MacClipyのDMGをApplicationsフォルダへドラッグしてインストールする画面イメージ"
+          width="1600"
+          height="1000"
+          loading="lazy"
+        />
+      </figure>
 
       <ol class="install__steps">
         {#each steps as step, index (step)}

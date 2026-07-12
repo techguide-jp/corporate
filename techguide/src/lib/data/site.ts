@@ -88,8 +88,8 @@ export const pageSeo: Record<
     description:
       'MacClipyは、コピー履歴をメニューバーやショートカットからすぐに呼び出せるmacOS用クリップボード管理アプリです。無料でダウンロードできます。',
     path: '/macclipy/',
-    image: '/images/macclipy/product-hero.png',
-    imageAlt: 'MacClipyのアプリアイコン',
+    image: '/images/macclipy/macclipy-og-rich.png',
+    imageAlt: 'MacClipyのコピー履歴パネルを表示したMacBook',
   },
 };
 
