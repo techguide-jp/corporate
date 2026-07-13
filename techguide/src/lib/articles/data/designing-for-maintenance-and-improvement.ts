@@ -18,7 +18,11 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
   blocks: [
     {
       type: 'paragraph',
-      text: '相談前の段階では、まず完成物そのものに目が向きやすいものです。画面、機能、公開日、費用。どれも大切ですが、実際には公開した後の方が長く続きます。',
+      text: [
+        '相談前の段階では、まず完成物そのものに目が向きやすいものです。画面、機能、公開日、費用。どれも大切ですが、',
+        { type: 'strong', text: '実際には公開した後の方が長く続きます' },
+        '。',
+      ],
     },
     {
       type: 'paragraph',
@@ -45,7 +49,11 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideでは、こうした運用の前提をできるだけ早い段階で確認します。完璧な運用表を作るためではなく、後で困りそうな場所を先に見つけるためです。',
+      text: [
+        'TechGuideでは、こうした運用の前提をできるだけ早い段階で確認します。完璧な運用表を作るためではなく、',
+        { type: 'strong', text: '後で困りそうな場所を先に見つける' },
+        'ためです。',
+      ],
     },
     {
       type: 'heading',
@@ -54,7 +62,11 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '保守や改善を見据える設計は、複雑な仕組みを作ることではありません。むしろ、必要以上に複雑にしないための考え方です。',
+      text: [
+        '保守や改善を見据える設計は、複雑な仕組みを作ることではありません。むしろ、',
+        { type: 'strong', text: '必要以上に複雑にしない' },
+        'ための考え方です。',
+      ],
     },
     {
       type: 'list',
@@ -69,7 +81,11 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '最初からすべてを盛り込むのではなく、変わりやすい部分と変えにくい部分を分けて考えます。そうすることで、初期費用を抑えながら、後から必要な改善を積み上げやすくなります。',
+      text: [
+        '最初からすべてを盛り込むのではなく、',
+        { type: 'strong', text: '変わりやすい部分と変えにくい部分を分けて考えます' },
+        '。そうすることで、初期費用を抑えながら、後から必要な改善を積み上げやすくなります。',
+      ],
     },
     {
       type: 'heading',
@@ -78,7 +94,11 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '依頼する側にとって不安なのは、公開後に何かあったとき、誰に何を相談すればよいか分からなくなることです。TechGuideでは、制作や実装の段階から、公開後の確認方法や改善の進め方を一緒に決めていきます。',
+      text: [
+        '依頼する側にとって不安なのは、公開後に何かあったとき、',
+        { type: 'strong', text: '誰に何を相談すればよいか分からなくなる' },
+        'ことです。TechGuideでは、制作や実装の段階から、公開後の確認方法や改善の進め方を一緒に決めていきます。',
+      ],
     },
     {
       type: 'list',
@@ -97,7 +117,11 @@ export const designingForMaintenanceAndImprovementArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideは、作ることだけを切り出して終わるよりも、事業や現場の中で使われ続ける状態まで考えたいと思っています。だからこそ、相談時点でまだ曖昧なことがあっても問題ありません。',
+      text: [
+        'TechGuideは、作ることだけを切り出して終わるよりも、事業や現場の中で使われ続ける状態まで考えたいと思っています。だからこそ、',
+        { type: 'strong', text: '相談時点でまだ曖昧なことがあっても問題ありません' },
+        '。',
+      ],
     },
     {
       type: 'paragraph',

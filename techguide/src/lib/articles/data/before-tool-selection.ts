@@ -23,7 +23,14 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideが最初に見たいのは、どのサービスが優れているかではなく、その会社の業務がどのように流れていて、どこに時間やミスが発生しているかです。',
+      text: [
+        'TechGuideが最初に見たいのは、どのサービスが優れているかではなく、',
+        {
+          type: 'strong',
+          text: 'その会社の業務がどのように流れていて、どこに時間やミスが発生しているか',
+        },
+        'です。',
+      ],
     },
     {
       type: 'heading',
@@ -46,7 +53,11 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'こうした状態では、どのツールを選んでも「使ってみないと分からない」になりがちです。そこでTechGuideでは、選ぶ前に判断の軸を整えます。',
+      text: [
+        'こうした状態では、どのツールを選んでも「使ってみないと分からない」になりがちです。そこでTechGuideでは、',
+        { type: 'strong', text: '選ぶ前に判断の軸を整えます' },
+        '。',
+      ],
     },
     {
       type: 'heading',
@@ -55,7 +66,11 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '最初に整理するのは、業務の流れと責任の置き方です。誰が入力し、誰が確認し、どのタイミングで次の作業に進むのかが見えると、必要な仕組みの形も見えやすくなります。',
+      text: [
+        '最初に整理するのは、',
+        { type: 'strong', text: '業務の流れと責任の置き方' },
+        'です。誰が入力し、誰が確認し、どのタイミングで次の作業に進むのかが見えると、必要な仕組みの形も見えやすくなります。',
+      ],
     },
     {
       type: 'list',
@@ -89,7 +104,11 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '整理してみると、必ずしも個別開発が必要とは限りません。既存ツールで足りる場合もあれば、小さな自動化や試作で十分に判断材料を作れる場合もあります。',
+      text: [
+        '整理してみると、',
+        { type: 'strong', text: '必ずしも個別開発が必要とは限りません' },
+        '。既存ツールで足りる場合もあれば、小さな自動化や試作で十分に判断材料を作れる場合もあります。',
+      ],
     },
     {
       type: 'list',
@@ -113,7 +132,11 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '大切なのは、最初から大きな導入に寄せすぎないことです。業務に合う最小の形から始め、必要に応じて広げる方が、現場に定着しやすくなります。',
+      text: [
+        '大切なのは、最初から大きな導入に寄せすぎないことです。',
+        { type: 'strong', text: '業務に合う最小の形から始め' },
+        '、必要に応じて広げる方が、現場に定着しやすくなります。',
+      ],
     },
     {
       type: 'heading',
@@ -122,7 +145,11 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideは、ツール名だけを決める支援ではなく、業務の整理から実装後の改善までを一つの流れとして扱います。事業側の判断と技術側の実装がずれないように、導入目的と運用設計を一緒に整えます。',
+      text: [
+        'TechGuideは、ツール名だけを決める支援ではなく、業務の整理から実装後の改善までを一つの流れとして扱います。事業側の判断と技術側の実装がずれないように、',
+        { type: 'strong', text: '導入目的と運用設計を一緒に整えます' },
+        '。',
+      ],
     },
     {
       type: 'list',
