@@ -45,6 +45,8 @@
 {#each segments as segment, index (index)}
   {#if typeof segment === 'string'}
     {segment}
+  {:else if segment.type === 'strong'}
+    <strong>{segment.text}</strong>
   {:else}
     <!-- eslint-disable svelte/no-navigation-without-resolve -->
     <a
@@ -60,6 +62,14 @@
 {/each}
 
 <style>
+  strong {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    color: #8b4f1d;
+    font-weight: 800;
+    background: linear-gradient(transparent 64%, rgba(230, 184, 92, 0.38) 64%);
+  }
+
   a {
     color: var(--color-primary-deep);
     font-weight: 800;

@@ -23,7 +23,11 @@ export const whyWeStartWithPlanningArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideが重視しているのは、作れるかどうかだけではなく、作る意味があるか、現場で使われるか、次の判断につながるかです。',
+      text: [
+        'TechGuideが重視しているのは、作れるかどうかだけではなく、',
+        { type: 'strong', text: '作る意味があるか、現場で使われるか、次の判断につながるか' },
+        'です。',
+      ],
     },
     {
       type: 'heading',
@@ -41,7 +45,10 @@ export const whyWeStartWithPlanningArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '最初から完璧な仕様書を作る必要はありません。一方で、何を解決したいのか、誰が使うのか、どこまで試せば次の判断ができるのかは、開発に入る前に揃えておきたい前提です。',
+      text: [
+        { type: 'strong', text: '最初から完璧な仕様書を作る必要はありません。' },
+        '一方で、何を解決したいのか、誰が使うのか、どこまで試せば次の判断ができるのかは、開発に入る前に揃えておきたい前提です。',
+      ],
     },
     {
       type: 'cta',
@@ -64,7 +71,11 @@ export const whyWeStartWithPlanningArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideでは、相談初期の曖昧さを悪いものとして扱いません。むしろ、その曖昧さを分解し、事業側の言葉と技術側の実装をつなぐことが支援の起点になります。',
+      text: [
+        'TechGuideでは、相談初期の曖昧さを悪いものとして扱いません。むしろ、',
+        { type: 'strong', text: 'その曖昧さを分解し、事業側の言葉と技術側の実装をつなぐ' },
+        'ことが支援の起点になります。',
+      ],
     },
     {
       type: 'list',
@@ -93,7 +104,11 @@ export const whyWeStartWithPlanningArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'こうした場合は、いきなり大きく作るよりも、まず触れるものを作って判断材料を増やす方が現実的です。試作で見える範囲を切り出すことで、本開発に進むべきか、範囲を削るべきか、別の方法で足りるのかを判断しやすくなります。',
+      text: [
+        'こうした場合は、いきなり大きく作るよりも、',
+        { type: 'strong', text: 'まず触れるものを作って判断材料を増やす' },
+        '方が現実的です。試作で見える範囲を切り出すことで、本開発に進むべきか、範囲を削るべきか、別の方法で足りるのかを判断しやすくなります。',
+      ],
     },
     {
       type: 'heading',
@@ -102,7 +117,11 @@ export const whyWeStartWithPlanningArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'TechGuideは、技術だけを切り出して提供するのではなく、相談段階の整理、試作、本開発、公開後の改善までを必要に応じてつなげていきます。',
+      text: [
+        'TechGuideは、技術だけを切り出して提供するのではなく、',
+        { type: 'strong', text: '相談段階の整理、試作、本開発、公開後の改善まで' },
+        'を必要に応じてつなげていきます。',
+      ],
     },
     {
       type: 'list',
