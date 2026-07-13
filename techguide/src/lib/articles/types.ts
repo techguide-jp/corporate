@@ -40,7 +40,12 @@ export interface ArticleTextLink {
   isExternal?: boolean;
 }
 
-export type ArticleTextSegment = string | ArticleTextLink;
+export interface ArticleTextStrong {
+  type: 'strong';
+  text: string;
+}
+
+export type ArticleTextSegment = string | ArticleTextLink | ArticleTextStrong;
 export type ArticleTextContent = string | readonly ArticleTextSegment[];
 
 export type ArticleContentBlock =
