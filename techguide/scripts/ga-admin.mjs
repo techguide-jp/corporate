@@ -1,4 +1,5 @@
 import { AnalyticsAdminServiceClient, protos } from '@google-analytics/admin';
+import { createUpdateMask } from './ga-admin-field-mask.mjs';
 
 const { KeyEvent, CustomDimension } = protos.google.analytics.admin.v1beta;
 
@@ -147,7 +148,7 @@ async function ensureKeyEvents(client, parent, dryRun) {
         );
       } else {
         await client.updateKeyEvent({
-          updateMask: 'counting_method',
+          updateMask: createUpdateMask('counting_method'),
           keyEvent: {
             name: existing.name,
             countingMethod: desired.countingMethod,
@@ -190,7 +191,7 @@ async function ensureCustomDimensions(client, parent, dryRun) {
         console.log(`[dry-run] update custom dimension metadata: ${desired.parameterName}`);
       } else {
         await client.updateCustomDimension({
-          updateMask: 'display_name,description',
+          updateMask: createUpdateMask('display_name', 'description'),
           customDimension: {
             name: existing.name,
             displayName: desired.displayName,
