@@ -14,7 +14,7 @@
     "lint:fix": "svelte-kit sync && eslint . --fix --max-warnings 0",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "validate": "pnpm format:check && pnpm lint && pnpm check && pnpm build",
+    "validate": "pnpm format:check && pnpm lint && pnpm check && pnpm test && pnpm build",
     "ga:list": "node --env-file-if-exists=.env scripts/ga-admin.mjs list",
     "ga:sync": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync",
     "ga:sync:dry": "node --env-file-if-exists=.env scripts/ga-admin.mjs sync --dry-run",
