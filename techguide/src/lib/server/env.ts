@@ -7,7 +7,11 @@ import {
 import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 
 const DEFAULT_AMPLIFY_APP_ID = 'd1ei4wu36fr0u9';
-const SSM_SECRET_NAMES = new Set(['RESEND_API_KEY', 'TURNSTILE_SECRET_KEY']);
+const SSM_SECRET_NAMES = new Set([
+  'MACCLIPY_GA_API_SECRET',
+  'RESEND_API_KEY',
+  'TURNSTILE_SECRET_KEY',
+]);
 const BUILD_TIME_SERVER_ENV: Record<string, string | undefined> = {
   CONTACT_TO_EMAIL: STATIC_CONTACT_TO_EMAIL,
   RESEND_FROM_EMAIL: STATIC_RESEND_FROM_EMAIL,

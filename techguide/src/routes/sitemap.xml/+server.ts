@@ -13,6 +13,7 @@ const sitemapEntries = [
   { path: '/profile/academy-fes-2026/', changefreq: 'weekly', priority: '0.6' },
   { path: pageSeo.recruit.path, changefreq: 'weekly', priority: '0.7' },
   { path: pageSeo.macclipy.path, changefreq: 'weekly', priority: '0.8' },
+  { path: pageSeo.macclipyPrivacy.path, changefreq: 'monthly', priority: '0.4' },
   { path: pageSeo.contact.path, changefreq: 'monthly', priority: '0.7' },
 ] as const;
 

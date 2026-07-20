@@ -31,7 +31,15 @@ export const siteMetadata: SiteMetadata = {
 export const instagramProfileUrl = 'https://www.instagram.com/yuchan_314/';
 
 export const pageSeo: Record<
-  'home' | 'services' | 'articles' | 'contact' | 'instagram' | 'profile' | 'recruit' | 'macclipy',
+  | 'home'
+  | 'services'
+  | 'articles'
+  | 'contact'
+  | 'instagram'
+  | 'profile'
+  | 'recruit'
+  | 'macclipy'
+  | 'macclipyPrivacy',
   PageSeo
 > = {
   home: {
@@ -90,6 +98,12 @@ export const pageSeo: Record<
     path: '/macclipy/',
     image: '/images/macclipy/macclipy-og-rich.png',
     imageAlt: 'MacClipyのコピー履歴パネルを表示したMacBook',
+  },
+  macclipyPrivacy: {
+    title: 'MacClipy プライバシーポリシー | TechGuide',
+    description:
+      'MacClipyが取り扱うデータ、匿名の利用状況の送信内容、利用目的、停止方法、保存期間について説明します。',
+    path: '/macclipy/privacy/',
   },
 };
 

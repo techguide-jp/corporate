@@ -12,6 +12,7 @@
   const sourceHref = 'https://github.com/techguide-jp/mac-clipy';
   const companyHref = resolve('/#company');
   const contactHref = resolve('/contact/?category=macclipy&subject=MacClipyについて');
+  const privacyHref = resolve('/macclipy/privacy/');
   const images = {
     hero: '/images/macclipy/macclipy-web-hero-rich.webp',
     workflow: '/images/macclipy/macclipy-workflow-rich.webp',
@@ -186,6 +187,7 @@
         <p>
           コピー履歴データはMac内に保存されます。パスワード管理アプリやプライベートな作業アプリは、履歴保存の対象外に設定できます。
         </p>
+        <p><a class="privacy__policy-link" href={privacyHref}>プライバシーポリシーを見る</a></p>
       </div>
 
       <figure class="section-visual">
@@ -247,6 +249,7 @@
 
       <div class="support__actions">
         <a class="support__company-link" href={companyHref}>運営者情報を見る</a>
+        <a class="support__company-link" href={privacyHref}>プライバシーポリシー</a>
         <a class="download-button" href={contactHref} onclick={trackContact}>
           MacClipyについて問い合わせる
         </a>

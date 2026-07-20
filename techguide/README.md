@@ -27,6 +27,12 @@ pnpm build
   支援内容の詳細ページ
 - `/contact`  
   Resend を使った独自問い合わせフォーム
+- `/macclipy`
+  MacClipyの製品・ダウンロード案内
+- `/macclipy/privacy`
+  MacClipyのプライバシーポリシー
+- `/api/macclipy/analytics`
+  署名済みMacClipyから匿名イベントを受け取るAPI
 
 ## 主な編集ポイント
 
@@ -111,18 +117,19 @@ legacy の [../events/index.html](../events/index.html) は rollback や参照�
 - 旧 URL の redirect / rewrite は Amplify コンソール側で維持する
 - 日常運用では `techguide/` を更新すれば本番と `redirects` に反映される
 - GA4 は `PUBLIC_GA_MEASUREMENT_ID` を設定し、`techguide.jp` / `www.techguide.jp` の本番ホストでのみ有効化する
+- MacClipyの匿名イベント転送には、サーバー専用の `MACCLIPY_GA_API_SECRET` が必要。構築・確認・障害対応は [docs/macclipy-analytics.md](./docs/macclipy-analytics.md) に従う
 - Resend を使う問い合わせフォームには `RESEND_API_KEY`、`RESEND_FROM_NAME`、`RESEND_FROM_EMAIL`、`CONTACT_TO_EMAIL`、`PUBLIC_TURNSTILE_SITE_KEY`、`TURNSTILE_SECRET_KEY` が必要
 - `PUBLIC_*` は SvelteKit の build 時に公開bundleへ埋め込むため、Amplifyで値を変えたら再デプロイが必要
 - `RESEND_FROM_NAME`、`RESEND_FROM_EMAIL`、`CONTACT_TO_EMAIL` はAmplifyの「環境設定」に置き、サーバーbundleへbuild時に埋め込んでSSR actionから参照する。変更時は再デプロイが必要
-- `RESEND_API_KEY` と `TURNSTILE_SECRET_KEY` は公開bundleへ入れず、AmplifyのシークレットまたはSSR runtime環境変数からサーバー側だけで読む
-- Amplifyの「シークレット」に置く場合は、SSR Compute role にSSM Parameter Storeの `ssm:GetParameter` 権限を付ける。現在の共有シークレットは `/amplify/shared/d1ei4wu36fr0u9/RESEND_API_KEY` と `/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY` を読む想定
+- `MACCLIPY_GA_API_SECRET`、`RESEND_API_KEY`、`TURNSTILE_SECRET_KEY` は公開bundleへ入れず、AmplifyのシークレットまたはSSR runtime環境変数からサーバー側だけで読む
+- Amplifyの「シークレット」に置く場合は、SSR Compute role にSSM Parameter Storeの `ssm:GetParameter` 権限を付ける。現在の共有シークレットは `/amplify/shared/d1ei4wu36fr0u9/MACCLIPY_GA_API_SECRET`、`/amplify/shared/d1ei4wu36fr0u9/RESEND_API_KEY`、`/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY` を読む想定
 - `pnpm dev` では `CONTACT_DEV_MOCK_SUBMISSION` が未設定または `true` の場合、送信完了UIを確認しやすいようにTurnstile/Resendを呼ばず成功扱いにする。ローカルで実連携を検証する場合は `CONTACT_DEV_MOCK_SUBMISSION=false` にする
 - AWS は SvelteKit 用 adapter を自社保守していないため、Amplify のSSR対応はコミュニティ adapter の `amplify-adapter` に依存しています
 - `design/TechGuide/` と `events/` は legacy / rollback 参照用として残している
 
 ### SSR Compute role
 
-問い合わせフォームの server action は、Turnstile secret と Resend API key をサーバー側で参照します。Amplify Console の「シークレット」に置いた値は、SvelteKit SSR compute の `process.env` にはそのまま出ないため、SSR Compute role 経由でSSM Parameter Storeから読みます。
+問い合わせフォームのserver actionとMacClipyの匿名計測APIは、秘密値をサーバー側で参照します。Amplify Console の「シークレット」に置いた値は、SvelteKit SSR compute の `process.env` にはそのまま出ないため、SSR Compute role 経由でSSM Parameter Storeから読みます。
 
 SSR Compute role に付ける最小権限の例:
 
@@ -134,6 +141,7 @@ SSR Compute role に付ける最小権限の例:
       "Effect": "Allow",
       "Action": "ssm:GetParameter",
       "Resource": [
+        "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/MACCLIPY_GA_API_SECRET",
         "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/RESEND_API_KEY",
         "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY"
       ]
@@ -192,6 +200,7 @@ GA4 の管理作業は、公式クライアント `@google-analytics/admin` を�
 
 - `contact_page_view` の Key event 化
 - `placement`, `section`, `link_label`, `destination_host` の custom dimension 作成・更新
+- MacClipy用の `app_version`, `build_number`, `macos_major_version`, `architecture` の custom dimension 作成・更新
 
 事前準備:
 
@@ -210,6 +219,7 @@ cp .env.example .env
 
 ```dotenv
 PUBLIC_GA_MEASUREMENT_ID=G-MS3VSF32XF
+MACCLIPY_GA_API_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
 GA4_PROPERTY_ID=123456789
 GOOGLE_APPLICATION_CREDENTIALS=/absolute/path/to/service-account.json
 RESEND_API_KEY=re_xxxxxxxxx
