@@ -34,6 +34,30 @@ const DEFAULT_CUSTOM_DIMENSIONS = [
     description: 'クリック先のホスト名',
     scope: CustomDimension.DimensionScope.EVENT,
   },
+  {
+    parameterName: 'app_version',
+    displayName: 'MacClipy app version',
+    description: 'MacClipyのアプリバージョン',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'build_number',
+    displayName: 'MacClipy build number',
+    description: 'MacClipyのビルド番号',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'macos_major_version',
+    displayName: 'macOS major version',
+    description: 'MacClipyを利用したmacOSのメジャーバージョン',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'architecture',
+    displayName: 'MacClipy architecture',
+    description: 'MacClipyを利用したCPUアーキテクチャ',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
 ];
 
 function fail(message) {

@@ -441,10 +441,24 @@
   align-items: center;
 }
 
-.privacy__copy > p:last-child {
+.privacy__copy > h2 + p {
   max-width: 38rem;
   margin-top: 22px;
   color: #5f6a63;
+}
+
+.privacy__policy-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: #236b45;
+  font-weight: 750;
+  text-decoration: underline;
+  text-decoration-color: rgba(35, 107, 69, 0.4);
+  text-underline-offset: 5px;
+}
+
+.privacy__policy-link:hover {
+  color: #174c30;
 }
 
 .install__inner {
