@@ -1,3 +1,8 @@
+export const ANALYTICS_ADDRESS_RATE_LIMIT = 100;
+export const ANALYTICS_INSTALLATION_RATE_LIMIT = 10;
+export const ANALYTICS_RATE_LIMIT_WINDOW_MS = 60_000;
+export const ANALYTICS_RATE_LIMIT_MAX_ENTRIES = 10_000;
+
 interface AnalyticsRateLimiterOptions {
   limit: number;
   windowMs: number;

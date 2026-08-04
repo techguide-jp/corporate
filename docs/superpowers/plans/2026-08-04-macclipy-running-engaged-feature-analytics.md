@@ -109,10 +109,10 @@
 
 **Interfaces:**
 
-- Produces: 1回の通常日次送信（Running + Engaged + 最大6 feature、初回は install 追加）が1分10件制限内に収まる定数と回帰テスト。
+- Produces: 1回の通常日次送信（Running + Engaged + 最大6 feature、初回は install 追加）を匿名インストール単位の1分10件に収め、同一アドレスの複数端末は1分100件まで許可する二段階制限と回帰テスト。
 - Produces: 新指標の意味、旧 `macclipy_daily_active` との非連続性、検証・リリース順序を明記した公開説明とrunbook。
 
-- [ ] **Step 1: 9件の正常batchを許可し11件目を拒否する失敗テストを書く**
+- [ ] **Step 1: 同一アドレスの2台分18件を許可し、各匿名インストールの11件目を拒否する失敗テストを書く**
 
 - [ ] **Step 2: routeとテストが共有するrate-limit定数を実装する**
 

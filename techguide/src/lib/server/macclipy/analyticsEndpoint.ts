@@ -14,7 +14,7 @@ interface AnalyticsEndpointInput {
 
 interface AnalyticsEndpointDependencies {
   now?: () => Date;
-  consumeRateLimit(clientAddress: string): boolean;
+  consumeRateLimit(scope: 'address' | 'installation', key: string): boolean;
   forward(payload: MacClipyAnalyticsPayload): Promise<void>;
 }
 
@@ -40,7 +40,7 @@ export async function handleMacClipyAnalyticsRequest(
     return { status: 413 };
   }
 
-  if (!dependencies.consumeRateLimit(input.clientAddress)) {
+  if (!dependencies.consumeRateLimit('address', input.clientAddress)) {
     return { status: 429, headers: { 'Retry-After': '60' } };
   }
 
@@ -54,6 +54,10 @@ export async function handleMacClipyAnalyticsRequest(
   const validation = parseMacClipyAnalyticsPayload(value, dependencies.now?.() ?? new Date());
   if (!validation.ok) {
     return { status: 400 };
+  }
+
+  if (!dependencies.consumeRateLimit('installation', validation.payload.installationId)) {
+    return { status: 429, headers: { 'Retry-After': '60' } };
   }
 
   try {

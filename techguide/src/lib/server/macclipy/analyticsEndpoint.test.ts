@@ -30,6 +30,24 @@ await test('accepts a valid payload and forwards it once', async () => {
   assert.equal(forwardCalls, 1);
 });
 
+await test('separates shared-address and installation rate-limit buckets', async () => {
+  const rateLimitCalls: string[][] = [];
+  const result = await handleMacClipyAnalyticsRequest(makeInput(JSON.stringify(validPayload)), {
+    now: () => now,
+    consumeRateLimit: (...keys: string[]) => {
+      rateLimitCalls.push(keys);
+      return true;
+    },
+    forward: () => Promise.resolve(),
+  });
+
+  assert.equal(result.status, 202);
+  assert.deepEqual(rateLimitCalls, [
+    ['address', '192.0.2.1'],
+    ['installation', validPayload.installation_id],
+  ]);
+});
+
 await test('rejects non-JSON, oversized, and malformed requests before forwarding', async () => {
   let forwardCalls = 0;
   const dependencies = {
