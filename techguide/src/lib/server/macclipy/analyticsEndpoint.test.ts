@@ -30,6 +30,24 @@ await test('accepts a valid payload and forwards it once', async () => {
   assert.equal(forwardCalls, 1);
 });
 
+await test('separates shared-address and installation rate-limit buckets', async () => {
+  const rateLimitCalls: string[][] = [];
+  const result = await handleMacClipyAnalyticsRequest(makeInput(JSON.stringify(validPayload)), {
+    now: () => now,
+    consumeRateLimit: (...keys: string[]) => {
+      rateLimitCalls.push(keys);
+      return true;
+    },
+    forward: () => Promise.resolve(),
+  });
+
+  assert.equal(result.status, 202);
+  assert.deepEqual(rateLimitCalls, [
+    ['address', '192.0.2.1'],
+    ['installation', validPayload.installation_id],
+  ]);
+});
+
 await test('rejects non-JSON, oversized, and malformed requests before forwarding', async () => {
   let forwardCalls = 0;
   const dependencies = {
@@ -88,6 +106,44 @@ await test('returns a generic 503 without echoing payload or secret', async () =
   assert.equal(result.status, 503);
   assert.equal(JSON.stringify(result).includes('server-only-secret'), false);
   assert.equal(JSON.stringify(result).includes(validPayload.installation_id), false);
+});
+
+await test('forwards a validated feature usage payload without raw field names', async () => {
+  let forwardedPayload: unknown;
+  const featureUsagePayload = {
+    ...validPayload,
+    event_name: 'feature_usage',
+    feature: 'search_session',
+    usage_count: 4,
+    usage_date: '2026-07-20',
+  };
+
+  const result = await handleMacClipyAnalyticsRequest(
+    makeInput(JSON.stringify(featureUsagePayload)),
+    {
+      now: () => now,
+      consumeRateLimit: () => true,
+      forward: (payload) => {
+        forwardedPayload = payload;
+        return Promise.resolve();
+      },
+    },
+  );
+
+  assert.equal(result.status, 202);
+  assert.deepEqual(forwardedPayload, {
+    schemaVersion: 1,
+    installationId: validPayload.installation_id,
+    eventName: 'feature_usage',
+    appVersion: '0.2.0',
+    buildNumber: '20',
+    macOSMajorVersion: 26,
+    architecture: 'arm64',
+    occurredAt: new Date('2026-07-20T02:59:00Z'),
+    feature: 'search_session',
+    usageCount: 4,
+    usageDate: '2026-07-20',
+  });
 });
 
 function makeInput(bodyText: string) {

@@ -1,4 +1,7 @@
-import type { MacClipyAnalyticsPayload } from './analyticsValidation.ts';
+import type {
+  MacClipyAnalyticsEventName,
+  MacClipyAnalyticsPayload,
+} from './analyticsValidation.ts';
 
 interface GaMeasurementConfiguration {
   measurementId: string;
@@ -6,6 +9,14 @@ interface GaMeasurementConfiguration {
 }
 
 type Fetcher = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
+
+const GA_EVENT_NAMES: Record<MacClipyAnalyticsEventName, string> = {
+  install: 'macclipy_install',
+  daily_active: 'macclipy_daily_running',
+  daily_running: 'macclipy_daily_running',
+  daily_engaged: 'macclipy_daily_engaged',
+  feature_usage: 'macclipy_feature_usage',
+};
 
 export async function sendMacClipyAnalyticsEvent(
   payload: MacClipyAnalyticsPayload,
@@ -22,10 +33,24 @@ export async function sendMacClipyAnalyticsEvent(
   url.searchParams.set('measurement_id', measurementId);
   url.searchParams.set('api_secret', apiSecret);
 
-  const eventName = payload.eventName === 'install' ? 'macclipy_install' : 'macclipy_daily_active';
+  const eventName = GA_EVENT_NAMES[payload.eventName];
   const sessionId = Math.floor(payload.occurredAt.getTime() / 1_000);
+  const eventParams: Record<string, string | number> = {
+    app_version: payload.appVersion,
+    build_number: payload.buildNumber,
+    macos_major_version: payload.macOSMajorVersion,
+    architecture: payload.architecture,
+    session_id: sessionId,
+    engagement_time_msec: 1,
+  };
+  if (payload.eventName === 'feature_usage') {
+    eventParams.feature = payload.feature;
+    eventParams.usage_count = payload.usageCount;
+    eventParams.usage_date = payload.usageDate;
+  }
+
   const body = {
-    client_id: payload.installationId,
+    client_id: convertUuidToGaClientId(payload.installationId),
     timestamp_micros: payload.occurredAt.getTime() * 1_000,
     consent: {
       ad_user_data: 'DENIED',
@@ -34,14 +59,7 @@ export async function sendMacClipyAnalyticsEvent(
     events: [
       {
         name: eventName,
-        params: {
-          app_version: payload.appVersion,
-          build_number: payload.buildNumber,
-          macos_major_version: payload.macOSMajorVersion,
-          architecture: payload.architecture,
-          session_id: sessionId,
-          engagement_time_msec: 1,
-        },
+        params: eventParams,
       },
     ],
   };
@@ -55,4 +73,11 @@ export async function sendMacClipyAnalyticsEvent(
   if (!response.ok) {
     throw new Error('ga_measurement_failed');
   }
+}
+
+function convertUuidToGaClientId(installationId: string): string {
+  const hex = installationId.replaceAll('-', '');
+  const upperBits = BigInt(`0x${hex.slice(0, 16)}`).toString();
+  const lowerBits = BigInt(`0x${hex.slice(16)}`).toString();
+  return `${upperBits}.${lowerBits}`;
 }

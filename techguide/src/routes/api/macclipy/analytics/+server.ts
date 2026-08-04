@@ -5,17 +5,30 @@ import {
   handleMacClipyAnalyticsRequest,
   MAX_ANALYTICS_BODY_BYTES,
 } from '$lib/server/macclipy/analyticsEndpoint';
-import { createAnalyticsRateLimiter } from '$lib/server/macclipy/analyticsRateLimit';
+import {
+  ANALYTICS_ADDRESS_RATE_LIMIT,
+  ANALYTICS_INSTALLATION_RATE_LIMIT,
+  ANALYTICS_RATE_LIMIT_MAX_ENTRIES,
+  ANALYTICS_RATE_LIMIT_WINDOW_MS,
+  createAnalyticsRateLimiter,
+} from '$lib/server/macclipy/analyticsRateLimit';
 import { sendMacClipyAnalyticsEvent } from '$lib/server/macclipy/gaMeasurementClient';
 import type { RequestHandler } from './$types';
 
 export const prerender = false;
 
-const rateLimiter = createAnalyticsRateLimiter({
-  limit: 10,
-  windowMs: 60_000,
-  maxEntries: 10_000,
-});
+const rateLimiters = {
+  address: createAnalyticsRateLimiter({
+    limit: ANALYTICS_ADDRESS_RATE_LIMIT,
+    windowMs: ANALYTICS_RATE_LIMIT_WINDOW_MS,
+    maxEntries: ANALYTICS_RATE_LIMIT_MAX_ENTRIES,
+  }),
+  installation: createAnalyticsRateLimiter({
+    limit: ANALYTICS_INSTALLATION_RATE_LIMIT,
+    windowMs: ANALYTICS_RATE_LIMIT_WINDOW_MS,
+    maxEntries: ANALYTICS_RATE_LIMIT_MAX_ENTRIES,
+  }),
+};
 
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const declaredLength = readContentLength(request.headers.get('content-length'));
@@ -36,7 +49,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       clientAddress: getClientAddress(),
     },
     {
-      consumeRateLimit: (clientAddress) => rateLimiter.consume(clientAddress),
+      consumeRateLimit: (scope, key) => rateLimiters[scope].consume(key),
       forward: async (payload) => {
         if (dev) {
           return;

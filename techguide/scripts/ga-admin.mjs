@@ -1,5 +1,10 @@
 import { AnalyticsAdminServiceClient, protos } from '@google-analytics/admin';
 import { createUpdateMask } from './ga-admin-field-mask.mjs';
+import {
+  MACCLIPY_USAGE_CUSTOM_DIMENSIONS,
+  MACCLIPY_USAGE_CUSTOM_METRICS,
+  normalizeKeyEventCountingMethod,
+} from './ga-admin-resources.mjs';
 
 const { KeyEvent, CustomDimension } = protos.google.analytics.admin.v1beta;
 
@@ -59,7 +64,10 @@ const DEFAULT_CUSTOM_DIMENSIONS = [
     description: 'MacClipyを利用したCPUアーキテクチャ',
     scope: CustomDimension.DimensionScope.EVENT,
   },
+  ...MACCLIPY_USAGE_CUSTOM_DIMENSIONS,
 ];
+
+const DEFAULT_CUSTOM_METRICS = [...MACCLIPY_USAGE_CUSTOM_METRICS];
 
 function fail(message) {
   console.error(`ERROR: ${message}`);
@@ -87,6 +95,11 @@ async function listKeyEvents(client, parent) {
 
 async function listCustomDimensions(client, parent) {
   const [items] = await client.listCustomDimensions({ parent });
+  return items;
+}
+
+async function listCustomMetrics(client, parent) {
+  const [items] = await client.listCustomMetrics({ parent });
   return items;
 }
 
@@ -118,6 +131,20 @@ function printCustomDimensions(items) {
   }
 }
 
+function printCustomMetrics(items) {
+  if (items.length === 0) {
+    console.log('Custom metrics: なし');
+    return;
+  }
+
+  console.log('Custom metrics:');
+  for (const item of items) {
+    console.log(
+      `- ${item.parameterName} (displayName=${item.displayName}, scope=${item.scope ?? 'UNKNOWN'}, unit=${item.measurementUnit ?? 'UNKNOWN'})`,
+    );
+  }
+}
+
 async function ensureKeyEvents(client, parent, dryRun) {
   const existingItems = await listKeyEvents(client, parent);
   const byEventName = new Map(existingItems.map((item) => [item.eventName, item]));
@@ -141,7 +168,10 @@ async function ensureKeyEvents(client, parent, dryRun) {
       continue;
     }
 
-    if (existing.countingMethod !== desired.countingMethod && existing.name) {
+    if (
+      normalizeKeyEventCountingMethod(existing.countingMethod) !== desired.countingMethod &&
+      existing.name
+    ) {
       if (dryRun) {
         console.log(
           `[dry-run] update key event counting method: ${desired.eventName} -> ${desired.countingMethod}`,
@@ -207,10 +237,55 @@ async function ensureCustomDimensions(client, parent, dryRun) {
   }
 }
 
+async function ensureCustomMetrics(client, parent, dryRun) {
+  const existingItems = await listCustomMetrics(client, parent);
+  const byParameterName = new Map(existingItems.map((item) => [item.parameterName, item]));
+
+  for (const desired of DEFAULT_CUSTOM_METRICS) {
+    const existing = byParameterName.get(desired.parameterName);
+
+    if (!existing) {
+      if (dryRun) {
+        console.log(`[dry-run] create custom metric: ${desired.parameterName}`);
+      } else {
+        await client.createCustomMetric({
+          parent,
+          customMetric: desired,
+        });
+        console.log(`created custom metric: ${desired.parameterName}`);
+      }
+      continue;
+    }
+
+    const needsUpdate =
+      existing.displayName !== desired.displayName || existing.description !== desired.description;
+
+    if (needsUpdate && existing.name) {
+      if (dryRun) {
+        console.log(`[dry-run] update custom metric metadata: ${desired.parameterName}`);
+      } else {
+        await client.updateCustomMetric({
+          updateMask: createUpdateMask('display_name', 'description'),
+          customMetric: {
+            name: existing.name,
+            displayName: desired.displayName,
+            description: desired.description,
+          },
+        });
+        console.log(`updated custom metric metadata: ${desired.parameterName}`);
+      }
+      continue;
+    }
+
+    console.log(`custom metric already up-to-date: ${desired.parameterName}`);
+  }
+}
+
 async function runList(client, parent) {
   console.log(`Property: ${parent}`);
   printKeyEvents(await listKeyEvents(client, parent));
   printCustomDimensions(await listCustomDimensions(client, parent));
+  printCustomMetrics(await listCustomMetrics(client, parent));
 }
 
 async function runSync(client, parent, dryRun) {
@@ -221,6 +296,7 @@ async function runSync(client, parent, dryRun) {
 
   await ensureKeyEvents(client, parent, dryRun);
   await ensureCustomDimensions(client, parent, dryRun);
+  await ensureCustomMetrics(client, parent, dryRun);
 }
 
 async function main() {
