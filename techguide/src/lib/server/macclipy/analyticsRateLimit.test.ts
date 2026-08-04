@@ -31,3 +31,19 @@ await test('bounds stored keys and fails closed for new keys at capacity', () =>
   assert.equal(limiter.consume('client-b'), true);
   assert.equal(limiter.consume('client-c'), false);
 });
+
+await test('allows one complete first-run daily analytics batch without allowing excess traffic', () => {
+  const limiter = createAnalyticsRateLimiter({
+    limit: 10,
+    windowMs: 60_000,
+    maxEntries: 100,
+    now: () => 1_000,
+  });
+
+  for (let requestNumber = 1; requestNumber <= 9; requestNumber += 1) {
+    assert.equal(limiter.consume('client-a'), true);
+  }
+
+  assert.equal(limiter.consume('client-a'), true);
+  assert.equal(limiter.consume('client-a'), false);
+});
