@@ -6,6 +6,7 @@
   import Company from '$lib/components/sections/Company.svelte';
   import ContactCta from '$lib/components/sections/ContactCta.svelte';
   import Hero from '$lib/components/sections/Hero.svelte';
+  import NewsSection from '$lib/components/sections/NewsSection.svelte';
   import Services from '$lib/components/sections/Services.svelte';
   import ShowcaseSection from '$lib/components/sections/ShowcaseSection.svelte';
   import {
@@ -27,6 +28,9 @@
     story,
     workItems,
   } from '$lib/data/site';
+  import { getPublishedNewsItems } from '$lib/news/get-news';
+
+  const latestNewsItems = getPublishedNewsItems().slice(0, 3);
 
   const homeStructuredData = [
     buildWebSiteJsonLd(),
@@ -52,6 +56,7 @@
 
 <main>
   <Hero content={hero} />
+  <NewsSection items={latestNewsItems} />
   <About content={story} />
   <Services items={services} />
   <ShowcaseSection

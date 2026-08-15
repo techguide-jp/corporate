@@ -1,5 +1,6 @@
 export const RECRUIT_CATEGORY_ID = 'recruit';
 export const MACCLIPY_CATEGORY_ID = 'macclipy';
+export const SHUSEI_CATEGORY_ID = 'shusei';
 
 export const CONTACT_CATEGORIES = [
   { id: 'discovery', label: '課題整理・導入前の相談' },
@@ -12,6 +13,7 @@ export const CONTACT_CATEGORIES = [
   { id: RECRUIT_CATEGORY_ID, label: '採用・パートナー応募' },
   { id: 'media', label: '取材・登壇の相談' },
   { id: MACCLIPY_CATEGORY_ID, label: 'MacClipyについて' },
+  { id: SHUSEI_CATEGORY_ID, label: '守成クラブについて' },
   { id: 'sales', label: '営業・ご提案' },
   { id: 'other', label: 'その他・まだ整理できていない相談' },
 ] as const;

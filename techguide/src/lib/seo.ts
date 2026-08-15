@@ -21,6 +21,7 @@ interface ArticleInput {
   publishedAt: string;
   updatedAt?: string;
   image?: string;
+  type?: 'Article' | 'NewsArticle';
 }
 
 function normalizePath(path: string) {
@@ -181,12 +182,13 @@ export function buildArticleJsonLd({
   publishedAt,
   updatedAt,
   image = siteMetadata.defaultOgImage,
+  type = 'Article',
 }: ArticleInput): JsonLdObject {
   const url = buildAbsoluteUrl(path);
 
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': type,
     '@id': `${url}#article`,
     headline,
     description,

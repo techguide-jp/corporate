@@ -6,6 +6,7 @@
     CONTACT_CATEGORIES,
     MACCLIPY_CATEGORY_ID,
     RECRUIT_CATEGORY_ID,
+    SHUSEI_CATEGORY_ID,
     type ContactFieldErrors,
     type ContactCategoryId,
     type ContactFormValues,
@@ -42,6 +43,7 @@
   const fieldErrors = $derived.by<ContactFieldErrors>(() => form?.fieldErrors ?? {});
   const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
   const isMacClipy = $derived(selectedCategory === MACCLIPY_CATEGORY_ID);
+  const isShusei = $derived(selectedCategory === SHUSEI_CATEGORY_ID);
   const hasTurnstile = $derived(data.turnstileSiteKey.length > 0);
   const showSuccessPanel = $derived(!isSubmitting && form?.ok === true);
   const hideContactForm = $derived(isSubmitting || showSuccessPanel);
@@ -280,6 +282,18 @@
                 <li>表示されたメッセージや発生頻度</li>
               </ul>
             </section>
+          {:else if isShusei}
+            <section class="contact-page__panel">
+              <h2>守成クラブについてお問い合わせいただけます</h2>
+              <p>
+                守成クラブやヒルノ品川会場、品川グループ公式サイトについてのご質問・ご相談を受け付けています。内容に応じて確認のうえご案内します。
+              </p>
+              <ul class="contact-page__support-list">
+                <li>守成クラブや例会参加について聞いてみたい</li>
+                <li>ヒルノ品川会場の活動について知りたい</li>
+                <li>品川グループ公式サイトについて問い合わせたい</li>
+              </ul>
+            </section>
           {:else}
             <section class="contact-page__panel">
               <h2>このようなご相談に対応しています</h2>
@@ -448,7 +462,9 @@
             <em id="message-help">
               {isMacClipy
                 ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
-                : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
+                : isShusei
+                  ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
+                  : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
             </em>
             {#if fieldErrors.message}
               <small>{fieldErrors.message}</small>

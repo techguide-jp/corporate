@@ -1,5 +1,6 @@
 import { pageSeo } from '$lib/data/site';
 import { getPublishedArticles } from '$lib/articles/get-article';
+import { getPublishedNewsItems } from '$lib/news/get-news';
 import { buildAbsoluteUrl } from '$lib/seo';
 
 export const prerender = true;
@@ -8,6 +9,7 @@ const sitemapEntries = [
   { path: pageSeo.home.path, changefreq: 'weekly', priority: '1.0' },
   { path: pageSeo.services.path, changefreq: 'weekly', priority: '0.8' },
   { path: pageSeo.articles.path, changefreq: 'weekly', priority: '0.7' },
+  { path: pageSeo.news.path, changefreq: 'weekly', priority: '0.7' },
   { path: pageSeo.instagram.path, changefreq: 'monthly', priority: '0.7' },
   { path: pageSeo.profile.path, changefreq: 'monthly', priority: '0.6' },
   { path: '/profile/academy-fes-2026/', changefreq: 'weekly', priority: '0.6' },
@@ -22,6 +24,11 @@ export function GET() {
     ...sitemapEntries,
     ...getPublishedArticles().map((article) => ({
       path: `/articles/${article.slug}/`,
+      changefreq: 'monthly',
+      priority: '0.6',
+    })),
+    ...getPublishedNewsItems().map((item) => ({
+      path: `/news/${item.slug}/`,
       changefreq: 'monthly',
       priority: '0.6',
     })),

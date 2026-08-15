@@ -34,6 +34,7 @@ export const pageSeo: Record<
   | 'home'
   | 'services'
   | 'articles'
+  | 'news'
   | 'contact'
   | 'instagram'
   | 'profile'
@@ -62,6 +63,12 @@ export const pageSeo: Record<
     path: '/articles/',
     image: '/images/services/consulting-visual.webp',
     imageAlt: 'TechGuideの記事一覧ページのビジュアル',
+  },
+  news: {
+    title: 'お知らせ | TechGuide',
+    description:
+      'TechGuide合同会社のサービス、プロダクト、制作実績、イベント、採用などの最新情報をお届けします。',
+    path: '/news/',
   },
   contact: {
     title: 'お問い合わせ | TechGuide',
@@ -112,6 +119,7 @@ export const navItems: NavItem[] = [
   { label: 'プロダクト', href: '/#products' },
   { label: '実績', href: '/#works' },
   { label: '記事', href: '/articles/' },
+  { label: 'お知らせ', href: '/news/' },
   { label: '会社情報', href: '/#company' },
   { label: '代表について', href: '/profile/' },
   { label: '採用', href: '/recruit/' },
