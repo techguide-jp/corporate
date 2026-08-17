@@ -74,16 +74,16 @@ pnpm build
 
 ### 現状
 
-`https://techguide.jp/redirects?event=<keyword>` の導線は、現在 [static/redirects/index.html](./static/redirects/index.html) で管理しています。
+`https://techguide.jp/redirects?event=<keyword>` の導線は、現在 [src/routes/redirects/+server.ts](./src/routes/redirects/+server.ts) で管理しています。
 
 実体:
 
-- live の `eventToUrl` マップ: [static/redirects/index.html](./static/redirects/index.html)
+- live の `eventRedirectDestinations` マップ: [src/routes/redirects/+server.ts](./src/routes/redirects/+server.ts)
 - legacy の旧実装: [../events/index.html](../events/index.html)
 - URL 仕様: `https://techguide.jp/redirects?event=<keyword>`
 - 例: `https://techguide.jp/redirects?event=20230522_talk_seminar`
 
-遷移先を追加・変更する場合は、`static/redirects/index.html` の `eventToUrl` を更新してください。
+遷移先を追加・変更する場合は、`src/routes/redirects/+server.ts` の `eventRedirectDestinations` を更新してください。
 
 ### 今後の方針
 
