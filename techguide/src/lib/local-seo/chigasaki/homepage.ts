@@ -84,6 +84,11 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
       },
     ],
   },
+  storyImage: {
+    image: '/images/chigasaki/onsite-consultation-v20260828.webp',
+    imageAlt: '店舗でお客さまの動線を確認する事業者とWeb制作担当者',
+    caption: '店舗でのお客さまの動きを確認し、サイトで伝える順番へ落とし込みます。',
+  },
   examples: {
     title: '茅ヶ崎の事業に合わせた制作例',
     description: '来店、予約、問い合わせ、採用など、必要な行動に合わせて構成します。',

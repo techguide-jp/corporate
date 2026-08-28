@@ -87,6 +87,11 @@ export const chigasakiHubContent: LocalSeoPageContent = {
       },
     ],
   },
+  storyImage: {
+    image: '/images/chigasaki/onsite-consultation-v20260828.webp',
+    imageAlt: '店舗の中を歩きながら仕事の流れを確認する事業者と相談担当者',
+    caption: '画面だけでなく、実際の仕事の流れを見ながら、必要な改善を整理します。',
+  },
   examples: {
     title: '店舗・企業・団体で、こんな相談に対応します',
     description: '業種や規模を問わず、集客と運営に必要な仕組みを組み合わせます。',

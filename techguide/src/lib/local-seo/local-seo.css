@@ -367,9 +367,15 @@
 
 .local-link-card img {
   width: 100%;
+  height: auto;
   aspect-ratio: 16 / 10;
   object-fit: cover;
   object-position: top center;
+}
+
+.local-link-card--compact img {
+  aspect-ratio: 16 / 9;
+  object-position: center;
 }
 
 .local-link-card > div {
@@ -408,6 +414,44 @@
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.14em;
+}
+
+.local-story {
+  padding-block: clamp(10px, 2vw, 24px) clamp(56px, 8vw, 96px);
+  background: rgba(255, 253, 248, 0.7);
+}
+
+.local-story__figure {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border-radius: clamp(22px, 3vw, 34px);
+  background: rgba(231, 237, 233, 0.9);
+  box-shadow: 0 24px 52px rgba(47, 71, 73, 0.14);
+}
+
+.local-story__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 8.4;
+  object-fit: cover;
+  object-position: center;
+}
+
+.local-story__figure figcaption {
+  position: absolute;
+  right: clamp(18px, 3vw, 34px);
+  bottom: clamp(18px, 3vw, 30px);
+  max-width: min(34rem, calc(100% - 36px));
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 16px;
+  background: rgba(25, 57, 59, 0.86);
+  color: rgba(255, 255, 255, 0.96);
+  font-weight: 700;
+  line-height: 1.7;
+  backdrop-filter: blur(8px);
 }
 
 .local-examples {
@@ -673,6 +717,20 @@
 
   .local-faq details > p {
     padding-right: 4px;
+  }
+
+  .local-story__figure img {
+    aspect-ratio: 4 / 3;
+    object-position: 54% center;
+  }
+
+  .local-story__figure figcaption {
+    position: static;
+    max-width: none;
+    border: 0;
+    border-radius: 0;
+    background: rgba(25, 57, 59, 0.96);
+    backdrop-filter: none;
   }
 
   .local-grid--three,

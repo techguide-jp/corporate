@@ -85,6 +85,11 @@ export const chigasakiBusinessImprovementContent: LocalSeoPageContent = {
       },
     ],
   },
+  storyImage: {
+    image: '/images/chigasaki/onsite-consultation-v20260828.webp',
+    imageAlt: '店舗内で日々の作業を確認する事業者と業務改善担当者',
+    caption: '毎日の作業を現場で確認し、残す仕事と減らせる仕事を分けます。',
+  },
   examples: {
     title: '身近な業務から改善できます',
     description: '現在使っている道具を活かし、毎週・毎月繰り返す作業から着手します。',

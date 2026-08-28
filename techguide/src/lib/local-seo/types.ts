@@ -30,6 +30,12 @@ export interface LocalSeoWorks {
   description: string;
 }
 
+export interface LocalSeoStoryImage {
+  image: string;
+  imageAlt: string;
+  caption: string;
+}
+
 export interface LocalSeoLinkCard extends LocalSeoContentItem {
   href: InternalHref;
   image: string;
@@ -68,6 +74,7 @@ export interface LocalSeoPageContent {
   support: LocalSeoSection<LocalSeoContentItem>;
   examples: LocalSeoSection<string>;
   process: LocalSeoSection<LocalSeoProcessStep>;
+  storyImage: LocalSeoStoryImage;
   relatedLinks?: LocalSeoSection<LocalSeoLinkCard>;
   faq: LocalSeoSection<LocalSeoFaqItem>;
   works?: LocalSeoWorks;
