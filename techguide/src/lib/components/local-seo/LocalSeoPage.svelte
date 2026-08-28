@@ -4,7 +4,6 @@
   import Header from '$lib/components/layout/Header.svelte';
   import LocalSeoFaqSection from '$lib/components/local-seo/LocalSeoFaqSection.svelte';
   import LocalSeoRelevanceSection from '$lib/components/local-seo/LocalSeoRelevanceSection.svelte';
-  import LocalSeoStoryImage from '$lib/components/local-seo/LocalSeoStoryImage.svelte';
   import ShowcaseSection from '$lib/components/sections/ShowcaseSection.svelte';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import ActionButton from '$lib/components/ui/ActionButton.svelte';
@@ -192,8 +191,6 @@
       </div>
     </div>
   </section>
-
-  <LocalSeoStoryImage storyImage={content.storyImage} />
 
   <section class="section local-examples">
     <div class="container local-examples__inner">

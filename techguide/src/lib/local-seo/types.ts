@@ -18,6 +18,8 @@ export interface LocalSeoProblemSection extends LocalSeoSection<LocalSeoProblemI
 export interface LocalSeoTransformationItem {
   before: string;
   after: string;
+  image?: string;
+  imageAlt?: string;
 }
 
 export interface LocalSeoFaqItem {
@@ -28,12 +30,6 @@ export interface LocalSeoFaqItem {
 export interface LocalSeoWorks {
   title: string;
   description: string;
-}
-
-export interface LocalSeoStoryImage {
-  image: string;
-  imageAlt: string;
-  caption: string;
 }
 
 export interface LocalSeoLinkCard extends LocalSeoContentItem {
@@ -74,7 +70,6 @@ export interface LocalSeoPageContent {
   support: LocalSeoSection<LocalSeoContentItem>;
   examples: LocalSeoSection<string>;
   process: LocalSeoSection<LocalSeoProcessStep>;
-  storyImage: LocalSeoStoryImage;
   relatedLinks?: LocalSeoSection<LocalSeoLinkCard>;
   faq: LocalSeoSection<LocalSeoFaqItem>;
   works?: LocalSeoWorks;

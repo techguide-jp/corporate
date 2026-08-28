@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { asset } from '$app/paths';
   import ActionButton from '$lib/components/ui/ActionButton.svelte';
   import type {
     LocalSeoProblemSection,
@@ -60,15 +61,36 @@
 
       <div class="local-transformation__list">
         {#each transformation.items as item (item.before)}
-          <article class="local-transformation__item">
-            <div class="local-transformation__state local-transformation__state--before">
-              <span>いま</span>
-              <p>{item.before}</p>
-            </div>
-            <span class="local-transformation__arrow" aria-hidden="true">→</span>
-            <div class="local-transformation__state local-transformation__state--after">
-              <span>整えたあと</span>
-              <p>{item.after}</p>
+          <article
+            class="local-transformation__item"
+            class:local-transformation__item--visual={Boolean(item.image && item.imageAlt)}
+          >
+            {#if item.image && item.imageAlt}
+              <figure class="local-transformation__visual">
+                <img
+                  src={asset(item.image)}
+                  alt={item.imageAlt}
+                  width="1536"
+                  height="864"
+                  loading="lazy"
+                />
+                <figcaption>
+                  <span>BEFORE</span>
+                  <span>AFTER</span>
+                </figcaption>
+              </figure>
+            {/if}
+
+            <div class="local-transformation__comparison">
+              <div class="local-transformation__state local-transformation__state--before">
+                <span>いま</span>
+                <p>{item.before}</p>
+              </div>
+              <span class="local-transformation__arrow" aria-hidden="true">→</span>
+              <div class="local-transformation__state local-transformation__state--after">
+                <span>整えたあと</span>
+                <p>{item.after}</p>
+              </div>
             </div>
           </article>
         {/each}

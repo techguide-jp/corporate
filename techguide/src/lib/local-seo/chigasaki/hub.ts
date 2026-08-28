@@ -53,14 +53,20 @@ export const chigasakiHubContent: LocalSeoPageContent = {
       {
         before: 'サイトを更新しても、何が問い合わせにつながったか分からない',
         after: '見る人の悩みから導線を組み、改善する場所を判断できる',
+        image: '/images/chigasaki/transformation-inquiry-flow-v20260828.webp',
+        imageAlt: '複雑なサイト構成に悩む店主と、導線整理後に顧客対応する店主の比較',
       },
       {
         before: '申込のたびに複数の画面へ転記し、確認漏れを心配する',
         after: '受付から管理までがつながり、確認と連絡に集中できる',
+        image: '/images/chigasaki/transformation-application-flow-v20260828.webp',
+        imageAlt: '紙と複数画面の申込管理と、タブレットで受付を一元化した状態の比較',
       },
       {
         before: '詳しい担当者に作業が集まり、休むと業務が止まる',
         after: '手順と情報が共有され、誰でも状況を追える',
+        image: '/images/chigasaki/transformation-team-flow-v20260828.webp',
+        imageAlt: '一人に書類が集中した職場と、進捗をチーム共有する職場の比較',
       },
     ],
   },
@@ -86,11 +92,6 @@ export const chigasakiHubContent: LocalSeoPageContent = {
         description: '公開や導入をゴールにせず、実際の反応と使い方を見ながら整えます。',
       },
     ],
-  },
-  storyImage: {
-    image: '/images/chigasaki/onsite-consultation-v20260828.webp',
-    imageAlt: '店舗の中を歩きながら仕事の流れを確認する事業者と相談担当者',
-    caption: '画面だけでなく、実際の仕事の流れを見ながら、必要な改善を整理します。',
   },
   examples: {
     title: '店舗・企業・団体で、こんな相談に対応します',

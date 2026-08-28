@@ -83,11 +83,6 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
       },
     ],
   },
-  storyImage: {
-    image: '/images/chigasaki/onsite-consultation-v20260828.webp',
-    imageAlt: '店舗の受付とスタッフの動きを確認する事業者とシステム開発担当者',
-    caption: '受付やスタッフの動きを見ながら、現場で無理なく使える仕組みを設計します。',
-  },
   examples: {
     title: '店舗・教室・イベント運営で使える仕組み',
     description: '受付方法やスタッフ体制に合わせ、必要な機能だけを組み合わせます。',
