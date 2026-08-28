@@ -20,7 +20,6 @@
   <div class="container local-relevance__inner">
     <div class="local-relevance__intro">
       <div class="local-relevance__heading">
-        <p class="local-section-kicker">こんなお悩みはありませんか</p>
         <h2 id="local-relevance-title">{problems.title}</h2>
         <p>{problems.description}</p>
       </div>
