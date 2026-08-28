@@ -2,6 +2,8 @@
   import { asset, resolve } from '$app/paths';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
+  import LocalSeoFaqSection from '$lib/components/local-seo/LocalSeoFaqSection.svelte';
+  import LocalSeoRelevanceSection from '$lib/components/local-seo/LocalSeoRelevanceSection.svelte';
   import ShowcaseSection from '$lib/components/sections/ShowcaseSection.svelte';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import ActionButton from '$lib/components/ui/ActionButton.svelte';
@@ -139,19 +141,12 @@
     </div>
   </section>
 
-  <section class="section local-problems">
-    <div class="container">
-      <SectionHeading title={content.problems.title} subtitle={content.problems.description} />
-      <div class="local-grid local-grid--three">
-        {#each content.problems.items as item (item.title)}
-          <article class="local-info-card">
-            <h3>{item.title}</h3>
-            <p>{item.description}</p>
-          </article>
-        {/each}
-      </div>
-    </div>
-  </section>
+  <LocalSeoRelevanceSection
+    problems={content.problems}
+    transformation={content.transformation}
+    {contactHref}
+    analyticsPlacement={content.contact.placement}
+  />
 
   {#if content.primaryLinks}
     <section class="section local-links-section">
@@ -225,11 +220,11 @@
     </div>
   </section>
 
-  {#if content.showWorks}
+  {#if content.works}
     <ShowcaseSection
       id="chigasaki-works"
-      title="これまでの制作・開発例"
-      subtitle="地域を限定した事例ではありませんが、Web制作から業務システムまで幅広く支援しています。"
+      title={content.works.title}
+      subtitle={content.works.description}
       items={selectedWorks}
       surface="soft"
     />
@@ -267,10 +262,12 @@
     </section>
   {/if}
 
+  <LocalSeoFaqSection faq={content.faq} />
+
   <section class="local-contact" aria-labelledby="local-contact-title">
     <div class="container local-contact__inner">
       <div>
-        <p class="local-eyebrow">Contact</p>
+        <p class="local-eyebrow">ご相談</p>
         <h2 id="local-contact-title">{content.contact.title}</h2>
         <p>{content.contact.description}</p>
       </div>

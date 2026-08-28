@@ -7,6 +7,29 @@ export interface LocalSeoContentItem {
   description: string;
 }
 
+export interface LocalSeoProblemItem extends LocalSeoContentItem {
+  audience: string;
+}
+
+export interface LocalSeoProblemSection extends LocalSeoSection<LocalSeoProblemItem> {
+  bridge: LocalSeoContentItem;
+}
+
+export interface LocalSeoTransformationItem {
+  before: string;
+  after: string;
+}
+
+export interface LocalSeoFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface LocalSeoWorks {
+  title: string;
+  description: string;
+}
+
 export interface LocalSeoLinkCard extends LocalSeoContentItem {
   href: InternalHref;
   image: string;
@@ -39,13 +62,15 @@ export interface LocalSeoPageContent {
   heroLead: string;
   heroCtaLabel: string;
   badges: string[];
-  problems: LocalSeoSection<LocalSeoContentItem>;
+  problems: LocalSeoProblemSection;
+  transformation: LocalSeoSection<LocalSeoTransformationItem>;
   primaryLinks?: LocalSeoSection<LocalSeoLinkCard>;
   support: LocalSeoSection<LocalSeoContentItem>;
   examples: LocalSeoSection<string>;
   process: LocalSeoSection<LocalSeoProcessStep>;
   relatedLinks?: LocalSeoSection<LocalSeoLinkCard>;
+  faq: LocalSeoSection<LocalSeoFaqItem>;
+  works?: LocalSeoWorks;
   contact: LocalSeoContact;
   serviceType?: string;
-  showWorks?: boolean;
 }
