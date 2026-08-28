@@ -269,6 +269,10 @@
 }
 
 @media (min-width: 981px) {
+  .local-transformation__item--visual:nth-child(2) {
+    grid-template-columns: minmax(320px, 0.8fr) minmax(0, 1.5fr);
+  }
+
   .local-transformation__item--visual:nth-child(2) .local-transformation__visual {
     order: 2;
   }
