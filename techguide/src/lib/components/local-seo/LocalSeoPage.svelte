@@ -32,7 +32,7 @@
         ]
       : [
           { name: 'ホーム', path: '/' },
-          { name: '茅ヶ崎のIT相談', path: '/chigasaki/' },
+          { name: '茅ヶ崎のWeb・IT支援', path: '/chigasaki/' },
           { name: content.breadcrumbLabel, path: content.seo.path },
         ],
   );
@@ -96,16 +96,29 @@
         <a href={resolve('/')}>ホーム</a>
         <span aria-hidden="true">/</span>
         {#if content.kind === 'service'}
-          <a href={resolve('/chigasaki/')}>茅ヶ崎のIT相談</a>
+          <a href={resolve('/chigasaki/')}>茅ヶ崎のWeb・IT支援</a>
           <span aria-hidden="true">/</span>
         {/if}
         <span aria-current="page">{content.breadcrumbLabel}</span>
       </nav>
 
-      <div class="local-hero__grid">
+      <div class="local-hero__stage">
+        <img
+          class="local-hero__image"
+          src={asset(content.seo.image)}
+          alt={content.seo.imageAlt}
+          width="1536"
+          height="864"
+          fetchpriority="high"
+        />
+        <div class="local-hero__scrim" aria-hidden="true"></div>
         <div class="local-hero__copy">
           <p class="local-eyebrow">{content.eyebrow}</p>
-          <h1>{content.heroTitle}</h1>
+          <h1>
+            {#each content.heroTitleLines as line (line)}
+              <span>{line}</span>
+            {/each}
+          </h1>
           <p class="local-hero__lead">{content.heroLead}</p>
           <div class="local-badges" aria-label="対応の特徴">
             {#each content.badges as badge (badge)}
@@ -114,22 +127,12 @@
           </div>
           <ActionButton
             href={contactHref}
-            label="茅ヶ崎エリアの相談をする"
+            label={content.heroCtaLabel}
             size="lg"
             analytics={{
               eventName: 'contact_cta_click',
               params: { placement: `${content.contact.placement}_hero` },
             }}
-          />
-        </div>
-
-        <div class="local-hero__visual">
-          <img
-            src={asset(content.seo.image)}
-            alt={content.seo.imageAlt}
-            width="1440"
-            height="900"
-            fetchpriority="high"
           />
         </div>
       </div>

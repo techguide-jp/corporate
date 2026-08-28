@@ -35,8 +35,9 @@ export interface LocalSeoPageContent {
   seo: Required<Pick<PageSeo, 'title' | 'description' | 'path' | 'image' | 'imageAlt'>>;
   breadcrumbLabel: string;
   eyebrow: string;
-  heroTitle: string;
+  heroTitleLines: string[];
   heroLead: string;
+  heroCtaLabel: string;
   badges: string[];
   problems: LocalSeoSection<LocalSeoContentItem>;
   primaryLinks?: LocalSeoSection<LocalSeoLinkCard>;

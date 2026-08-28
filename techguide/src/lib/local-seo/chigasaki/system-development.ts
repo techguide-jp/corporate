@@ -10,22 +10,23 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
     description:
       '茅ヶ崎市・湘南エリアのシステム開発・Webアプリ開発。予約、申込、会員・顧客管理、イベント管理などを、業務整理から設計・開発・運用まで支援します。',
     path,
-    image: '/images/showcase/ticketcraft-hero.webp',
-    imageAlt: '茅ヶ崎エリアの予約・申込システム開発のイメージ',
+    image: '/images/chigasaki/system-development-hero.webp',
+    imageAlt: '茅ヶ崎の海辺をイメージした予約管理システムの打ち合わせ風景',
   },
   breadcrumbLabel: 'システム開発',
-  eyebrow: 'System Development',
-  heroTitle: '茅ヶ崎のシステム開発・Webアプリ開発',
+  eyebrow: '茅ヶ崎のシステム開発',
+  heroTitleLines: ['予約・申込の手間を、', '現場に合う仕組みへ。'],
   heroLead:
-    '予約、申込、顧客管理など、現場の業務に合うWebシステムを設計・開発します。「システムが必要か分からない」という段階から、オンライン・対面で業務を整理します。',
-  badges: ['業務整理から対応', '小さな試作から相談可能', '運用改善まで伴走'],
+    'イベント、教室、会員サービス、店舗予約など、茅ヶ崎の事業で増えがちな受付・確認・連絡をひとつの流れにします。システムが必要か分からない段階から相談できます。',
+  heroCtaLabel: 'システム化を相談する',
+  badges: ['茅ヶ崎市内で業務を確認', '小さな試作から相談可能', '運用改善まで伴走'],
   problems: {
-    title: 'システム開発を検討するきっかけ',
-    description: '既存の業務を理解し、仕組みにする部分と人が判断する部分を分けます。',
+    title: '受付から管理まで、同じ情報を追いかけていませんか',
+    description: '予約や申込の流れを確認し、自動化する部分と人が判断する部分を分けます。',
     items: [
       {
-        title: '予約や申込の転記が多い',
-        description: 'フォーム、メール、台帳に分かれた情報をまとめ、確認や連絡の手間を減らします。',
+        title: '予約や申込を台帳へ転記している',
+        description: 'フォーム、メール、紙に分かれた情報をまとめ、確認や連絡の手間を減らします。',
       },
       {
         title: '顧客情報を追いかけにくい',
@@ -38,7 +39,7 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
     ],
   },
   support: {
-    title: '業務課題を解決する形で設計します',
+    title: '機能一覧ではなく、現場の流れから設計します',
     description: '機能を増やすことより、現場で使い続けられることを優先します。',
     items: [
       {
@@ -56,8 +57,8 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
     ],
   },
   examples: {
-    title: '開発できるシステムの例',
-    description: '業種や運用に合わせ、必要な機能を組み合わせます。',
+    title: '店舗・教室・イベント運営で使える仕組み',
+    description: '受付方法やスタッフ体制に合わせ、必要な機能だけを組み合わせます。',
     items: [
       '予約システム',
       '申込システム',
@@ -70,8 +71,8 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
     ],
   },
   process: {
-    title: 'システム開発の進め方',
-    description: '業務と目的を確認し、必要な範囲を見極めながら進めます。',
+    title: '紙や画面を一緒に見ながら、必要な範囲を決めます',
+    description: '最初から仕様書を用意する必要はありません。現在の業務から順に整理します。',
     items: [
       { title: '現状業務を整理', description: '担当者、手順、情報、困っている場面を確認します。' },
       {
@@ -91,8 +92,9 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
     items: getChigasakiRelatedLinks(path),
   },
   contact: {
-    title: '茅ヶ崎でのシステム開発をご相談ください',
-    description: '作りたい機能が決まっていなくても、現在の業務や困りごとから整理できます。',
+    title: 'いまの受付・管理方法を、そのまま見せてください',
+    description:
+      '作りたい機能が決まっていなくても、現在の業務や困りごとから整理できます。茅ヶ崎市内での対面確認も可能です。',
     category: 'development',
     subject: '茅ヶ崎エリアのシステム開発相談',
     placement: 'chigasaki_system_development',

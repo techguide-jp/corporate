@@ -10,37 +10,38 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
     description:
       '茅ヶ崎市・湘南エリアのホームページ制作・Web制作。コーポレートサイト、サービスサイト、LP、リニューアルを、訴求整理と問い合わせ導線から支援します。',
     path,
-    image: '/images/services/development-visual.webp',
-    imageAlt: '茅ヶ崎エリアのホームページ制作と導線設計のイメージ',
+    image: '/images/chigasaki/homepage-hero.webp',
+    imageAlt: '茅ヶ崎の海辺をイメージしたホームページ制作の打ち合わせ風景',
   },
   breadcrumbLabel: 'ホームページ制作',
-  eyebrow: 'Website Design',
-  heroTitle: '茅ヶ崎のホームページ制作・Web制作',
+  eyebrow: '茅ヶ崎のホームページ制作',
+  heroTitleLines: ['お店の魅力を、', '伝わるサイトに。'],
   heroLead:
-    '会社やサービスの魅力を整理し、見た人が次の行動へ進みやすいホームページを制作します。原稿や構成が決まっていない段階から、茅ヶ崎市内での対面相談にも対応します。',
-  badges: ['茅ヶ崎市・湘南エリア対応', '原稿・構成から相談可能', '公開後の改善にも対応'],
+    '店舗、教室、専門サービス、地域イベントなど、茅ヶ崎で事業を営む方へ。写真や原稿がまだなくても、誰に何を伝えるかを一緒に整理し、スマートフォンで見やすいサイトに仕上げます。',
+  heroCtaLabel: 'ホームページ制作を相談する',
+  badges: ['茅ヶ崎市内で打ち合わせ', '原稿・構成から相談可能', '公開後の改善にも対応'],
   problems: {
-    title: 'ホームページのこんな課題に',
-    description: '見た目だけでなく、伝わり方と問い合わせまでの流れを整えます。',
+    title: '見た目を変えるだけでは、成果は変わりません',
+    description: '検索で見つけてもらい、内容を理解し、問い合わせるまでの流れを整えます。',
     items: [
       {
-        title: '何を載せればよいか決まらない',
-        description: '事業の強み、利用者の悩み、選ばれる理由を整理してページ構成へ落とし込みます。',
+        title: 'サービスの良さをうまく言葉にできない',
+        description: 'お客さまからよく聞かれることや選ばれる理由を整理し、伝わる文章にします。',
       },
       {
-        title: '既存サイトが古く更新しづらい',
-        description: '必要な情報と運用方法を見直し、更新しやすく迷いにくいサイトへ整えます。',
+        title: '営業時間やメニューを更新しづらい',
+        description: '日々変わる情報と固定情報を分け、無理なく更新できる運用に整えます。',
       },
       {
-        title: 'アクセスはあっても問い合わせがない',
+        title: '見られているのに予約・問い合わせがない',
         description:
           'サービス説明、実績、フォームまでの導線を確認し、行動につながる流れを作ります。',
       },
     ],
   },
   support: {
-    title: '伝える内容から公開後まで支援します',
-    description: '制作前の整理と公開後の改善を含め、事業に必要なWebサイトを一緒に作ります。',
+    title: 'お店やサービスの魅力を、伝わる順番に整えます',
+    description: '制作前の聞き取りから公開後の改善まで、窓口を分けずに支援します。',
     items: [
       {
         title: '目的・訴求・構成の整理',
@@ -57,8 +58,8 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
     ],
   },
   examples: {
-    title: '制作できるページ・サイト',
-    description: '目的に合わせて必要な構成と機能を選びます。',
+    title: '茅ヶ崎の事業に合わせた制作例',
+    description: '来店、予約、問い合わせ、採用など、必要な行動に合わせて構成します。',
     items: [
       'コーポレートサイト',
       'サービスサイト',
@@ -71,8 +72,8 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
     ],
   },
   process: {
-    title: 'ホームページ制作の進め方',
-    description: '原稿や写真がそろっていない状態でも、必要な準備から整理します。',
+    title: '原稿や写真がなくても、ここから進められます',
+    description: '対面・オンラインでお話を伺い、必要な準備を一緒に整理します。',
     items: [
       { title: 'ヒアリング', description: '目的、対象者、現在の課題、必要なページを確認します。' },
       { title: '構成・訴求設計', description: '情報の順番と問い合わせまでの導線を設計します。' },
@@ -89,8 +90,9 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
     items: getChigasakiRelatedLinks(path),
   },
   contact: {
-    title: '茅ヶ崎でのホームページ制作をご相談ください',
-    description: '新規制作、リニューアル、LP改善など、現在の状況が分かる範囲でお送りください。',
+    title: 'いまのサイトを見ながら、改善点を整理できます',
+    description:
+      '新規制作、リニューアル、LP改善など、現在の状況が分かる範囲でお送りください。茅ヶ崎市内での対面相談も可能です。',
     category: 'lp',
     subject: '茅ヶ崎エリアのホームページ制作相談',
     placement: 'chigasaki_homepage',

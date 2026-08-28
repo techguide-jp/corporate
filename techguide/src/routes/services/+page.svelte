@@ -150,18 +150,18 @@
     <div class="container regional-support__inner">
       <div class="regional-support__visual">
         <img
-          src={asset('/images/services/consulting-visual.webp')}
-          alt="地域の事業者と課題を整理するIT相談のイメージ"
-          width="1440"
-          height="900"
+          src={asset('/images/chigasaki/consultation-hero.webp')}
+          alt="茅ヶ崎の海辺をイメージしたWeb・IT相談の風景"
+          width="1536"
+          height="864"
           loading="lazy"
         />
       </div>
       <div class="regional-support__copy">
-        <p class="regional-support__eyebrow">Regional Support</p>
-        <h2>茅ヶ崎市・湘南エリアのご相談</h2>
+        <p class="regional-support__eyebrow">茅ヶ崎市内で対面相談できます</p>
+        <h2>茅ヶ崎で、集客と業務を整えたい方へ</h2>
         <p>
-          Web制作、システム開発、業務効率化について、課題整理から制作・運用改善まで支援します。オンラインに加え、茅ヶ崎市内での対面相談にも対応します。
+          ホームページの見直し、予約・顧客管理、転記作業の削減など、店舗や事業の現場で起きている困りごとから相談できます。
         </p>
         <div class="regional-support__tags" aria-label="地域向け支援内容">
           <span>ホームページ制作</span>
@@ -433,12 +433,11 @@
   }
 
   .regional-support__eyebrow {
-    color: rgba(135, 99, 45, 0.88);
+    color: rgba(38, 92, 96, 0.94);
     font-family: var(--font-heading);
     font-size: 0.82rem;
     font-weight: 800;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   .regional-support__copy > p:not(.regional-support__eyebrow) {
