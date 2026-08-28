@@ -268,6 +268,16 @@
   grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.8fr);
 }
 
+@media (min-width: 981px) {
+  .local-transformation__item--visual:nth-child(2) .local-transformation__visual {
+    order: 2;
+  }
+
+  .local-transformation__item--visual:nth-child(2) .local-transformation__comparison {
+    order: 1;
+  }
+}
+
 .local-transformation__visual {
   position: relative;
   overflow: hidden;
