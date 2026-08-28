@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { asset } from '$app/paths';
+  import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
@@ -142,6 +142,36 @@
             {/if}
           </article>
         {/each}
+      </div>
+    </div>
+  </section>
+
+  <section class="section regional-support">
+    <div class="container regional-support__inner">
+      <div class="regional-support__visual">
+        <img
+          src={asset('/images/services/consulting-visual.webp')}
+          alt="地域の事業者と課題を整理するIT相談のイメージ"
+          width="1440"
+          height="900"
+          loading="lazy"
+        />
+      </div>
+      <div class="regional-support__copy">
+        <p class="regional-support__eyebrow">Regional Support</p>
+        <h2>茅ヶ崎市・湘南エリアのご相談</h2>
+        <p>
+          Web制作、システム開発、業務効率化について、課題整理から制作・運用改善まで支援します。オンラインに加え、茅ヶ崎市内での対面相談にも対応します。
+        </p>
+        <div class="regional-support__tags" aria-label="地域向け支援内容">
+          <span>ホームページ制作</span>
+          <span>システム開発</span>
+          <span>業務効率化・AI活用</span>
+        </div>
+        <a class="regional-support__link" href={resolve('/chigasaki/')}>
+          茅ヶ崎エリア向け支援を見る
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>
@@ -376,6 +406,81 @@
     text-underline-offset: 6px;
   }
 
+  .regional-support {
+    background: linear-gradient(180deg, rgba(255, 253, 248, 0.92), rgba(247, 240, 213, 0.88));
+  }
+
+  .regional-support__inner {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(30px, 5vw, 68px);
+    align-items: center;
+  }
+
+  .regional-support__visual img {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    border-radius: 28px;
+    object-fit: cover;
+    object-position: top center;
+    box-shadow: var(--shadow-card);
+  }
+
+  .regional-support__copy {
+    display: grid;
+    justify-items: start;
+    gap: 18px;
+  }
+
+  .regional-support__eyebrow {
+    color: rgba(135, 99, 45, 0.88);
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .regional-support__copy > p:not(.regional-support__eyebrow) {
+    color: var(--color-ink-soft);
+  }
+
+  .regional-support__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .regional-support__tags span {
+    padding: 7px 12px;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 246, 214, 0.86);
+    color: rgba(100, 73, 34, 0.94);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .regional-support__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding-inline: 22px;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary);
+    color: rgba(79, 54, 21, 0.96);
+    font-weight: 800;
+    box-shadow: var(--shadow-button);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .regional-support__link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px rgba(224, 164, 91, 0.3);
+  }
+
   @media (max-width: 900px) {
     .service-detail__intro {
       grid-template-columns: 1fr;
@@ -399,6 +504,10 @@
     .service-detail__related-card {
       grid-template-columns: 1fr;
       padding-top: 16px;
+    }
+
+    .regional-support__inner {
+      grid-template-columns: 1fr;
     }
   }
 
