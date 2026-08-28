@@ -2,12 +2,15 @@ import { pageSeo } from '$lib/data/site';
 import { getPublishedArticles } from '$lib/articles/get-article';
 import { getPublishedNewsItems } from '$lib/news/get-news';
 import { buildAbsoluteUrl } from '$lib/seo';
+import { chigasakiSitemapEntries } from './entries';
+import { renderSitemap } from './sitemap';
 
 export const prerender = true;
 
 const sitemapEntries = [
   { path: pageSeo.home.path, changefreq: 'weekly', priority: '1.0' },
   { path: pageSeo.services.path, changefreq: 'weekly', priority: '0.8' },
+  ...chigasakiSitemapEntries,
   { path: pageSeo.articles.path, changefreq: 'weekly', priority: '0.7' },
   { path: pageSeo.news.path, changefreq: 'weekly', priority: '0.7' },
   { path: pageSeo.instagram.path, changefreq: 'monthly', priority: '0.7' },
@@ -34,18 +37,7 @@ export function GET() {
     })),
   ];
 
-  const body = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${entries
-  .map(
-    ({ path, changefreq, priority }) => `  <url>
-    <loc>${buildAbsoluteUrl(path)}</loc>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`,
-  )
-  .join('\n')}
-</urlset>`;
+  const body = renderSitemap(entries, buildAbsoluteUrl);
 
   return new Response(body, {
     headers: {
