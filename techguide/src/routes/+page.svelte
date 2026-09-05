@@ -8,6 +8,7 @@
   import Hero from '$lib/components/sections/Hero.svelte';
   import NewsSection from '$lib/components/sections/NewsSection.svelte';
   import Services from '$lib/components/sections/Services.svelte';
+  import RegionalSupportSection from '$lib/components/local-seo/RegionalSupportSection.svelte';
   import ShowcaseSection from '$lib/components/sections/ShowcaseSection.svelte';
   import {
     buildOrganizationJsonLd,
@@ -59,6 +60,7 @@
   <NewsSection items={latestNewsItems} />
   <About content={story} />
   <Services items={services} />
+  <RegionalSupportSection placement="home" />
   <ShowcaseSection
     id="products"
     title="プロダクト"

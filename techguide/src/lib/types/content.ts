@@ -56,6 +56,7 @@ export interface StoryContent {
 export interface ShowcaseItem {
   title: string;
   description: string;
+  scope?: string;
   image: string;
   href: string;
   ctaLabel: string;

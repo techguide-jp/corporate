@@ -2,11 +2,14 @@
   import { browser } from '$app/environment';
   import { page } from '$app/state';
   import { GA_MEASUREMENT_ID, isGaEnabled, trackPageView } from '$lib/analytics';
+  import { getBrowserAttribution } from '$lib/analytics/visit';
+  import { sanitizeAnalyticsUrl } from '$lib/analytics/attribution';
   import type { Snippet } from 'svelte';
   import '../app.css';
 
   let { children }: { children: Snippet } = $props();
-  let previousUrl = $state('');
+  // 更新してもページビュー用のeffectを再実行しない。
+  let previousUrl = '';
   let gaInitialized = false;
 
   function initializeGa() {
@@ -25,15 +28,28 @@
     document.head.appendChild(gaScript);
 
     window.gtag('js', new Date());
+    updateGaPageContext();
     window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
     gaInitialized = true;
   }
 
+  function updateGaPageContext() {
+    window.gtag?.('set', {
+      page_location: sanitizeAnalyticsUrl(window.location.href),
+      page_referrer: sanitizeAnalyticsUrl(previousUrl || document.referrer),
+    });
+  }
+
   function sendPageView() {
-    if (!browser || !isGaEnabled(window.location.hostname)) {
+    if (
+      !browser ||
+      !isGaEnabled(window.location.hostname) ||
+      previousUrl === window.location.href
+    ) {
       return;
     }
 
+    updateGaPageContext();
     trackPageView({
       pageTitle: document.title,
       pageLocation: window.location.href,
@@ -55,6 +71,8 @@
   $effect(() => {
     void page.url.pathname;
     void page.url.search;
+
+    if (browser) getBrowserAttribution();
 
     initializeGa();
 

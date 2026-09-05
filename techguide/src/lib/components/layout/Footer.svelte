@@ -2,6 +2,8 @@
   import { browser } from '$app/environment';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
+  import { trackEvent } from '$lib/analytics';
+  import { chigasakiHubLink, chigasakiServiceLinks } from '$lib/local-seo/chigasaki/shared';
   import type { NavItem } from '$lib/types/content';
   import { getResolveArgs, isNavigationItemActive } from '$lib/utils/paths';
 
@@ -74,6 +76,20 @@
           >
             {item.label}
           </a>
+        {/each}
+      </nav>
+      <p class="footer__label">茅ヶ崎での支援</p>
+      <nav aria-label="茅ヶ崎の支援ページ">
+        {#each [chigasakiHubLink, ...chigasakiServiceLinks] as item (item.href)}
+          <a
+            class:footer__link--active={isActive(item.href)}
+            href={resolve(...getResolveArgs(item.href))}
+            onclick={() =>
+              trackEvent('regional_link_click', {
+                placement: 'footer',
+                destination_page: item.href,
+              })}>{item.ctaLabel}</a
+          >
         {/each}
       </nav>
     </div>

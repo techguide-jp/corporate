@@ -1,3 +1,5 @@
+import { normalizeAttributionPage, type ContactAttribution } from '../analytics/attribution.ts';
+
 export const RECRUIT_CATEGORY_ID = 'recruit';
 export const MACCLIPY_CATEGORY_ID = 'macclipy';
 export const SHUSEI_CATEGORY_ID = 'shusei';
@@ -20,7 +22,7 @@ export const CONTACT_CATEGORIES = [
 
 export type ContactCategoryId = (typeof CONTACT_CATEGORIES)[number]['id'];
 
-export interface ContactFormValues {
+export interface ContactFormValues extends ContactAttribution {
   category: ContactCategoryId | '';
   name: string;
   email: string;
@@ -58,6 +60,8 @@ export function createEmptyContactFormValues(
 ): ContactFormValues {
   return {
     category,
+    landingPage: '',
+    sourcePage: '',
     name: '',
     email: '',
     company: '',
@@ -89,5 +93,6 @@ export function createContactFormValuesFromSearchParams(
     ...createEmptyContactFormValues(category),
     subject: getInitialTextValue(searchParams.get('subject'), 120),
     message: getInitialTextValue(searchParams.get('message'), 2000),
+    sourcePage: normalizeAttributionPage(searchParams.get('source_page')),
   };
 }

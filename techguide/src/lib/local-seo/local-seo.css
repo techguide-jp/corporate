@@ -84,7 +84,8 @@
   font-weight: 800;
   letter-spacing: -0.045em;
   line-height: 1.2;
-  word-break: keep-all;
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .local-hero h1 span {

@@ -2,6 +2,8 @@
   import { browser } from '$app/environment';
   import { enhance } from '$app/forms';
   import { trackEvent } from '$lib/analytics';
+  import { getBrowserAttribution } from '$lib/analytics/visit';
+  import { createLeadEventTracker } from '$lib/contact/lead';
   import {
     CONTACT_CATEGORIES,
     MACCLIPY_CATEGORY_ID,
@@ -17,12 +19,14 @@
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { PageProps } from './$types';
 
   const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script';
   const MIN_SUBMITTING_MS = 1000;
+  const leadEvent = createLeadEventTracker();
+  let attribution = $state({ landingPage: '', sourcePage: '' });
 
   let { data, form }: PageProps = $props();
   const initialSelectedCategory = () => data.selectedCategory;
@@ -60,12 +64,18 @@
     ]),
   ].map((item) => serializeJsonLd(item));
 
-  $effect(() => {
-    if (!browser) {
-      return;
-    }
+  onMount(() => {
+    const visit = getBrowserAttribution();
+    attribution = visit;
+    trackEvent('contact_page_view', {
+      source_page: data.initialValues.sourcePage || visit.sourcePage,
+    });
+  });
 
-    trackEvent('contact_page_view');
+  $effect(() => {
+    if (!browser || !form?.ok) return;
+    const params = leadEvent(form.receipt);
+    if (params) trackEvent('generate_lead', params);
   });
 
   $effect(() => {
@@ -352,6 +362,16 @@
           aria-hidden={hideContactForm ? 'true' : undefined}
           use:enhance={handleSubmit}
         >
+          <input
+            type="hidden"
+            name="landingPage"
+            value={values.landingPage || attribution.landingPage}
+          />
+          <input
+            type="hidden"
+            name="sourcePage"
+            value={values.sourcePage || attribution.sourcePage}
+          />
           <div class="contact-form__header">
             <h2>{contactPageContent.formTitle}</h2>
             <p>{contactPageContent.formDescription}</p>
