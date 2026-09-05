@@ -1,7 +1,9 @@
+import { publicWorks } from '$lib/data/works';
+import { CHIGASAKI_PATHS } from './paths';
 import { getChigasakiRelatedLinks } from '$lib/local-seo/chigasaki/shared';
 import type { LocalSeoPageContent } from '$lib/local-seo/types';
 
-const path = '/chigasaki/homepage/';
+const path = CHIGASAKI_PATHS.homepage;
 
 export const chigasakiHomepageContent: LocalSeoPageContent = {
   kind: 'service',
@@ -15,10 +17,10 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
   },
   breadcrumbLabel: 'ホームページ制作',
   eyebrow: '茅ヶ崎のホームページ制作',
-  heroTitleLines: ['お店の魅力を、', '伝わるサイトに。'],
+  heroTitleLines: ['茅ヶ崎の', 'ホームページ制作。', '相談につながるサイトへ。'],
   heroLead:
-    '店舗、教室、専門サービス、地域イベントなど、茅ヶ崎で事業を営む方へ。写真や原稿がまだなくても、誰に何を伝えるかを一緒に整理し、スマートフォンで見やすいサイトに仕上げます。',
-  heroCtaLabel: 'ホームページ制作を相談する',
+    '茅ヶ崎の店舗・教室・企業へ。新規制作からリニューアル、LP改善まで、サービスの魅力と問い合わせ・申込の流れを一緒に整理します。「情報を更新できない」「見られても相談が来ない」といった、今のHPの困りごとからお話しください。',
+  heroCtaLabel: '今のHPと困りごとを相談する',
   badges: ['茅ヶ崎市内で打ち合わせ', '原稿・構成から相談可能', '公開後の改善にも対応'],
   problems: {
     title: 'サイトの見た目より先に、詰まっている場所があります',
@@ -85,7 +87,7 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
     ],
   },
   examples: {
-    title: '茅ヶ崎の事業に合わせた制作例',
+    title: '目的に合わせて制作するサイト・ページ',
     description: '来店、予約、問い合わせ、採用など、必要な行動に合わせて構成します。',
     items: [
       'コーポレートサイト',
@@ -96,6 +98,28 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
       'ECサイト',
       '採用ページ',
       '既存ホームページのリニューアル',
+    ],
+  },
+  estimate: {
+    title: '制作費用・期間を決める3つの条件',
+    description:
+      'まず必要な範囲と優先順位を確認し、お見積もりに含む作業・公開までの期間・公開後の費用を分けてご案内します。',
+    items: [
+      {
+        title: 'ページ数と素材の準備',
+        description:
+          'LP1枚か複数ページか、原稿・写真が揃っているかで変わります。既存サイトやパンフレットを活用し、原稿整理から支援する範囲を決めます。',
+      },
+      {
+        title: '申込・予約・更新の仕組み',
+        description:
+          '問い合わせフォーム、予約サービスとの連携、自社で更新する仕組みの有無を確認します。既存サービスを使う方法と、個別に開発する方法を比較します。',
+      },
+      {
+        title: '移行と公開後の運用',
+        description:
+          'ドメイン・サーバーの移行、既存URLの引き継ぎ、更新作業や保守の分担を確認します。月々のサービス利用料と制作費も分けて整理します。',
+      },
     ],
   },
   process: {
@@ -117,14 +141,20 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
     items: getChigasakiRelatedLinks(path),
   },
   works: {
+    items: [publicWorks.aromine, publicWorks.academyFes, publicWorks.shusei],
     title: '伝えるだけでなく、申込みまで整えた制作例',
     description:
-      '講座LP、イベントサイト、会場公式サイトなど、訪問者が内容を理解して次の行動へ進める導線を設計した事例です。',
+      '講座LP、イベントサイト、会場公式サイトの公開実績です。画面と担当範囲をご覧いただけます。掲載実績は茅ヶ崎市内に限定したものではありません。',
   },
   faq: {
     title: '茅ヶ崎のホームページ制作でよくある質問',
     description: '準備段階や公開後の運用について、よくある疑問にお答えします。',
     items: [
+      {
+        question: '茅ヶ崎市内で対面の打ち合わせはできますか？',
+        answer:
+          'はい。茅ヶ崎市内の店舗・事務所などで、場所と日程を調整して対応します。湘南エリアを含むオンライン相談にも対応し、市外での対面相談は個別に調整します。',
+      },
       {
         question: '原稿や写真がなくても相談できますか？',
         answer:
@@ -155,7 +185,7 @@ export const chigasakiHomepageContent: LocalSeoPageContent = {
   contact: {
     title: 'いまのサイトを見ながら、改善点を整理できます',
     description:
-      '新規制作、リニューアル、LP改善など、現在の状況が分かる範囲でお送りください。茅ヶ崎市内での対面相談も可能です。',
+      '今のHPのURL、困っていること、希望する公開時期が分かればお送りください。新規制作でURLがなくても相談できます。茅ヶ崎市内での対面相談は、場所と日程を調整して対応します。',
     category: 'lp',
     subject: '茅ヶ崎エリアのホームページ制作相談',
     placement: 'chigasaki_homepage',

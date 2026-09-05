@@ -10,12 +10,40 @@ const { KeyEvent, CustomDimension } = protos.google.analytics.admin.v1beta;
 
 const DEFAULT_KEY_EVENTS = [
   {
+    eventName: 'generate_lead',
+    countingMethod: KeyEvent.CountingMethod.ONCE_PER_EVENT,
+  },
+  {
     eventName: 'contact_page_view',
     countingMethod: KeyEvent.CountingMethod.ONCE_PER_EVENT,
   },
 ];
 
 const DEFAULT_CUSTOM_DIMENSIONS = [
+  {
+    parameterName: 'landing_page',
+    displayName: 'Inquiry landing page',
+    description: '問い合わせ訪問の最初のページ（タブ単位・30分無操作で更新）',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'source_page',
+    displayName: 'Inquiry source page',
+    description: '相談元ページ・地域導線のクリック元',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'destination_page',
+    displayName: 'Regional destination page',
+    description: '地域支援リンクの遷移先',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'contact_category',
+    displayName: 'Contact category',
+    description: '送信を受け付けた問い合わせのカテゴリID',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
   {
     parameterName: 'placement',
     displayName: 'Placement',

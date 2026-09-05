@@ -1,13 +1,15 @@
+import { publicWorks } from '$lib/data/works';
+import { CHIGASAKI_PATHS } from './paths';
 import { chigasakiServiceLinks } from '$lib/local-seo/chigasaki/shared';
 import type { LocalSeoPageContent } from '$lib/local-seo/types';
 
 export const chigasakiHubContent: LocalSeoPageContent = {
   kind: 'hub',
   seo: {
-    title: '茅ヶ崎のWeb制作・システム開発・IT相談 | TechGuide',
+    title: '茅ヶ崎のWeb・IT相談｜集客と業務の改善支援 | TechGuide',
     description:
       '茅ヶ崎市・湘南エリアの店舗・企業・教室・地域団体へ。ホームページ改善、予約・申込システム、業務効率化を、課題整理から対面・オンラインで支援します。',
-    path: '/chigasaki/',
+    path: CHIGASAKI_PATHS.hub,
     image: '/images/chigasaki/consultation-hero.webp',
     imageAlt: '茅ヶ崎の海辺をイメージしたWeb・IT相談の風景',
   },
@@ -130,6 +132,7 @@ export const chigasakiHubContent: LocalSeoPageContent = {
     ],
   },
   works: {
+    items: [publicWorks.academyFes, publicWorks.aromine, publicWorks.shusei],
     title: '集客導線と運営の仕組みを、実際に形にしてきました',
     description:
       'イベント申込・受付、講座LP、会場公式サイトなどの制作・開発例です。茅ヶ崎地域に限定した事例ではありませんが、相談内容に近い進め方を確認できます。',

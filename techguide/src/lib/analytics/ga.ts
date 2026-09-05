@@ -1,5 +1,7 @@
 import { dev } from '$app/environment';
 import { PUBLIC_GA_MEASUREMENT_ID } from '$env/static/public';
+import { sanitizeAnalyticsUrl } from './attribution';
+import { getBrowserAttribution } from './visit';
 
 export const GA_MEASUREMENT_ID = PUBLIC_GA_MEASUREMENT_ID.trim();
 
@@ -19,6 +21,8 @@ export interface AnalyticsMetadata {
     | 'contact_cta_click'
     | 'contact_page_view'
     | 'contact_form_fallback_click'
+    | 'generate_lead'
+    | 'regional_link_click'
     | 'business_automation_click'
     | 'form_flow_click'
     | 'general_contact_click'
@@ -79,9 +83,9 @@ export function trackPageView({
   callGtag('event', 'page_view', {
     send_to: GA_MEASUREMENT_ID,
     page_title: pageTitle,
-    page_location: pageLocation,
-    page_path: pagePath,
-    page_referrer: pageReferrer,
+    page_location: sanitizeAnalyticsUrl(pageLocation),
+    page_path: sanitizeAnalyticsUrl(pagePath),
+    page_referrer: pageReferrer ? sanitizeAnalyticsUrl(pageReferrer) : undefined,
   });
 }
 
@@ -90,8 +94,12 @@ export function trackEvent(eventName: AnalyticsMetadata['eventName'], params?: G
     return;
   }
 
+  const attribution = getBrowserAttribution();
   callGtag('event', eventName, {
     send_to: GA_MEASUREMENT_ID,
+    page_location: sanitizeAnalyticsUrl(window.location.href),
+    landing_page: attribution.landingPage || undefined,
+    source_page: attribution.sourcePage || undefined,
     ...params,
   });
 }
