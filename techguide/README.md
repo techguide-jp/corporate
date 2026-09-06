@@ -198,8 +198,9 @@ GA4 の管理作業は、公式クライアント `@google-analytics/admin` を�
 
 用途:
 
-- `contact_page_view` の Key event 化
-- `placement`, `section`, `link_label`, `destination_host` の custom dimension 作成・更新
+- 問い合わせ送信成功時の `generate_lead` の Key event 化
+- 旧 `contact_page_view` Key event 設定の削除（閲覧イベント自体は継続計測）
+- `form_name`, `inquiry_type`, `placement`, `section`, `link_label`, `destination_host` の custom dimension 作成・更新
 - MacClipy用の `app_version`, `build_number`, `macos_major_version`, `architecture`, `feature`, `usage_date` の custom dimension 作成・更新
 - MacClipy用の `usage_count` custom metric 作成・更新
 
@@ -242,7 +243,8 @@ pnpm ga:sync
 pnpm ga:sync:dry
 ```
 
-`ga:sync` は冪等に動く前提です。  
+`ga:sync` は冪等に動く前提です。問い合わせでは、メール送信成功後だけ `generate_lead` を送信し、検証失敗・送信失敗・bot判定は成果として計上しません。
+
 Realtime / DebugView の確認、Internal traffic / Developer traffic filter、Unwanted referrals などの UI 確認までは自動化していません。
 
 MacClipyのRunning DAU、Engaged DAU、機能別日次利用は既存のGA・Qiita日次monitoringでも確認します。新指標の定義、旧 `macclipy_daily_active` との切り替え、合成イベント検証、開始日の記録方法は [docs/macclipy-analytics.md](./docs/macclipy-analytics.md) に従ってください。取得失敗は実績0として扱いません。

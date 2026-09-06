@@ -1,5 +1,6 @@
 <script lang="ts">
   import { asset, resolve } from '$app/paths';
+  import { trackEvent } from '$lib/analytics';
   import type { ServiceItem } from '$lib/types/content';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { getResolveArgs } from '$lib/utils/paths';
@@ -23,6 +24,8 @@
         <a
           class="service"
           href={resolve(...getResolveArgs(item.href))}
+          onclick={() =>
+            trackEvent('service_cta_click', { service_id: item.kind, placement: 'home_services' })}
           aria-label={`${item.title} の詳細を見る`}
         >
           <div class="service__image">

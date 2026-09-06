@@ -10,12 +10,38 @@ const { KeyEvent, CustomDimension } = protos.google.analytics.admin.v1beta;
 
 const DEFAULT_KEY_EVENTS = [
   {
-    eventName: 'contact_page_view',
+    eventName: 'generate_lead',
     countingMethod: KeyEvent.CountingMethod.ONCE_PER_EVENT,
   },
 ];
 
+const RETIRED_KEY_EVENTS = ['contact_page_view'];
+
 const DEFAULT_CUSTOM_DIMENSIONS = [
+  {
+    parameterName: 'error_kind',
+    displayName: 'Form error kind',
+    scope: 'EVENT',
+    description: 'Fixed error category only; never error messages or input values.',
+  },
+  {
+    parameterName: 'service_id',
+    displayName: 'Service ID',
+    scope: 'EVENT',
+    description: 'Public service category.',
+  },
+  {
+    parameterName: 'form_name',
+    displayName: 'Form name',
+    description: '成果イベントが発生したフォーム',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
+  {
+    parameterName: 'inquiry_type',
+    displayName: 'Inquiry type',
+    description: '個人情報を含まない問い合わせ種別',
+    scope: CustomDimension.DimensionScope.EVENT,
+  },
   {
     parameterName: 'placement',
     displayName: 'Placement',
@@ -190,6 +216,21 @@ async function ensureKeyEvents(client, parent, dryRun) {
     }
 
     console.log(`key event already up-to-date: ${desired.eventName}`);
+  }
+
+  for (const eventName of RETIRED_KEY_EVENTS) {
+    const existing = byEventName.get(eventName);
+    if (!existing?.name) {
+      console.log(`retired key event already absent: ${eventName}`);
+      continue;
+    }
+
+    if (dryRun) {
+      console.log(`[dry-run] delete retired key event: ${eventName}`);
+    } else {
+      await client.deleteKeyEvent({ name: existing.name });
+      console.log(`deleted retired key event: ${eventName}`);
+    }
   }
 }
 

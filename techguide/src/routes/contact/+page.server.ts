@@ -31,12 +31,13 @@ export const actions: Actions = {
     const validation = parseContactFormData(formData);
 
     if (!validation.ok) {
-      return fail(400, validation);
+      return fail(400, { ...validation, analyticsError: 'validation' as const });
     }
 
     if (await shouldMockContactSubmission()) {
       return {
         ok: true,
+        trackLead: true,
         values: createEmptyContactFormValues(),
         message: SUCCESS_MESSAGE,
       };
@@ -48,6 +49,7 @@ export const actions: Actions = {
         ok: false,
         values: validation.submission,
         fieldErrors: { turnstile: turnstile.message },
+        analyticsError: 'turnstile' as const,
         message: turnstile.message,
       });
     }
@@ -66,12 +68,14 @@ export const actions: Actions = {
         ok: false,
         values: validation.submission,
         fieldErrors: {},
+        analyticsError: 'server' as const,
         message: sendResult.message,
       });
     }
 
     return {
       ok: true,
+      trackLead: true,
       values: createEmptyContactFormValues(),
       message: sendResult.message ?? SUCCESS_MESSAGE,
     };

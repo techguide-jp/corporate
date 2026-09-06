@@ -28,6 +28,9 @@
   const initialSelectedCategory = () => data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
   let isSubmitting = $state(false);
+  let formElement = $state<HTMLFormElement>();
+  let formStarted = false;
+  let formViewed = false;
   let submissionStatusPanel = $state<HTMLElement>();
   let turnstileContainer = $state<HTMLDivElement>();
   let turnstileToken = $state('');
@@ -68,6 +71,51 @@
     trackEvent('contact_page_view');
   });
 
+  function formEvent(
+    eventName: 'form_view' | 'form_start' | 'form_submit_attempt' | 'form_submit_error',
+    errorKind?: string,
+  ) {
+    trackEvent(eventName, {
+      form_name: 'contact',
+      inquiry_type: selectedCategory || 'unknown',
+      error_kind: errorKind,
+    });
+  }
+
+  function startForm() {
+    if (formStarted) return;
+    formStarted = true;
+    formEvent('form_start');
+  }
+
+  $effect(() => {
+    if (!formElement) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!formViewed && entries.some((entry) => entry.isIntersecting)) {
+        formViewed = true;
+        formEvent('form_view');
+        observer.disconnect();
+      }
+    });
+    observer.observe(formElement);
+    let invalidInProgress = false;
+    const invalid = () => {
+      if (invalidInProgress) return;
+      invalidInProgress = true;
+      formEvent('form_submit_attempt');
+      formEvent('form_submit_error', 'validation');
+      queueMicrotask(() => {
+        invalidInProgress = false;
+      });
+    };
+    formElement.addEventListener('invalid', invalid, true);
+    const element = formElement;
+    return () => {
+      observer.disconnect();
+      element.removeEventListener('invalid', invalid, true);
+    };
+  });
+
   $effect(() => {
     if (!browser || !hasTurnstile || !turnstileContainer) {
       return;
@@ -85,6 +133,7 @@
         if (isActive) {
           turnstileClientError =
             '迷惑投稿対策の読み込みに失敗しました。ページを再読み込みしてから送信してください。';
+          formEvent('form_submit_error', 'turnstile_load');
         }
       });
 
@@ -111,6 +160,8 @@
 
   const handleSubmit: SubmitFunction = () => {
     const startedAt = Date.now();
+    const inquiryType = selectedCategory || 'unknown';
+    formEvent('form_submit_attempt');
     isSubmitting = true;
     scrollSubmissionStatusIntoView();
 
@@ -119,7 +170,22 @@
 
       try {
         await update();
+        if (result.type === 'success' && result.data?.trackLead === true) {
+          trackEvent('generate_lead', {
+            form_name: 'contact',
+            inquiry_type: inquiryType,
+          });
+        }
         resetTurnstile();
+        if (result.type === 'failure') {
+          const kind = result.data?.analyticsError;
+          formEvent(
+            'form_submit_error',
+            kind === 'validation' || kind === 'turnstile' ? kind : 'server',
+          );
+        } else if (result.type === 'error') {
+          formEvent('form_submit_error', 'request');
+        }
         shouldScrollResult = result.type === 'success';
 
         const remainingDelay = MIN_SUBMITTING_MS - (Date.now() - startedAt);
@@ -190,6 +256,7 @@
         turnstileToken = '';
         turnstileClientError =
           '迷惑投稿対策の確認に失敗しました。ページを再読み込みしてから送信してください。';
+        if (turnstileRetryCount === 3) formEvent('form_submit_error', 'turnstile');
         return true;
       },
     });
@@ -317,6 +384,7 @@
           <section class="contact-page__panel contact-page__panel--compact">
             <h2>返信について</h2>
             <p>{contactPageContent.responseNote}</p>
+            <a href="#contact-form">相談内容を入力する</a>
           </section>
         </div>
 
@@ -345,6 +413,10 @@
         {/if}
 
         <form
+          id="contact-form"
+          bind:this={formElement}
+          oninput={startForm}
+          onchange={startForm}
           method="POST"
           action="?/submit"
           class="contact-form"
@@ -437,7 +509,7 @@
           </label>
 
           <label class="contact-form__field" for="subject">
-            <span>件名 <strong>必須</strong></span>
+            <span>件名（任意）</span>
             <input
               id="subject"
               name="subject"

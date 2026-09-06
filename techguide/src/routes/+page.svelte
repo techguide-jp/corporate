@@ -56,9 +56,9 @@
 
 <main>
   <Hero content={hero} />
+  <Services items={services} />
   <NewsSection items={latestNewsItems} />
   <About content={story} />
-  <Services items={services} />
   <ShowcaseSection
     id="products"
     title="プロダクト"
