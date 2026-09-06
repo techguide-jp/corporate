@@ -694,6 +694,7 @@
   .contact-page__form-link {
     display: inline-block;
     margin-block: 0.5rem 1.5rem;
+    text-decoration-line: underline;
     text-underline-offset: 0.2em;
   }
 

@@ -1,5 +1,4 @@
 const SAFE_QUERY_KEYS = new Set([
-  'category',
   'utm_source',
   'utm_medium',
   'utm_campaign',

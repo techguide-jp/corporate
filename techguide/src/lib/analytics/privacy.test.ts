@@ -7,7 +7,7 @@ void test('contact prefills and fragments are excluded while campaign context is
     sanitizeAnalyticsUrl(
       'https://techguide.jp/contact/?category=ai&subject=private&message=secret&email=x&token=y&utm_source=article#private',
     ),
-    'https://techguide.jp/contact/?category=ai&utm_source=article',
+    'https://techguide.jp/contact/?utm_source=article',
   );
   assert.equal(analyticsPagePath('https://techguide.jp/contact/?message=secret'), '/contact/');
 });

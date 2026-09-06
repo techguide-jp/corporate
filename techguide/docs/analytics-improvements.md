@@ -11,15 +11,15 @@
 
 ## フォームの段階
 
-| イベント | 条件 | 主な分類 |
-| --- | --- | --- |
-| form_view | 入力フォームが画面に入った時に1回 | form_name, inquiry_type |
-| form_start | 最初の入力または変更に1回 | form_name, inquiry_type |
-| form_submit_attempt | ネイティブ検証または送信開始 | form_name, inquiry_type |
-| form_submit_error | 入力検証・迷惑投稿対策・受付処理の失敗 | error_kind |
-| generate_lead | 正常受付票ごとに1回 | form_name, inquiry_type, contact_category, landing_page, source_page |
-| service_view | 支援項目の表示 | service_id |
-| service_cta_click | 支援項目の相談導線 | service_id, placement |
+| イベント            | 条件                                   | 主な分類                                                             |
+| ------------------- | -------------------------------------- | -------------------------------------------------------------------- |
+| form_view           | 入力フォームが画面に入った時に1回      | form_name, inquiry_type                                              |
+| form_start          | 最初の入力または変更に1回              | form_name, inquiry_type                                              |
+| form_submit_attempt | ネイティブ検証または送信開始           | form_name, inquiry_type                                              |
+| form_submit_error   | 入力検証・迷惑投稿対策・受付処理の失敗 | error_kind                                                           |
+| generate_lead       | 正常受付票ごとに1回                    | form_name, inquiry_type, contact_category, landing_page, source_page |
+| service_view        | 支援項目の表示                         | service_id                                                           |
+| service_cta_click   | 支援項目の相談導線                     | service_id, placement                                                |
 
 `error_kind`: validation / turnstile_load / turnstile / server / request。requestはブラウザが受け取った一般的なリクエスト失敗であり、ネットワーク障害と断定しない。
 
