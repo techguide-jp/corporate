@@ -1,7 +1,9 @@
+import { publicWorks } from '$lib/data/works';
+import { CHIGASAKI_PATHS } from './paths';
 import { getChigasakiRelatedLinks } from '$lib/local-seo/chigasaki/shared';
 import type { LocalSeoPageContent } from '$lib/local-seo/types';
 
-const path = '/chigasaki/system-development/';
+const path = CHIGASAKI_PATHS.development;
 
 export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
   kind: 'service',
@@ -15,7 +17,7 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
   },
   breadcrumbLabel: 'システム開発',
   eyebrow: '茅ヶ崎のシステム開発',
-  heroTitleLines: ['予約・申込の手間を、', '現場に合う仕組みへ。'],
+  heroTitleLines: ['茅ヶ崎のシステム開発。', '予約・申込を、', '現場に合う仕組みへ。'],
   heroLead:
     'イベント、教室、会員サービス、店舗予約など、茅ヶ崎の事業で増えがちな受付・確認・連絡をひとつの流れにします。システムが必要か分からない段階から相談できます。',
   heroCtaLabel: 'システム化を相談する',
@@ -119,9 +121,10 @@ export const chigasakiSystemDevelopmentContent: LocalSeoPageContent = {
     items: getChigasakiRelatedLinks(path),
   },
   works: {
-    title: '申込・受付・運営をひとつにつないだ開発例',
+    items: [publicWorks.academyFes, publicWorks.shusei],
+    title: '利用者の行動から設計したサイト・アプリ',
     description:
-      'イベントの申込と受付、参加者管理、運営画面など、利用者とスタッフ双方の流れを設計した制作・開発事例です。',
+      '来場者向けアプリと会場公式サイトの公開実績です。ブースを探す、イベントを知るなど、利用者の行動に沿った設計と担当範囲を確認できます。掲載実績は茅ヶ崎市内に限定したものではありません。',
   },
   faq: {
     title: '茅ヶ崎のシステム開発でよくある質問',

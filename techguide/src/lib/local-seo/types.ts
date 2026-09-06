@@ -1,5 +1,5 @@
 import type { ContactCategoryId } from '$lib/contact/form';
-import type { PageSeo } from '$lib/types/content';
+import type { PageSeo, ShowcaseItem } from '$lib/types/content';
 import type { InternalHref } from '$lib/utils/paths';
 
 export interface LocalSeoContentItem {
@@ -30,6 +30,7 @@ export interface LocalSeoFaqItem {
 export interface LocalSeoWorks {
   title: string;
   description: string;
+  items: ShowcaseItem[];
 }
 
 export interface LocalSeoLinkCard extends LocalSeoContentItem {
@@ -69,6 +70,7 @@ export interface LocalSeoPageContent {
   primaryLinks?: LocalSeoSection<LocalSeoLinkCard>;
   support: LocalSeoSection<LocalSeoContentItem>;
   examples: LocalSeoSection<string>;
+  estimate?: LocalSeoSection<LocalSeoContentItem>;
   process: LocalSeoSection<LocalSeoProcessStep>;
   relatedLinks?: LocalSeoSection<LocalSeoLinkCard>;
   faq: LocalSeoSection<LocalSeoFaqItem>;

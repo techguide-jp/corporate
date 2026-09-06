@@ -1,6 +1,7 @@
 import { dev } from '$app/environment';
 import { PUBLIC_GA_MEASUREMENT_ID } from '$env/static/public';
 import { analyticsPagePath, sanitizeAnalyticsUrl } from './privacy';
+import { getBrowserAttribution } from './visit';
 
 export const GA_MEASUREMENT_ID = PUBLIC_GA_MEASUREMENT_ID.trim();
 
@@ -28,6 +29,7 @@ export interface AnalyticsMetadata {
     | 'service_view'
     | 'service_cta_click'
     | 'contact_form_fallback_click'
+    | 'regional_link_click'
     | 'business_automation_click'
     | 'form_flow_click'
     | 'general_contact_click'
@@ -65,6 +67,10 @@ export function initializeGa(): boolean {
     window.dataLayer?.push(arguments);
   };
   window.gtag('js', new Date());
+  window.gtag('set', {
+    page_location: sanitizeAnalyticsUrl(window.location.href),
+    page_referrer: sanitizeAnalyticsUrl(document.referrer),
+  });
   window.gtag('config', GA_MEASUREMENT_ID, {
     send_page_view: false,
     page_location: sanitizeAnalyticsUrl(window.location.href),
@@ -108,6 +114,10 @@ export function trackPageView({
     return;
   }
 
+  window.gtag?.('set', {
+    page_location: sanitizeAnalyticsUrl(pageLocation),
+    page_referrer: pageReferrer ? sanitizeAnalyticsUrl(pageReferrer) : '',
+  });
   callGtag('event', 'page_view', {
     send_to: GA_MEASUREMENT_ID,
     page_title: pageTitle,
@@ -122,7 +132,10 @@ export function trackEvent(eventName: AnalyticsMetadata['eventName'], params?: G
     return;
   }
 
+  const attribution = getBrowserAttribution();
   callGtag('event', eventName, {
+    landing_page: attribution.landingPage || undefined,
+    source_page: attribution.sourcePage || undefined,
     ...params,
     send_to: GA_MEASUREMENT_ID,
     page_location: sanitizeAnalyticsUrl(window.location.href),

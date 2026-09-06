@@ -1,7 +1,9 @@
+import { publicWorks } from '$lib/data/works';
+import { CHIGASAKI_PATHS } from './paths';
 import { getChigasakiRelatedLinks } from '$lib/local-seo/chigasaki/shared';
 import type { LocalSeoPageContent } from '$lib/local-seo/types';
 
-const path = '/chigasaki/business-improvement/';
+const path = CHIGASAKI_PATHS.improvement;
 
 export const chigasakiBusinessImprovementContent: LocalSeoPageContent = {
   kind: 'service',
@@ -15,7 +17,7 @@ export const chigasakiBusinessImprovementContent: LocalSeoPageContent = {
   },
   breadcrumbLabel: '業務効率化・IT導入',
   eyebrow: '茅ヶ崎の業務改善・IT活用',
-  heroTitleLines: ['毎日の手作業を、', '無理なく減らす。'],
+  heroTitleLines: ['茅ヶ崎の業務改善。', '毎日の手作業を、', '無理なく減らす。'],
   heroLead:
     'フォームからExcelへの転記、予約確認、定型メール、毎月の集計。茅ヶ崎の店舗・企業・団体で繰り返している作業を見つけ、いま使っている道具を活かしながら減らします。',
   heroCtaLabel: '業務改善を相談する',
@@ -121,9 +123,10 @@ export const chigasakiBusinessImprovementContent: LocalSeoPageContent = {
     items: getChigasakiRelatedLinks(path),
   },
   works: {
-    title: '運営の手間まで見据えた制作・開発例',
+    items: [publicWorks.academyFes, publicWorks.shusei],
+    title: '案内・情報整理から運営を支える公開実績',
     description:
-      '申込受付、参加者管理、更新しやすい情報設計など、公開後に担当者が無理なく運用できることまで考えた事例です。',
+      '来場者が情報を探せるアプリ、例会・イベント案内を整理したサイトの制作例です。日々の業務改善でも、まず情報と対応の流れを整理します。掲載実績は茅ヶ崎市内に限定したものではありません。',
   },
   faq: {
     title: '茅ヶ崎の業務効率化・IT導入でよくある質問',

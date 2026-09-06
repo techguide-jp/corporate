@@ -1,6 +1,7 @@
 <script lang="ts">
   import { afterNavigate } from '$app/navigation';
   import { trackPageView } from '$lib/analytics';
+  import { getBrowserAttribution } from '$lib/analytics/visit';
   import { sanitizeAnalyticsUrl } from '$lib/analytics/privacy';
   import type { Snippet } from 'svelte';
   import '../app.css';
@@ -9,6 +10,7 @@
   let previousUrl = '';
   // Navigation is the trigger; updating the referrer must not trigger another PV.
   afterNavigate(() => {
+    getBrowserAttribution();
     const location = sanitizeAnalyticsUrl(window.location.href);
     if (location === previousUrl) return;
     trackPageView({

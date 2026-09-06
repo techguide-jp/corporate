@@ -59,6 +59,9 @@
           <div class="showcase-card__body">
             <h3>{item.title}</h3>
             <p>{item.description}</p>
+            {#if item.scope}
+              <p class="showcase-card__scope"><strong>担当範囲</strong>{item.scope}</p>
+            {/if}
             {#if isInternalHref(item.href)}
               <a class="showcase-card__link" href={resolve(...getResolveArgs(item.href))}>
                 {item.ctaLabel}
@@ -92,7 +95,7 @@
 
   .showcase__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: clamp(18px, 2vw, 24px);
   }
 
@@ -150,6 +153,18 @@
     font-weight: 800;
     text-decoration: underline;
     text-underline-offset: 6px;
+  }
+
+  .showcase-card__scope {
+    padding-top: 12px;
+    border-top: 1px solid rgba(117, 92, 56, 0.12);
+    font-size: 0.9rem;
+  }
+
+  .showcase-card__scope strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--color-ink);
   }
 
   .showcase-card__link::after {

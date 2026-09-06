@@ -52,6 +52,10 @@ export function buildAdminEmail(submission: ContactSubmission) {
     'TechGuideサイトからお問い合わせが届きました。',
     '',
     ...formatSubmissionLines(submission),
+    '',
+    '相談導線（参考情報）:',
+    `流入ページ: ${submission.landingPage || '不明'}`,
+    `相談元ページ: ${submission.sourcePage || '不明'}`,
   ];
 
   return {

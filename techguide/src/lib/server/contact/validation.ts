@@ -5,7 +5,8 @@ import {
   type ContactCategoryId,
   type ContactFieldErrors,
   type ContactFormValues,
-} from '$lib/contact/form';
+} from '../../contact/form.ts';
+import { normalizeAttributionPage } from '../../analytics/attribution.ts';
 
 export interface ContactSubmission extends ContactFormValues {
   category: ContactCategoryId;
@@ -31,6 +32,8 @@ function hasValue(value: string) {
 export function parseContactFormData(formData: FormData): ContactValidationResult {
   const values: ContactFormValues = {
     category: '',
+    landingPage: normalizeAttributionPage(readText(formData, 'landingPage')),
+    sourcePage: normalizeAttributionPage(readText(formData, 'sourcePage')),
     name: readText(formData, 'name'),
     email: readText(formData, 'email'),
     company: readText(formData, 'company'),

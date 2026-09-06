@@ -1,18 +1,13 @@
 import { PUBLIC_TURNSTILE_SITE_KEY } from '$env/static/public';
 import { fail, type Actions } from '@sveltejs/kit';
-import {
-  createContactFormValuesFromSearchParams,
-  createEmptyContactFormValues,
-} from '$lib/contact/form';
+import { createContactFormValuesFromSearchParams } from '$lib/contact/form';
 import { shouldMockContactSubmission } from '$lib/server/contact/devSubmission';
 import { sendContactEmails } from '$lib/server/contact/sendContactEmails';
 import { verifyTurnstile } from '$lib/server/contact/turnstile';
-import { parseContactFormData } from '$lib/server/contact/validation';
+import { submitContactForm } from '$lib/server/contact/submit';
 import type { PageServerLoad } from './$types';
 
 export const prerender = false;
-
-const SUCCESS_MESSAGE = 'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。';
 
 export const load: PageServerLoad = async ({ url }) => {
   const initialValues = createContactFormValuesFromSearchParams(url.searchParams);
@@ -28,56 +23,11 @@ export const load: PageServerLoad = async ({ url }) => {
 export const actions: Actions = {
   submit: async ({ request, getClientAddress }) => {
     const formData = await request.formData();
-    const validation = parseContactFormData(formData);
-
-    if (!validation.ok) {
-      return fail(400, { ...validation, analyticsError: 'validation' as const });
-    }
-
-    if (await shouldMockContactSubmission()) {
-      return {
-        ok: true,
-        trackLead: true,
-        values: createEmptyContactFormValues(),
-        message: SUCCESS_MESSAGE,
-      };
-    }
-
-    const turnstile = await verifyTurnstile(formData, getClientAddress());
-    if (!turnstile.ok) {
-      return fail(400, {
-        ok: false,
-        values: validation.submission,
-        fieldErrors: { turnstile: turnstile.message },
-        analyticsError: 'turnstile' as const,
-        message: turnstile.message,
-      });
-    }
-
-    if (validation.isBot) {
-      return {
-        ok: true,
-        values: createEmptyContactFormValues(),
-        message: SUCCESS_MESSAGE,
-      };
-    }
-
-    const sendResult = await sendContactEmails(validation.submission);
-    if (!sendResult.ok) {
-      return fail(500, {
-        ok: false,
-        values: validation.submission,
-        fieldErrors: {},
-        analyticsError: 'server' as const,
-        message: sendResult.message,
-      });
-    }
-
-    return {
-      ok: true,
-      trackLead: true,
-      values: createEmptyContactFormValues(),
-      message: sendResult.message ?? SUCCESS_MESSAGE,
-    };
+    const result = await submitContactForm(formData, {
+      shouldMock: shouldMockContactSubmission,
+      verify: () => verifyTurnstile(formData, getClientAddress()),
+      send: sendContactEmails,
+    });
+    return result.status === 200 ? result.data : fail(result.status, result.data);
   },
 };

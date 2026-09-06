@@ -2,6 +2,8 @@
   import { browser } from '$app/environment';
   import { enhance } from '$app/forms';
   import { trackEvent } from '$lib/analytics';
+  import { getBrowserAttribution } from '$lib/analytics/visit';
+  import { createLeadEventTracker } from '$lib/contact/lead';
   import {
     CONTACT_CATEGORIES,
     MACCLIPY_CATEGORY_ID,
@@ -23,6 +25,8 @@
 
   const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script';
   const MIN_SUBMITTING_MS = 1000;
+  const leadEvent = createLeadEventTracker();
+  let attribution = $state({ landingPage: '', sourcePage: '' });
 
   let { data, form }: PageProps = $props();
   const initialSelectedCategory = () => data.selectedCategory;
@@ -64,11 +68,18 @@
   ].map((item) => serializeJsonLd(item));
 
   $effect(() => {
-    if (!browser) {
-      return;
-    }
+    if (!browser) return;
+    const visit = getBrowserAttribution();
+    attribution = visit;
+    trackEvent('contact_page_view', {
+      source_page: data.initialValues.sourcePage || visit.sourcePage,
+    });
+  });
 
-    trackEvent('contact_page_view');
+  $effect(() => {
+    if (!browser || !form?.ok) return;
+    const params = leadEvent(form.receipt);
+    if (params) trackEvent('generate_lead', params);
   });
 
   function formEvent(
@@ -160,7 +171,6 @@
 
   const handleSubmit: SubmitFunction = () => {
     const startedAt = Date.now();
-    const inquiryType = selectedCategory || 'unknown';
     formEvent('form_submit_attempt');
     isSubmitting = true;
     scrollSubmissionStatusIntoView();
@@ -170,12 +180,6 @@
 
       try {
         await update();
-        if (result.type === 'success' && result.data?.trackLead === true) {
-          trackEvent('generate_lead', {
-            form_name: 'contact',
-            inquiry_type: inquiryType,
-          });
-        }
         resetTurnstile();
         if (result.type === 'failure') {
           const kind = result.data?.analyticsError;
@@ -334,6 +338,9 @@
       />
 
       <p class="contact-page__lead">{contactPageContent.lead}</p>
+      {#if !hideContactForm}
+        <a class="contact-page__form-link" href="#contact-form">相談内容を入力する</a>
+      {/if}
 
       <div class:contact-page__content--feedback={hideContactForm} class="contact-page__content">
         <div class="contact-page__details" hidden={hideContactForm}>
@@ -384,7 +391,6 @@
           <section class="contact-page__panel contact-page__panel--compact">
             <h2>返信について</h2>
             <p>{contactPageContent.responseNote}</p>
-            <a href="#contact-form">相談内容を入力する</a>
           </section>
         </div>
 
@@ -414,6 +420,7 @@
 
         <form
           id="contact-form"
+          tabindex="-1"
           bind:this={formElement}
           oninput={startForm}
           onchange={startForm}
@@ -424,6 +431,16 @@
           aria-hidden={hideContactForm ? 'true' : undefined}
           use:enhance={handleSubmit}
         >
+          <input
+            type="hidden"
+            name="landingPage"
+            value={values.landingPage || attribution.landingPage}
+          />
+          <input
+            type="hidden"
+            name="sourcePage"
+            value={values.sourcePage || attribution.sourcePage}
+          />
           <div class="contact-form__header">
             <h2>{contactPageContent.formTitle}</h2>
             <p>{contactPageContent.formDescription}</p>
@@ -450,6 +467,7 @@
             <select
               id="category"
               name="category"
+              required
               value={selectedCategory}
               onchange={updateCategory}
               aria-invalid={fieldErrors.category ? 'true' : undefined}
@@ -471,6 +489,7 @@
               <input
                 id="name"
                 name="name"
+                required
                 value={values.name ?? ''}
                 autocomplete="name"
                 aria-invalid={fieldErrors.name ? 'true' : undefined}
@@ -487,6 +506,7 @@
                 id="email"
                 name="email"
                 type="email"
+                required
                 value={values.email ?? ''}
                 autocomplete="email"
                 aria-invalid={fieldErrors.email ? 'true' : undefined}
@@ -527,6 +547,7 @@
             <textarea
               id="message"
               name="message"
+              required
               rows="8"
               aria-invalid={fieldErrors.message ? 'true' : undefined}
               aria-describedby="message-help">{values.message ?? ''}</textarea
@@ -670,6 +691,16 @@
 <Footer companyName={companyProfile.name} items={navItems} />
 
 <style>
+  .contact-page__form-link {
+    display: inline-block;
+    margin-block: 0.5rem 1.5rem;
+    text-underline-offset: 0.2em;
+  }
+
+  #contact-form {
+    scroll-margin-top: 6rem;
+  }
+
   .contact-page {
     padding-block: clamp(72px, 8vw, 110px);
   }

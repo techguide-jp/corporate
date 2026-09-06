@@ -1,5 +1,6 @@
 <script lang="ts">
   import { asset, resolve } from '$app/paths';
+  import { trackEvent } from '$lib/analytics';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import LocalSeoFaqSection from '$lib/components/local-seo/LocalSeoFaqSection.svelte';
@@ -8,7 +9,7 @@
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import ActionButton from '$lib/components/ui/ActionButton.svelte';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
-  import { companyProfile, navItems, workItems } from '$lib/data/site';
+  import { companyProfile, navItems } from '$lib/data/site';
   import type { LocalSeoPageContent } from '$lib/local-seo/types';
   import {
     buildAbsoluteUrl,
@@ -73,10 +74,13 @@
     `/contact/?${new URLSearchParams({
       category: content.contact.category,
       subject: content.contact.subject,
+      source_page: content.seo.path,
     }).toString()}`,
   );
 
-  const selectedWorks = workItems.slice(0, 3);
+  function trackRegionalLink(href: string, placement: string) {
+    trackEvent('regional_link_click', { destination_page: href, placement });
+  }
 </script>
 
 <SeoHead
@@ -157,7 +161,11 @@
         />
         <div class="local-grid local-grid--three">
           {#each content.primaryLinks.items as item (item.href)}
-            <a class="local-link-card" href={resolve(...getResolveArgs(item.href))}>
+            <a
+              class="local-link-card"
+              href={resolve(...getResolveArgs(item.href))}
+              onclick={() => trackRegionalLink(item.href, 'local_primary')}
+            >
               <img
                 src={asset(item.image)}
                 alt={item.imageAlt}
@@ -203,6 +211,23 @@
     </div>
   </section>
 
+  {#if content.estimate}
+    <section class="section local-support">
+      <div class="container">
+        <SectionHeading title={content.estimate.title} subtitle={content.estimate.description} />
+        <div class="local-grid local-grid--three">
+          {#each content.estimate.items as item, index (item.title)}
+            <article class="local-support-card">
+              <span aria-hidden="true">0{index + 1}</span>
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+            </article>
+          {/each}
+        </div>
+      </div>
+    </section>
+  {/if}
+
   <section class="section local-process">
     <div class="container">
       <SectionHeading title={content.process.title} subtitle={content.process.description} />
@@ -225,7 +250,7 @@
       id="chigasaki-works"
       title={content.works.title}
       subtitle={content.works.description}
-      items={selectedWorks}
+      items={content.works.items}
       surface="soft"
     />
   {/if}
@@ -242,6 +267,7 @@
             <a
               class="local-link-card local-link-card--compact"
               href={resolve(...getResolveArgs(item.href))}
+              onclick={() => trackRegionalLink(item.href, 'local_related')}
             >
               <img
                 src={asset(item.image)}
@@ -273,7 +299,7 @@
       </div>
       <ActionButton
         href={contactHref}
-        label="相談内容を送る"
+        label={content.heroCtaLabel}
         tone="light"
         size="lg"
         analytics={{

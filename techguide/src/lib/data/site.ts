@@ -246,30 +246,7 @@ export const productItems: ShowcaseItem[] = [
   },
 ];
 
-export const workItems: ShowcaseItem[] = [
-  {
-    title: '北原孝彦アカデミーフェス 2026',
-    description:
-      '100ブース・100セミナーが集まる大型イベントのサイト。来場者・出展者導線、会場情報、当日の回遊導線を整理しました。',
-    image: '/images/showcase/academy-fes-2026-hero.webp',
-    href: 'https://fes.kitaharatakahiko-academy.com/',
-    ctaLabel: 'サイトを見る',
-  },
-  {
-    title: 'AROMINE',
-    description: 'セルフコンディショニングブランドの講座・申込LP',
-    image: '/images/showcase/aromine-hero.webp',
-    href: 'https://aromine.vercel.app/',
-    ctaLabel: '実績を見る',
-  },
-  {
-    title: '守成クラブ 東京品川会場',
-    description: '例会案内・イベント導線を整理した公式サイト',
-    image: '/images/showcase/shusei-shinagawa-hero.webp',
-    href: 'https://www.shusei-tokyoshinagawa.com/',
-    ctaLabel: '実績を見る',
-  },
-];
+export { workItems } from './works';
 
 export const companyProfile: CompanyProfile = {
   name: 'TechGuide合同会社',
