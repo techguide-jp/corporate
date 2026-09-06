@@ -19,7 +19,7 @@
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
-  import { onMount, tick } from 'svelte';
+  import { tick } from 'svelte';
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { PageProps } from './$types';
 
@@ -32,6 +32,9 @@
   const initialSelectedCategory = () => data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
   let isSubmitting = $state(false);
+  let formElement = $state<HTMLFormElement>();
+  let formStarted = false;
+  let formViewed = false;
   let submissionStatusPanel = $state<HTMLElement>();
   let turnstileContainer = $state<HTMLDivElement>();
   let turnstileToken = $state('');
@@ -64,7 +67,8 @@
     ]),
   ].map((item) => serializeJsonLd(item));
 
-  onMount(() => {
+  $effect(() => {
+    if (!browser) return;
     const visit = getBrowserAttribution();
     attribution = visit;
     trackEvent('contact_page_view', {
@@ -76,6 +80,51 @@
     if (!browser || !form?.ok) return;
     const params = leadEvent(form.receipt);
     if (params) trackEvent('generate_lead', params);
+  });
+
+  function formEvent(
+    eventName: 'form_view' | 'form_start' | 'form_submit_attempt' | 'form_submit_error',
+    errorKind?: string,
+  ) {
+    trackEvent(eventName, {
+      form_name: 'contact',
+      inquiry_type: selectedCategory || 'unknown',
+      error_kind: errorKind,
+    });
+  }
+
+  function startForm() {
+    if (formStarted) return;
+    formStarted = true;
+    formEvent('form_start');
+  }
+
+  $effect(() => {
+    if (!formElement) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!formViewed && entries.some((entry) => entry.isIntersecting)) {
+        formViewed = true;
+        formEvent('form_view');
+        observer.disconnect();
+      }
+    });
+    observer.observe(formElement);
+    let invalidInProgress = false;
+    const invalid = () => {
+      if (invalidInProgress) return;
+      invalidInProgress = true;
+      formEvent('form_submit_attempt');
+      formEvent('form_submit_error', 'validation');
+      queueMicrotask(() => {
+        invalidInProgress = false;
+      });
+    };
+    formElement.addEventListener('invalid', invalid, true);
+    const element = formElement;
+    return () => {
+      observer.disconnect();
+      element.removeEventListener('invalid', invalid, true);
+    };
   });
 
   $effect(() => {
@@ -95,6 +144,7 @@
         if (isActive) {
           turnstileClientError =
             '迷惑投稿対策の読み込みに失敗しました。ページを再読み込みしてから送信してください。';
+          formEvent('form_submit_error', 'turnstile_load');
         }
       });
 
@@ -121,6 +171,7 @@
 
   const handleSubmit: SubmitFunction = () => {
     const startedAt = Date.now();
+    formEvent('form_submit_attempt');
     isSubmitting = true;
     scrollSubmissionStatusIntoView();
 
@@ -130,6 +181,15 @@
       try {
         await update();
         resetTurnstile();
+        if (result.type === 'failure') {
+          const kind = result.data?.analyticsError;
+          formEvent(
+            'form_submit_error',
+            kind === 'validation' || kind === 'turnstile' ? kind : 'server',
+          );
+        } else if (result.type === 'error') {
+          formEvent('form_submit_error', 'request');
+        }
         shouldScrollResult = result.type === 'success';
 
         const remainingDelay = MIN_SUBMITTING_MS - (Date.now() - startedAt);
@@ -200,6 +260,7 @@
         turnstileToken = '';
         turnstileClientError =
           '迷惑投稿対策の確認に失敗しました。ページを再読み込みしてから送信してください。';
+        if (turnstileRetryCount === 3) formEvent('form_submit_error', 'turnstile');
         return true;
       },
     });
@@ -277,6 +338,9 @@
       />
 
       <p class="contact-page__lead">{contactPageContent.lead}</p>
+      {#if !hideContactForm}
+        <a class="contact-page__form-link" href="#contact-form">相談内容を入力する</a>
+      {/if}
 
       <div class:contact-page__content--feedback={hideContactForm} class="contact-page__content">
         <div class="contact-page__details" hidden={hideContactForm}>
@@ -355,6 +419,11 @@
         {/if}
 
         <form
+          id="contact-form"
+          tabindex="-1"
+          bind:this={formElement}
+          oninput={startForm}
+          onchange={startForm}
           method="POST"
           action="?/submit"
           class="contact-form"
@@ -398,6 +467,7 @@
             <select
               id="category"
               name="category"
+              required
               value={selectedCategory}
               onchange={updateCategory}
               aria-invalid={fieldErrors.category ? 'true' : undefined}
@@ -419,6 +489,7 @@
               <input
                 id="name"
                 name="name"
+                required
                 value={values.name ?? ''}
                 autocomplete="name"
                 aria-invalid={fieldErrors.name ? 'true' : undefined}
@@ -435,6 +506,7 @@
                 id="email"
                 name="email"
                 type="email"
+                required
                 value={values.email ?? ''}
                 autocomplete="email"
                 aria-invalid={fieldErrors.email ? 'true' : undefined}
@@ -457,7 +529,7 @@
           </label>
 
           <label class="contact-form__field" for="subject">
-            <span>件名 <strong>必須</strong></span>
+            <span>件名（任意）</span>
             <input
               id="subject"
               name="subject"
@@ -475,6 +547,7 @@
             <textarea
               id="message"
               name="message"
+              required
               rows="8"
               aria-invalid={fieldErrors.message ? 'true' : undefined}
               aria-describedby="message-help">{values.message ?? ''}</textarea
@@ -618,6 +691,17 @@
 <Footer companyName={companyProfile.name} items={navItems} />
 
 <style>
+  .contact-page__form-link {
+    display: inline-block;
+    margin-block: 0.5rem 1.5rem;
+    text-decoration-line: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  #contact-form {
+    scroll-margin-top: 6rem;
+  }
+
   .contact-page {
     padding-block: clamp(72px, 8vw, 110px);
   }

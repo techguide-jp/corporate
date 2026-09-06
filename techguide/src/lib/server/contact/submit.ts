@@ -14,7 +14,8 @@ const SUCCESS_MESSAGE = 'お問い合わせを受け付けました。内容を�
 
 export async function submitContactForm(formData: FormData, dependencies: SubmitDependencies) {
   const validation = parseContactFormData(formData);
-  if (!validation.ok) return { status: 400 as const, data: validation };
+  if (!validation.ok)
+    return { status: 400 as const, data: { ...validation, analyticsError: 'validation' as const } };
 
   const { submission, isBot } = validation;
   const success = (message = SUCCESS_MESSAGE) => {
@@ -38,6 +39,7 @@ export async function submitContactForm(formData: FormData, dependencies: Submit
         ok: false as const,
         values: submission,
         fieldErrors: { turnstile: turnstile.message },
+        analyticsError: 'turnstile' as const,
         message: turnstile.message,
       },
     };
@@ -49,7 +51,13 @@ export async function submitContactForm(formData: FormData, dependencies: Submit
   if (!result.ok) {
     return {
       status: 500 as const,
-      data: { ok: false as const, values: submission, fieldErrors: {}, message: result.message },
+      data: {
+        ok: false as const,
+        values: submission,
+        fieldErrors: {},
+        message: result.message,
+        analyticsError: 'server' as const,
+      },
     };
   }
   return success(result.message);

@@ -76,6 +76,8 @@ await test('adds attribution only to the admin email, and emits a lead once with
   };
   assert.deepEqual(leadEvent(receipt), {
     contact_category: 'lp',
+    form_name: 'contact',
+    inquiry_type: 'lp',
     landing_page: '/chigasaki/homepage/',
     source_page: '/chigasaki/system-development/',
   });
@@ -103,7 +105,11 @@ await test('issues a lead receipt only after admin delivery and excludes all fai
   const bot = await submitContactForm(botForm, dependencies);
   assert.equal(sendCalls, 0);
   assert.equal(invalid.status, 400);
+  assert.ok('analyticsError' in invalid.data && invalid.data.analyticsError === 'validation');
   assert.equal(challengeFailed.status, 400);
+  assert.ok(
+    'analyticsError' in challengeFailed.data && challengeFailed.data.analyticsError === 'turnstile',
+  );
   assert.ok(bot.data.ok && bot.data.receipt === null);
   const deliveryFailed = await submitContactForm(makeForm(), {
     ...dependencies,
@@ -114,6 +120,9 @@ await test('issues a lead receipt only after admin delivery and excludes all fai
     assert.ok(!('receipt' in result.data));
   }
   assert.equal(deliveryFailed.status, 500);
+  assert.ok(
+    'analyticsError' in deliveryFailed.data && deliveryFailed.data.analyticsError === 'server',
+  );
   const accepted = await submitContactForm(makeForm(), dependencies);
   assert.equal(sendCalls, 1);
   assert.equal(accepted.status, 200);
@@ -138,4 +147,12 @@ await test('development mock sends no external requests and gives bots no lead r
   bot.set('website', 'spam');
   const ignored = await submitContactForm(bot, dependencies);
   assert.ok(ignored.data.ok && ignored.data.receipt === null);
+});
+
+await test('an omitted subject uses the selected category label', () => {
+  const form = makeForm();
+  form.delete('subject');
+  const result = parseContactFormData(form);
+  assert.ok(result.ok);
+  if (result.ok) assert.equal(result.submission.subject, 'LP・Webサイト制作の相談');
 });

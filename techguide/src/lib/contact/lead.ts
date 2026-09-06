@@ -13,6 +13,8 @@ export function createLeadEventTracker() {
     measured.add(receipt.id);
     return {
       contact_category: receipt.category,
+      form_name: 'contact',
+      inquiry_type: receipt.category,
       landing_page: normalizeAttributionPage(receipt.landingPage) || undefined,
       source_page: normalizeAttributionPage(receipt.sourcePage) || undefined,
     };

@@ -68,10 +68,6 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     fieldErrors.email = 'メールアドレスの形式を確認してください。';
   }
 
-  if (!hasValue(values.subject)) {
-    fieldErrors.subject = '件名を入力してください。';
-  }
-
   if (!hasValue(values.message)) {
     fieldErrors.message = 'お問い合わせ内容を入力してください。';
   }
@@ -113,6 +109,7 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     isBot,
     submission: {
       ...values,
+      subject: values.subject || getContactCategoryLabel(category),
       category,
       categoryLabel: getContactCategoryLabel(category),
       isRecruit,

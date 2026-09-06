@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { asset } from '$app/paths';
+  import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
+  import { getResolveArgs } from '$lib/utils/paths';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
@@ -9,6 +10,30 @@
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactInfo, navItems, pageSeo, serviceDetails } from '$lib/data/site';
+
+  let serviceList = $state<HTMLDivElement>();
+  const inquiryCategories: Record<string, string> = {
+    consulting: 'discovery',
+    development: 'development',
+    ai: 'ai',
+  };
+  $effect(() => {
+    if (!serviceList) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          trackEvent('service_view', { service_id: entry.target.id, placement: 'services_detail' });
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.1 },
+    );
+    serviceList
+      .querySelectorAll('article.service-detail')
+      .forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  });
 
   function handleOutboundClick(section: string, label: string, href: string) {
     trackEvent('outbound_link_click', {
@@ -52,7 +77,7 @@
         level={1}
       />
 
-      <div class="service-detail-list__items">
+      <div class="service-detail-list__items" bind:this={serviceList}>
         {#each serviceDetails as detail, index (detail.id)}
           <article
             class:service-detail--reverse={index === 1}
@@ -95,6 +120,18 @@
 
               <div class="service-detail__content">
                 <p class="service-detail__summary">{detail.summary}</p>
+                <a
+                  href={resolve(
+                    ...getResolveArgs(
+                      `/contact/?category=${inquiryCategories[detail.id] ?? 'other'}#contact-form`,
+                    ),
+                  )}
+                  onclick={() =>
+                    trackEvent('service_cta_click', {
+                      service_id: detail.id,
+                      placement: 'services_contact',
+                    })}>この支援について相談する</a
+                >
                 <div class="service-detail__grid">
                   <section>
                     <h3 class="service-detail__section-title">こんな課題</h3>

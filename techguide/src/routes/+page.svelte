@@ -57,9 +57,9 @@
 
 <main>
   <Hero content={hero} />
+  <Services items={services} />
   <NewsSection items={latestNewsItems} />
   <About content={story} />
-  <Services items={services} />
   <RegionalSupportSection placement="home" />
   <ShowcaseSection
     id="products"

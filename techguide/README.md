@@ -198,9 +198,10 @@ GA4 の管理作業は、公式クライアント `@google-analytics/admin` を�
 
 用途:
 
-- `generate_lead`（問い合わせ受付完了）と `contact_page_view` の Key event 設定
+- 問い合わせ送信成功時の `generate_lead` の Key event 化
+- 旧 `contact_page_view` Key event 設定の削除（閲覧イベント自体は継続計測）
+- `form_name`, `inquiry_type`, `placement`, `section`, `link_label`, `destination_host` の custom dimension 作成・更新
 - `landing_page`, `source_page`, `destination_page`, `contact_category` の custom dimension 作成・更新
-- `placement`, `section`, `link_label`, `destination_host` の custom dimension 作成・更新
 - MacClipy用の `app_version`, `build_number`, `macos_major_version`, `architecture`, `feature`, `usage_date` の custom dimension 作成・更新
 - MacClipy用の `usage_count` custom metric 作成・更新
 
@@ -243,7 +244,8 @@ pnpm ga:sync
 pnpm ga:sync:dry
 ```
 
-`ga:sync` は冪等に動く前提です。  
+`ga:sync` は冪等に動く前提です。問い合わせでは、メール送信成功後だけ `generate_lead` を送信し、検証失敗・送信失敗・bot判定は成果として計上しません。
+
 Realtime / DebugView の確認、Internal traffic / Developer traffic filter、Unwanted referrals などの UI 確認までは自動化していません。
 
 受託相談の集計には `generate_lead` を使用します。`contact_page_view` やクリック数を問い合わせ件数に合算しません。地域SEOの計測定義・公開後チェックは [docs/local-seo.md](./docs/local-seo.md) を参照してください。
