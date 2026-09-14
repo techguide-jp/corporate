@@ -52,13 +52,6 @@ export const futureArticleCandidates = [
     primaryCtaHref: '/contact/?category=development',
   },
   {
-    title: '“作らない提案”もする理由',
-    category: 'techguide-approach',
-    readerConcern: '開発ありきで話が進みそう',
-    angle: '開発しない方がよい場合は、既存ツールや運用改善を提案する姿勢を出す',
-    primaryCtaHref: '/contact/?category=discovery',
-  },
-  {
     title: 'IT導入で、現場に無理をさせないために見るポイント',
     category: 'it-adoption',
     readerConcern: '導入しても現場が使わなさそう',

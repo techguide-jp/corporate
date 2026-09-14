@@ -73,7 +73,7 @@
 <main>
   <article class="article-detail">
     <div class="container article-detail__container">
-      {#if article.thumbnail}
+      {#if article.thumbnail && article.thumbnail.layout !== 'standalone'}
         <header class="article-detail__hero">
           <img src={article.thumbnail.src} alt={article.thumbnail.alt} />
           <div class="article-detail__hero-overlay">
@@ -97,9 +97,18 @@
         </header>
       {:else}
         <header class="article-detail__header">
+          {#if article.thumbnail}
+            <img
+              class="article-detail__cover"
+              src={article.thumbnail.src}
+              alt={article.thumbnail.alt}
+            />
+          {/if}
           <div class="article-detail__meta">
             <CategoryBadge category={article.category} />
-            <span>{categoryLabel}</span>
+            {#if !article.thumbnail}
+              <span>{categoryLabel}</span>
+            {/if}
             <time datetime={article.publishedAt}>{article.publishedAt}</time>
             {#if article.readingTimeMinutes}
               <span>{article.readingTimeMinutes}分</span>
@@ -155,6 +164,15 @@
     gap: 18px;
     margin-bottom: clamp(34px, 5vw, 52px);
     text-align: left;
+  }
+
+  .article-detail__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: 12px;
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-soft);
   }
 
   .article-detail__meta {

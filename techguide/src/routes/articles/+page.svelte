@@ -144,7 +144,7 @@
 
   .articles-index__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: clamp(18px, 2vw, 24px);
   }
 </style>

@@ -84,6 +84,7 @@ export interface ArticleSeo {
 export interface ArticleThumbnail {
   src: string;
   alt: string;
+  layout?: 'background' | 'standalone';
 }
 
 export interface Article {
