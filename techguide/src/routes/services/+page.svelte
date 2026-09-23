@@ -52,7 +52,7 @@
     }),
     buildBreadcrumbJsonLd([
       { name: 'ホーム', path: '/' },
-      { name: '支援内容', path: pageSeo.services.path },
+      { name: 'お手伝いできること', path: pageSeo.services.path },
     ]),
   ].map((item) => serializeJsonLd(item));
 </script>
@@ -72,13 +72,14 @@
   <section class="section service-detail-list">
     <div class="container">
       <SectionHeading
-        title="支援内容"
-        subtitle="課題や事業フェーズに応じて、導入前整理から制作・技術教育まで必要な支援を詳しくご覧いただけます。"
+        title="お手伝いできること"
+        subtitle="日々の業務の困りごとから、Webサイトやシステムづくり、人材育成まで。具体的なご相談の例と、お手伝いできることをご紹介します。"
         level={1}
       />
 
       <div class="service-detail-list__items" bind:this={serviceList}>
         {#each serviceDetails as detail, index (detail.id)}
+          {@const titleParts = detail.title.split('・')}
           <article
             class:service-detail--reverse={index === 1}
             class="service-detail"
@@ -86,8 +87,14 @@
           >
             <div class="service-detail__intro">
               <div class="service-detail__heading">
-                <p class="service-detail__eyebrow">支援領域</p>
-                <h2>{detail.title}</h2>
+                <p class="service-detail__eyebrow">サービス</p>
+                <h2>
+                  {#each titleParts as part, partIndex (partIndex)}
+                    <span class="service-detail__title-part">
+                      {part}{partIndex < titleParts.length - 1 ? '・' : ''}
+                    </span>
+                  {/each}
+                </h2>
               </div>
 
               <div class="service-detail__visual">
@@ -130,11 +137,11 @@
                     trackEvent('service_cta_click', {
                       service_id: detail.id,
                       placement: 'services_contact',
-                    })}>この支援について相談する</a
+                    })}>この内容について相談する</a
                 >
                 <div class="service-detail__grid">
                   <section>
-                    <h3 class="service-detail__section-title">こんな課題</h3>
+                    <h3 class="service-detail__section-title">こんなお困りごとに</h3>
                     <ul>
                       {#each detail.issues as item (item)}
                         <li>{item}</li>
@@ -143,7 +150,7 @@
                   </section>
 
                   <section>
-                    <h3 class="service-detail__section-title">支援内容</h3>
+                    <h3 class="service-detail__section-title">お手伝いすること</h3>
                     <ul>
                       {#each detail.offerings as item (item)}
                         <li>{item}</li>
@@ -285,6 +292,10 @@
     line-height: 1.18;
     letter-spacing: -0.04em;
     font-weight: 800;
+  }
+
+  .service-detail__title-part {
+    display: inline-block;
   }
 
   .service-detail__summary {
