@@ -1,6 +1,7 @@
 <script lang="ts">
   import { asset } from '$app/paths';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
+  import AboutPrinciples from '$lib/components/sections/AboutPrinciples.svelte';
   import type { StoryContent } from '$lib/types/content';
 
   interface Props {
@@ -52,13 +53,15 @@
   <div class="container about__inner">
     <SectionHeading eyebrow={content.label} title={content.title} />
 
+    <AboutPrinciples {content} />
+
     <div class="about__intro">
       <div class="about__portrait">
         <img src={asset(content.image)} alt={content.imageAlt} loading="lazy" />
       </div>
 
       <article class="about__story">
-        <p class="about__eyebrow">代表の想い</p>
+        <h3 class="about__eyebrow">代表の想い</h3>
         <p class="about__lead">
           {#each splitEmphasis(content.lead) as chunk, chunkIndex (chunkIndex)}
             {#if chunk.emphasized}
@@ -85,29 +88,9 @@
       </article>
     </div>
 
-    <section class="about__mission-area">
-      <div class="about__block-head">
-        <p class="about__eyebrow">{content.missionTitle}</p>
-      </div>
-
-      <ul class="about__mission-list">
-        {#each content.missionItems as item (item)}
-          <li>
-            {#each splitEmphasis(item) as chunk, chunkIndex (chunkIndex)}
-              {#if chunk.emphasized}
-                <strong>{chunk.text}</strong>
-              {:else}
-                {chunk.text}
-              {/if}
-            {/each}
-          </li>
-        {/each}
-      </ul>
-    </section>
-
     <section class="about__focus-area">
       <div class="about__block-head">
-        <p class="about__eyebrow">課題意識</p>
+        <h3 class="about__eyebrow">課題意識</h3>
         <p class="about__block-copy">
           {#each splitEmphasis(focusIntro) as chunk, chunkIndex (chunkIndex)}
             {#if chunk.emphasized}
@@ -122,7 +105,7 @@
       <div class="about__focus-list">
         {#each content.focusItems as item (item.title)}
           <article>
-            <h3>{item.title}</h3>
+            <h4>{item.title}</h4>
             <p>
               {#each splitEmphasis(item.description) as chunk, chunkIndex (chunkIndex)}
                 {#if chunk.emphasized}
@@ -196,6 +179,8 @@
     grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.4fr);
     gap: clamp(24px, 3vw, 40px);
     align-items: start;
+    padding-top: clamp(28px, 4vw, 40px);
+    border-top: 1px solid rgba(117, 92, 56, 0.14);
   }
 
   .about__portrait img {
@@ -243,56 +228,6 @@
     text-wrap: pretty;
   }
 
-  .about__mission-area {
-    position: relative;
-    isolation: isolate;
-    overflow: visible;
-    display: grid;
-    gap: 18px;
-    padding: clamp(26px, 3vw, 34px) 0 clamp(22px, 3vw, 28px);
-  }
-
-  .about__mission-area::before {
-    content: 'Mission';
-    position: absolute;
-    right: 0;
-    top: clamp(8px, 1.8vw, 14px);
-    font-family: var(--font-heading);
-    font-size: clamp(3.6rem, 8vw, 6.2rem);
-    line-height: 1;
-    letter-spacing: -0.06em;
-    font-weight: 900;
-    color: rgba(214, 151, 76, 0.18);
-    pointer-events: none;
-  }
-
-  .about__mission-area::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: -18px;
-    bottom: -14px;
-    width: 100vw;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      90deg,
-      rgba(233, 188, 96, 0.32) 0%,
-      rgba(244, 223, 180, 0.2) 26%,
-      rgba(255, 249, 239, 0.08) 100%
-    );
-    box-shadow:
-      inset 0 3px 0 rgba(214, 151, 76, 0.62),
-      inset 0 -1px 0 rgba(214, 151, 76, 0.24);
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  .about__mission-area .about__block-head,
-  .about__mission-area .about__mission-list {
-    position: relative;
-    z-index: 1;
-  }
-
   .about__focus-area {
     display: grid;
     gap: 18px;
@@ -314,30 +249,6 @@
     color: rgba(57, 45, 29, 0.92);
   }
 
-  .about__mission-list {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .about__mission-list li {
-    padding: 20px 0;
-    font-family: var(--font-heading);
-    font-size: clamp(1.16rem, 1.76vw, 1.56rem);
-    line-height: 1.58;
-    letter-spacing: -0.03em;
-    color: rgba(57, 45, 29, 0.94);
-    font-weight: 800;
-    border-bottom: 1px solid rgba(117, 92, 56, 0.1);
-    text-wrap: pretty;
-  }
-
-  .about__mission-list li:first-child {
-    padding-top: 0;
-  }
-
   .about__focus-list {
     display: grid;
     gap: 18px;
@@ -354,7 +265,7 @@
     margin-top: 8px;
   }
 
-  .about__focus-list h3 {
+  .about__focus-list h4 {
     font-family: var(--font-heading);
     font-size: clamp(1.16rem, 1.72vw, 1.42rem);
     line-height: 1.4;
@@ -424,7 +335,6 @@
 
   .about__copy strong,
   .about__block-copy strong,
-  .about__mission-list strong,
   .about__focus-list strong,
   .about__focus-points strong,
   .about__focus-closing strong {
