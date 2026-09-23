@@ -126,14 +126,18 @@ export const navItems: NavItem[] = [
   { label: 'お問い合わせ', href: '/contact/' },
 ];
 
+const visionTitle = '力になれる喜びと、頼れる安心が、すべての人に。';
+
 export const hero: HeroContent = {
   image: '/images/hero/hero.webp',
   imageAlt: '',
   imageWidth: 1316,
   imageHeight: 688,
-  title: 'IT を、もっと身近に。\n成果につながる形まで。',
-  description:
-    '中小企業や立ち上げ期のチームに向けて、IT導入、LP制作、AI活用まで実行しやすい形に整えて伴走します。',
+  title: visionTitle.replaceAll('、', '、\n'),
+  descriptionLines: [
+    ['ITの活用から', 'システム開発・制作、', 'エンジニアの育成まで。'],
+    ['相手の想いや状況を理解し、', '実際に役立つ形で応えます。'],
+  ],
   actions: [
     { label: '支援内容を見る', href: '/services/', tone: 'warm' },
     {
@@ -186,7 +190,7 @@ export const story: StoryContent = {
     },
   ],
   vision: {
-    title: '力になれる喜びと、頼れる安心が、すべての人に。',
+    title: visionTitle,
     paragraphs: [
       '自分の得意や経験が、誰かの役に立つ。\n自分だけでは難しいときには、安心して頼れる人がいる。',
       '支える側と支えられる側を固定せず、人との関わりの中で、一人ひとりが自分の望む人生を歩んでいける世界を目指します。',

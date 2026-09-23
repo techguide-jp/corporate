@@ -21,7 +21,7 @@ export interface HeroContent {
   imageWidth: number;
   imageHeight: number;
   title: string;
-  description: string;
+  descriptionLines: string[][];
   actions: ActionLink[];
 }
 
