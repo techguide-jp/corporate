@@ -15,12 +15,13 @@
 <section class="section section--tight services" id="services">
   <div class="container">
     <SectionHeading
-      title="支援領域"
-      subtitle="TechGuide が伴走できる支援領域の全体像を、まずは要約でご覧いただけます。"
+      title="お手伝いできること"
+      subtitle="日々の業務の困りごとから、Webサイトやシステムづくり、人材育成までご相談いただけます。"
     />
 
     <div class="services__grid">
       {#each items as item (item.href)}
+        {@const titleParts = item.title.split('・')}
         <a
           class="service"
           href={resolve(...getResolveArgs(item.href))}
@@ -32,7 +33,13 @@
             <img src={asset(item.image)} alt={item.imageAlt} loading="lazy" />
           </div>
 
-          <h3>{item.title}</h3>
+          <h3>
+            {#each titleParts as part, index (index)}
+              <span class="service__title-part">
+                {part}{index < titleParts.length - 1 ? '・' : ''}
+              </span>
+            {/each}
+          </h3>
           <p>{item.description}</p>
         </a>
       {/each}
@@ -101,6 +108,10 @@
     letter-spacing: -0.03em;
     font-weight: 800;
     padding-top: 4px;
+  }
+
+  .service__title-part {
+    display: inline-block;
   }
 
   p {

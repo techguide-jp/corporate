@@ -232,31 +232,31 @@ export const story: StoryContent = {
 
 export const services: ServiceItem[] = [
   {
-    title: '導入前整理・IT活用支援',
+    title: 'ITの相談・業務改善',
     description:
-      '課題整理、優先順位づけ、業務導線の整理を通じて、今の体制で無理なく始められる一歩を明確にします。',
+      '「手作業を減らしたい」「どのツールを使えばいいか分からない」。今の仕事の進め方を伺い、無理なく取り入れられる方法を一緒に考えます。',
     href: '/services/#consulting',
     kind: 'consulting',
     image: '/images/services/consulting-visual.webp',
-    imageAlt: '導入前整理・IT活用支援',
+    imageAlt: 'ITの相談・業務改善',
   },
   {
-    title: '受託開発・LP/導線改善',
+    title: 'Webサイト制作・システム開発',
     description:
-      '事業の目的と利用者の行動を踏まえ、伝わる構成と成果につながる導線を設計し、制作から改善まで伴走します。',
+      'サービスを伝えるWebサイトや、仕事を使いやすくするシステムをつくります。今あるサイトやシステムの改善もご相談いただけます。',
     href: '/services/#development',
     kind: 'development',
     image: '/images/services/development-visual.webp',
-    imageAlt: '受託開発・LP/導線改善',
+    imageAlt: 'Webサイト制作・システム開発',
   },
   {
-    title: 'AI活用・技術教育・組織支援',
+    title: 'AI活用・エンジニア育成',
     description:
-      'AIの現場活用に加え、エンジニアが事業理解を持って対話・提案できるようにする技術教育を通じて、噛み合う組織づくりを支援します。',
+      'AIを日々の仕事に取り入れるお手伝いや、エンジニアの育成を行います。技術を学ぶことに加え、相手の意図をくみ取り、提案する力も大切にしています。',
     href: '/services/#ai',
     kind: 'ai',
     image: '/images/services/ai-visual.webp',
-    imageAlt: 'AI活用・技術教育・組織支援',
+    imageAlt: 'AI活用・エンジニア育成',
   },
 ];
 
