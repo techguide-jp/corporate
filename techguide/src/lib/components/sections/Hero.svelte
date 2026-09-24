@@ -27,7 +27,15 @@
   <div class="container hero__inner">
     <div class="hero__content">
       <h1 class="text-balance">{content.title}</h1>
-      <p class="hero__description">{content.description}</p>
+      <p class="hero__description">
+        {#each content.descriptionLines as line, index (index)}
+          <span class="hero__description-line">
+            {#each line as phrase (phrase)}
+              <span class="hero__phrase">{phrase}</span>
+            {/each}
+          </span>
+        {/each}
+      </p>
 
       <div class="hero__actions">
         {#each content.actions as action (action.href)}
@@ -49,7 +57,7 @@
     position: relative;
     isolation: isolate;
     overflow: clip;
-    min-height: clamp(520px, 58vw, 700px);
+    min-height: clamp(520px, 50vw, 680px);
     background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.12) 0%,
@@ -106,27 +114,24 @@
     min-height: inherit;
     display: grid;
     place-items: center;
-    padding-block: clamp(92px, 10vw, 132px);
+    padding-block: clamp(40px, 5vw, 72px);
   }
 
   .hero__content {
-    --hero-title-size: clamp(1.72rem, 4.1vw, 3.75rem);
+    --hero-title-size: clamp(1.65rem, calc(1.1rem + 2.4vw), 3.5rem);
     --hero-inline-padding: clamp(22px, 5vw, 52px);
     position: relative;
     display: grid;
     justify-items: center;
     gap: 18px;
     text-align: center;
-    inline-size: min(
-      100%,
-      calc((var(--hero-title-size) * 11.5) + (var(--hero-inline-padding) * 2) + 0.5rem)
-    );
+    inline-size: min(100%, 49rem);
     padding: clamp(28px, 4vw, 44px) var(--hero-inline-padding);
     border-radius: min(36px, 4vw);
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.58) 0%,
-      rgba(255, 249, 238, 0.46) 100%
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(255, 249, 238, 0.78) 100%
     );
     border: 1px solid rgba(255, 255, 255, 0.48);
     box-shadow: 0 20px 40px rgba(95, 67, 32, 0.11);
@@ -137,51 +142,53 @@
     font-family: var(--font-heading);
     max-width: 11.5em;
     font-size: var(--hero-title-size);
-    line-height: 1.12;
-    letter-spacing: -0.06em;
+    line-height: 1.4;
+    letter-spacing: -0.04em;
     font-weight: 800;
     white-space: pre-line;
     color: rgba(33, 23, 13, 0.96);
   }
 
   .hero__description {
-    max-width: 30rem;
-    font-size: clamp(1rem, 2vw, 1.16rem);
-    color: rgba(69, 55, 37, 0.88);
+    max-width: 34rem;
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    line-height: 1.85;
+    color: rgb(69, 55, 37);
+  }
+
+  .hero__description-line {
+    display: block;
+  }
+
+  .hero__phrase {
+    display: inline-block;
+    max-width: 100%;
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    inline-size: min(100%, 30rem);
     gap: 14px;
     margin-top: 6px;
   }
 
+  .hero__actions :global(.action-button) {
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+
   @media (max-width: 640px) {
-    .hero {
-      min-height: 520px;
-      background-position: center;
+    .hero__inner {
+      padding-block: 24px;
     }
 
     .hero__content {
-      --hero-title-size: clamp(1.72rem, 5.8vw, 3rem);
       --hero-inline-padding: 18px;
       padding: 26px var(--hero-inline-padding) 24px;
       border-radius: 28px;
-    }
-
-    h1 {
-      max-width: 11.5em;
-    }
-
-    .hero__description {
-      max-width: 19rem;
-    }
-
-    .hero__actions {
-      width: 100%;
-      flex-direction: column;
+      gap: 16px;
     }
   }
 </style>

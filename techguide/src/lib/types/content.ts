@@ -21,7 +21,7 @@ export interface HeroContent {
   imageWidth: number;
   imageHeight: number;
   title: string;
-  description: string;
+  descriptionLines: string[][];
   actions: ActionLink[];
 }
 
@@ -41,6 +41,11 @@ export interface StoryFocus {
   closing?: string;
 }
 
+export interface StoryPrinciple {
+  title: string;
+  description: string;
+}
+
 export interface StoryContent {
   label: string;
   title: string;
@@ -49,8 +54,15 @@ export interface StoryContent {
   imageAlt: string;
   paragraphs: string[];
   focusItems: StoryFocus[];
+  vision: {
+    title: string;
+    paragraphs: string[];
+  };
   missionTitle: string;
-  missionItems: string[];
+  missionItems: StoryPrinciple[];
+  valuesTitle: string;
+  valuesIntro: string;
+  values: StoryPrinciple[];
 }
 
 export interface ShowcaseItem {

@@ -49,12 +49,12 @@ export const pageSeo: Record<
     path: '/',
   },
   services: {
-    title: '支援内容 | TechGuide',
+    title: 'お手伝いできること | TechGuide',
     description:
-      'テックガイド合同会社の支援内容。導入前整理・IT活用支援、受託開発・LP/導線改善、AI活用・技術教育・組織支援を詳しく紹介します。',
+      'ITの相談・業務改善、Webサイト制作・システム開発、AI活用・エンジニア育成。TechGuideがお手伝いできることを、具体的な困りごとや相談例とともに紹介します。',
     path: '/services/',
     image: '/images/services/development-visual.webp',
-    imageAlt: 'TechGuide の支援内容を紹介するページのビジュアル',
+    imageAlt: 'TechGuideがお手伝いできることを紹介するページのビジュアル',
   },
   articles: {
     title: '記事 | TechGuide',
@@ -126,14 +126,18 @@ export const navItems: NavItem[] = [
   { label: 'お問い合わせ', href: '/contact/' },
 ];
 
+const visionTitle = '力になれる喜びと、頼れる安心が、すべての人に。';
+
 export const hero: HeroContent = {
   image: '/images/hero/hero.webp',
   imageAlt: '',
   imageWidth: 1316,
   imageHeight: 688,
-  title: 'IT を、もっと身近に。\n成果につながる形まで。',
-  description:
-    '中小企業や立ち上げ期のチームに向けて、IT導入、LP制作、AI活用まで実行しやすい形に整えて伴走します。',
+  title: visionTitle.replaceAll('、', '、\n'),
+  descriptionLines: [
+    ['ITの活用から', 'システム開発・制作、', 'エンジニアの育成まで。'],
+    ['相手の想いや状況を理解し、', '実際に役立つ形で応えます。'],
+  ],
   actions: [
     { label: '支援内容を見る', href: '/services/', tone: 'warm' },
     {
@@ -150,7 +154,7 @@ export const hero: HeroContent = {
 
 export const story: StoryContent = {
   label: 'About',
-  title: '事業と現場をつなぎ、実行できる形へ。',
+  title: 'TechGuideが目指す世界と、大切にすること。',
   lead: 'ITを、分かる人のものではなく、**使える人のものにする。**',
   image: '/images/about/ceo.webp',
   imageAlt: 'TechGuide合同会社 代表 高橋雄太',
@@ -185,40 +189,74 @@ export const story: StoryContent = {
         'TechGuideは、こうした齟齬を減らすために、**技術だけでなく相手の状況や感情を汲み取り、事業と噛み合う形で動ける人を増やす支援**に取り組んでいます。',
     },
   ],
+  vision: {
+    title: visionTitle,
+    paragraphs: [
+      '自分の得意や経験が、誰かの役に立つ。\n自分だけでは難しいときには、安心して頼れる人がいる。',
+      '支える側と支えられる側を固定せず、人との関わりの中で、一人ひとりが自分の望む人生を歩んでいける世界を目指します。',
+    ],
+  },
   missionTitle: 'Mission',
   missionItems: [
-    '中小企業にとって、**人に寄り添い、幸せを生み出す IT との関わり**を増やす。',
-    '技術だけでなく相手の状況や感情を汲み取れる人を増やし、**現場で成果の出る支援**を広げる。',
+    {
+      title: '目の前の人に価値を提供し、その力を持つエンジニアを増やす。',
+      description:
+        '相手の想いや状況を理解し、実際に役立つ形で応える。自らその支援を実践するとともに、誰かの力になれるエンジニアを育てます。',
+    },
+    {
+      title: '必要なときに、安心して頼れる人や支援に出会える機会を広げる。',
+      description:
+        '知識や経験の違いによって、困りごとを抱え込んだり、やりたいことを諦めたりしなくてよいように。相談できる入口と、必要な支援につながる関係を育てます。',
+    },
+  ],
+  valuesTitle: 'Values',
+  valuesIntro: '会社全体で、仕事や関係づくりの判断基準にする3つ。',
+  values: [
+    {
+      title: '相手を知ることから始める。',
+      description:
+        '要望だけでなく、その背景にある想い、状況、大切にしていることを理解するよう努めます。',
+    },
+    {
+      title: '本当に役立つことを選ぶ。',
+      description:
+        '自分が提供したいものより、相手に必要なものを優先する。ちょっとした調整や既存サービスで十分な場合はそう提案する場合も。',
+    },
+    {
+      title: '無理なく続く関係を育てる。',
+      description:
+        'お互いの状況を大切にしながら、双方にとって無理なく続けられる進め方を一緒に探します。一度きりの成果にとどまらず、信頼や経験が積み重なる関係を育てます。',
+    },
   ],
 };
 
 export const services: ServiceItem[] = [
   {
-    title: '導入前整理・IT活用支援',
+    title: 'ITの相談・業務改善',
     description:
-      '課題整理、優先順位づけ、業務導線の整理を通じて、今の体制で無理なく始められる一歩を明確にします。',
+      '「手作業を減らしたい」「どのツールを使えばいいか分からない」。今の仕事の進め方を伺い、無理なく取り入れられる方法を一緒に考えます。',
     href: '/services/#consulting',
     kind: 'consulting',
     image: '/images/services/consulting-visual.webp',
-    imageAlt: '導入前整理・IT活用支援',
+    imageAlt: 'ITの相談・業務改善',
   },
   {
-    title: '受託開発・LP/導線改善',
+    title: 'Webサイト制作・システム開発',
     description:
-      '事業の目的と利用者の行動を踏まえ、伝わる構成と成果につながる導線を設計し、制作から改善まで伴走します。',
+      'サービスを伝えるWebサイトや、仕事を使いやすくするシステムをつくります。今あるサイトやシステムの改善もご相談いただけます。',
     href: '/services/#development',
     kind: 'development',
     image: '/images/services/development-visual.webp',
-    imageAlt: '受託開発・LP/導線改善',
+    imageAlt: 'Webサイト制作・システム開発',
   },
   {
-    title: 'AI活用・技術教育・組織支援',
+    title: 'AI活用・エンジニア育成',
     description:
-      'AIの現場活用に加え、エンジニアが事業理解を持って対話・提案できるようにする技術教育を通じて、噛み合う組織づくりを支援します。',
+      'AIを日々の仕事に取り入れるお手伝いや、エンジニアの育成を行います。技術を学ぶことに加え、相手の意図をくみ取り、提案する力も大切にしています。',
     href: '/services/#ai',
     kind: 'ai',
     image: '/images/services/ai-visual.webp',
-    imageAlt: 'AI活用・技術教育・組織支援',
+    imageAlt: 'AI活用・エンジニア育成',
   },
 ];
 
@@ -629,64 +667,67 @@ export const profilePageContent: ProfilePageContent = {
 export const serviceDetails: ServiceDetail[] = [
   {
     id: 'consulting',
-    title: '導入前整理・IT活用支援',
+    title: 'ITの相談・業務改善',
     summary:
-      'ツール導入や業務改善を進めたいが、何が課題で、何を優先すべきかが曖昧な状態から整理します。',
+      '手作業を減らしたい、仕事をもっと進めやすくしたい。今の仕事の進め方や困っていることを伺い、どこから変えるとよいかを一緒に考えます。新しいツールを入れる前の段階からご相談いただけます。',
     issues: [
-      '何を改善したいのかがまだ言語化できていない',
-      '提案やツールの妥当性を判断しづらい',
-      '導入前に現場の運用や導線まで整理したい',
+      '手作業や二重入力が多く、何から見直せばよいか分からない',
+      '自分たちの仕事に合うツールを選びたい',
+      '新しいツールを入れても、現場で使い続けられるか不安',
     ],
     offerings: [
-      '現状把握と課題整理',
-      '優先順位づけと導入方針の言語化',
-      '現場に合う業務導線・運用設計',
+      '今の仕事の流れを伺い、時間や手間がかかっているところを整理します',
+      '今あるツールの工夫や既存サービスの活用も含め、改善方法を考えます',
+      '費用や手間を踏まえて優先順位を決め、無理なく続けられる進め方を提案します',
     ],
-    process: ['現状把握', '優先順位づけ', '導入方針の設計'],
+    process: ['今の仕事を伺う', '取り組む順番を決める', '進め方を一緒に考える'],
     visual: {
       image: '/images/services/consulting-visual.webp',
-      alt: '導入前整理の打ち合わせイメージ',
-      eyebrow: 'Planning',
-      title: 'まず着手前の整理を行う',
-      description: '導入可否の判断や、現場に無理のない進め方まで整理してから動き出します。',
+      alt: '仕事の流れや困りごとを整理するイメージ',
+      eyebrow: '相談・整理',
+      title: 'まずは、今の困りごとから',
+      description:
+        'うまく説明できなくても大丈夫です。状況を伺いながら、今の体制でできることを一緒に探します。',
     },
   },
   {
     id: 'development',
-    title: 'LP制作・受託開発',
+    title: 'Webサイト制作・システム開発',
     summary:
-      '企画段階から目的と訴求を整理し、申込や問い合わせにつながる導線まで含めて制作と改善を進めます。',
+      'サービスの魅力を伝えるWebサイトや、毎日の仕事を使いやすくするシステムをつくります。何をつくるかを考える段階から、公開後の見直しまでご相談いただけます。今あるサイトやシステムの改善にも対応します。',
     issues: [
-      '何を載せれば伝わるのか整理できていない',
-      '公開しているページが成果につながっていない',
-      '制作後も改善しながら運用したい',
+      'サービスの魅力を伝え、申し込みやお問い合わせにつなげたい',
+      '手作業で行っている仕事を、使いやすいシステムにしたい',
+      '今あるサイトやシステムを、使いながら改善していきたい',
     ],
     offerings: [
-      '目的整理と訴求設計',
-      'LP制作、フォーム導線、必要機能の実装',
-      '公開後の振り返りと改善伴走',
+      '誰に何を伝えたいか、どんな仕事を便利にしたいかを一緒に整理します',
+      'Webサイトや申し込みフォーム、業務に必要なシステムを制作・開発します',
+      '公開後の使われ方や利用者の声をもとに、使いやすさを見直します',
     ],
-    process: ['目的整理と訴求設計', '制作・実装', '公開後の改善伴走'],
+    process: ['つくる目的を整理する', '制作・開発する', '使いながら改善する'],
     visual: {
       image: '/images/services/development-visual.webp',
-      alt: 'LP制作と導線改善のイメージ',
-      eyebrow: 'Development',
-      title: '訴求から申込導線まで設計する',
-      description: '訴求設計、フォーム導線、必要機能の実装、公開後の改善まで継続して支えます。',
+      alt: 'Webサイトやシステムをつくり、使いやすく整えるイメージ',
+      eyebrow: '制作・開発',
+      title: '伝わること、使いやすいことを大切に',
+      description:
+        '見る人・使う人を思い浮かべながら、載せる情報や必要な機能を考えます。公開後も、実際の使われ方に合わせて改善します。',
       href: 'https://lpboost-prod.lpboost.workers.dev/',
       ctaLabel: 'LP Boost を見る',
     },
     relatedItems: [
       {
         title: 'LP Boost',
-        description: '相談導線まで整えるLP制作・改善支援',
+        description:
+          'サービス紹介ページ（LP）の制作や、申し込み・お問い合わせにつながりやすくするための改善',
         image: '/images/showcase/lpboost-hero.webp',
         href: 'https://lpboost-prod.lpboost.workers.dev/',
         ctaLabel: 'サービスを見る',
       },
       {
         title: 'Ready Mock',
-        description: '3分診断を起点に、事業に合う試作サービス案を組み立てる支援',
+        description: '3分の診断から、事業に合った試作品のアイデアを整理するサービス',
         image: '/images/showcase/ready-mock-hero.webp',
         href: 'https://ready-mock.com/',
         ctaLabel: 'サービスを見る',
@@ -695,32 +736,36 @@ export const serviceDetails: ServiceDetail[] = [
   },
   {
     id: 'ai',
-    title: 'AI活用・技術教育・組織支援',
+    title: 'AI活用・エンジニア育成',
     summary:
-      'AIを現場で使える形に落とし込みながら、エンジニアが事業背景を理解し、ビジネス側と噛み合う形で動けるようにする技術教育と組織支援を行います。',
+      'AIを日々の仕事に取り入れるお手伝いや、エンジニアの育成を行います。技術を学ぶことに加え、仕事の目的や相手の意図を理解し、相談・提案できる力を育てます。チーム内での認識のすり合わせもお手伝いします。',
     issues: [
-      'AIをどう業務に活かせば成果につながるのか分からない',
-      '技術力はあっても、事業側との会話や優先順位のすり合わせが噛み合いにくい',
-      'エンジニアが一段上の視座を持ち、提案や判断ができる組織にしたい',
+      'AIに興味はあるが、どの仕事に使えるか分からない',
+      'エンジニアと仕事を依頼する側で、目的や優先順位の認識がずれる',
+      'エンジニアが相手の意図をくみ取り、自分から提案できるようになってほしい',
     ],
     offerings: [
-      'AI活用テーマの整理と小さな実証',
-      'エンジニア向けの技術教育、事業理解支援、壁打ち',
-      'ビジネスと技術の認識をそろえる進め方・対話設計',
+      'AIを使えそうな仕事を一緒に探し、小さく試して役立つかを確かめます',
+      '実際の仕事での悩みや疑問を題材に、技術と、目的に合った考え方を学ぶ機会をつくります',
+      'エンジニアと仕事を依頼する側が、目的や進め方を話し合えるようお手伝いします',
     ],
-    process: ['テーマ整理', '小さく試す', '教育と現場定着'],
+    process: [
+      '仕事やチームの悩みを伺う',
+      '試すこと・学ぶことを決める',
+      '仕事に取り入れながら振り返る',
+    ],
     visual: {
       image: '/images/services/ai-visual.webp',
-      alt: 'AI活用と技術教育のイメージ',
-      eyebrow: 'Enablement',
-      title: '小さく始めて、噛み合う組織を育てる',
+      alt: 'AIの使い方や技術を学び、チームで話し合うイメージ',
+      eyebrow: '活用・育成',
+      title: '学んだことを、日々の仕事で使える力に',
       description:
-        'AI導入だけでなく、事業理解と対話力を持って動ける技術人材と進め方づくりまで伴走します。',
+        'AIも技術も、仕事の中で役立てることを大切にしています。試すことや対話を重ねながら、できることを増やしていきます。',
     },
     relatedItems: [
       {
         title: 'ValueGate Blog',
-        description: '技術と事業をつなぐ視点を、実務に落とし込める形で発信するブログ',
+        description: '技術を仕事に役立てる考え方や、相談・提案のヒントを紹介するブログ',
         image: '/images/showcase/valuegate-blog-hero.webp',
         href: 'https://blog.valuegate.tech/',
         ctaLabel: 'ブログを見る',
