@@ -5,6 +5,11 @@
   import { getBrowserAttribution } from '$lib/analytics/visit';
   import { createLeadEventTracker } from '$lib/contact/lead';
   import {
+    classifyTurnstileClientError,
+    normalizeTurnstileServerReason,
+    type TurnstileClientReason,
+  } from '$lib/contact/turnstile';
+  import {
     CONTACT_CATEGORIES,
     MACCLIPY_CATEGORY_ID,
     RECRUIT_CATEGORY_ID,
@@ -20,6 +25,7 @@
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
   import { tick } from 'svelte';
+  import { SvelteSet } from 'svelte/reactivity';
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { PageProps } from './$types';
 
@@ -39,9 +45,14 @@
   let turnstileContainer = $state<HTMLDivElement>();
   let turnstileToken = $state('');
   let turnstileClientError = $state('');
+  let turnstileClientReason = $state<TurnstileClientReason>('client_pending');
+  let turnstileIsLoading = $state(false);
+  let turnstileServerErrorDismissed = $state(false);
   let turnstileWidgetId: string | undefined;
   let turnstileLoadPromise: Promise<void> | undefined;
   let turnstileRetryCount = 0;
+  let turnstileGeneration = 0;
+  const reportedClientErrors = new SvelteSet<TurnstileClientReason>();
 
   const values = $derived.by<ContactFormValues>(() => ({
     ...data.initialValues,
@@ -132,24 +143,10 @@
       return;
     }
 
-    let isActive = true;
-
-    void renderTurnstile()
-      .then(() => {
-        if (isActive) {
-          turnstileClientError = '';
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          turnstileClientError =
-            '迷惑投稿対策の読み込みに失敗しました。ページを再読み込みしてから送信してください。';
-          formEvent('form_submit_error', 'turnstile_load');
-        }
-      });
+    void initializeTurnstile();
 
     return () => {
-      isActive = false;
+      turnstileGeneration += 1;
       if (turnstileWidgetId && window.turnstile?.remove) {
         window.turnstile.remove(turnstileWidgetId);
       }
@@ -169,7 +166,19 @@
     selectedCategory = (event.currentTarget as HTMLSelectElement).value as ContactCategoryId | '';
   }
 
-  const handleSubmit: SubmitFunction = () => {
+  const handleSubmit: SubmitFunction = ({ cancel }) => {
+    if (isSubmitting) {
+      cancel();
+      return;
+    }
+    if (hasTurnstile && !turnstileToken) {
+      cancel();
+      formEvent('form_submit_attempt');
+      formEvent('form_submit_error', `turnstile_${turnstileClientReason}`);
+      turnstileClientError ||= '迷惑投稿対策の確認が完了していません。';
+      turnstileContainer?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     const startedAt = Date.now();
     formEvent('form_submit_attempt');
     isSubmitting = true;
@@ -183,9 +192,14 @@
         resetTurnstile();
         if (result.type === 'failure') {
           const kind = result.data?.analyticsError;
+          turnstileServerErrorDismissed = false;
           formEvent(
             'form_submit_error',
-            kind === 'validation' || kind === 'turnstile' ? kind : 'server',
+            kind === 'turnstile'
+              ? `turnstile_${normalizeTurnstileServerReason(result.data?.analyticsErrorReason)}`
+              : kind === 'validation'
+                ? kind
+                : 'server',
           );
         } else if (result.type === 'error') {
           formEvent('form_submit_error', 'request');
@@ -222,13 +236,41 @@
     });
   }
 
-  async function renderTurnstile() {
+  function setTurnstileError(reason: TurnstileClientReason, message: string, report = true) {
+    turnstileToken = '';
+    turnstileClientReason = reason;
+    turnstileClientError = message;
+    if (report && !reportedClientErrors.has(reason)) {
+      reportedClientErrors.add(reason);
+      formEvent('form_submit_error', `turnstile_${reason}`);
+    }
+  }
+
+  async function initializeTurnstile() {
+    const generation = turnstileGeneration;
+    turnstileIsLoading = true;
+    try {
+      await renderTurnstile(generation);
+    } catch {
+      if (generation === turnstileGeneration) {
+        setTurnstileError(
+          'client_load',
+          '迷惑投稿対策を読み込めませんでした。再確認をお試しください。',
+        );
+      }
+    } finally {
+      if (generation === turnstileGeneration) turnstileIsLoading = false;
+    }
+  }
+
+  async function renderTurnstile(generation: number) {
     await tick();
     if (!turnstileContainer || turnstileWidgetId) {
       return;
     }
 
     await loadTurnstileScript();
+    if (generation !== turnstileGeneration) return;
     if (!turnstileContainer || !window.turnstile) {
       throw new Error('Turnstile is unavailable.');
     }
@@ -246,22 +288,26 @@
         turnstileRetryCount = 0;
         turnstileToken = token;
         turnstileClientError = '';
+        turnstileClientReason = 'client_pending';
+        turnstileServerErrorDismissed = true;
       },
       'expired-callback': () => {
-        turnstileToken = '';
+        setTurnstileError(
+          'client_expired',
+          '確認の有効期限が切れました。再確認してください。',
+          false,
+        );
       },
-      'error-callback': () => {
+      'timeout-callback': () => {
+        setTurnstileError('client_timeout', '確認が時間切れになりました。再確認してください。');
+      },
+      'error-callback': (code) => {
         turnstileRetryCount += 1;
-
-        if (turnstileToken || turnstileRetryCount <= 2) {
-          return false;
-        }
-
-        turnstileToken = '';
-        turnstileClientError =
-          '迷惑投稿対策の確認に失敗しました。ページを再読み込みしてから送信してください。';
-        if (turnstileRetryCount === 3) formEvent('form_submit_error', 'turnstile');
-        return true;
+        setTurnstileError(
+          classifyTurnstileClientError(code),
+          '迷惑投稿対策の確認に失敗しました。再確認をお試しください。',
+        );
+        return turnstileRetryCount > 2;
       },
     });
   }
@@ -280,28 +326,32 @@
         TURNSTILE_SCRIPT_ID,
       ) as HTMLScriptElement | null;
 
-      if (existingScript) {
-        existingScript.addEventListener('load', () => resolve(), { once: true });
-        existingScript.addEventListener(
-          'error',
-          () => reject(new Error('Turnstile load failed.')),
-          {
-            once: true,
-          },
-        );
-        return;
-      }
-
-      const script = document.createElement('script');
+      const script = existingScript ?? document.createElement('script');
       script.id = TURNSTILE_SCRIPT_ID;
       script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
       script.async = true;
       script.defer = true;
-      script.addEventListener('load', () => resolve(), { once: true });
-      script.addEventListener('error', () => reject(new Error('Turnstile load failed.')), {
-        once: true,
-      });
-      document.head.append(script);
+      const cleanup = () => {
+        window.clearTimeout(timeout);
+        script.removeEventListener('load', loaded);
+        script.removeEventListener('error', failed);
+      };
+      const loaded = () => {
+        cleanup();
+        resolve();
+      };
+      const failed = () => {
+        cleanup();
+        script.remove();
+        reject(new Error('Turnstile load failed.'));
+      };
+      const timeout = window.setTimeout(failed, 15_000);
+      script.addEventListener('load', loaded, { once: true });
+      script.addEventListener('error', failed, { once: true });
+      if (!existingScript) document.head.append(script);
+    }).catch((error: unknown) => {
+      turnstileLoadPromise = undefined;
+      throw error;
     });
 
     return turnstileLoadPromise;
@@ -309,13 +359,35 @@
 
   function resetTurnstile() {
     turnstileToken = '';
+    turnstileClientError = '';
+    turnstileClientReason = 'client_pending';
     turnstileRetryCount = 0;
-    if (turnstileWidgetId) {
-      window.turnstile?.reset(turnstileWidgetId);
+    try {
+      if (turnstileWidgetId) window.turnstile?.reset(turnstileWidgetId);
+    } catch {
+      setTurnstileError('client_unknown', '迷惑投稿対策を再確認できませんでした。');
+    }
+  }
+
+  async function retryTurnstile() {
+    if (turnstileIsLoading || isSubmitting) return;
+    turnstileServerErrorDismissed = true;
+    reportedClientErrors.clear();
+    resetTurnstile();
+    if (turnstileWidgetId && !turnstileClientError) return;
+    try {
+      if (turnstileWidgetId) window.turnstile?.remove?.(turnstileWidgetId);
+    } catch {
+      setTurnstileError(
+        'client_unknown',
+        '迷惑投稿対策を再確認できませんでした。ページを再読み込みしてください。',
+      );
       return;
     }
-
-    window.turnstile?.reset();
+    turnstileWidgetId = undefined;
+    turnstileLoadPromise = undefined;
+    if (!window.turnstile) document.getElementById(TURNSTILE_SCRIPT_ID)?.remove();
+    await initializeTurnstile();
   }
 </script>
 
@@ -663,13 +735,29 @@
                 bind:this={turnstileContainer}
                 aria-live="polite"
               ></div>
+              <p id="turnstile-status" role="status" aria-live="polite">
+                {turnstileClientError ||
+                  (turnstileToken
+                    ? '迷惑投稿対策の確認が完了しました。'
+                    : turnstileIsLoading
+                      ? '迷惑投稿対策を読み込んでいます。'
+                      : '迷惑投稿対策の確認待ちです。')}
+              </p>
+              {#if turnstileClientError || (fieldErrors.turnstile && !turnstileServerErrorDismissed)}
+                <button
+                  class="contact-form__turnstile-retry"
+                  type="button"
+                  onclick={retryTurnstile}
+                  disabled={turnstileIsLoading || isSubmitting}
+                  aria-busy={turnstileIsLoading}
+                >
+                  {turnstileIsLoading ? '再確認中...' : '迷惑投稿対策を再確認'}
+                </button>
+              {/if}
             {:else}
               <p>迷惑投稿対策は本番環境で有効になります。</p>
             {/if}
-            {#if turnstileClientError}
-              <small>{turnstileClientError}</small>
-            {/if}
-            {#if fieldErrors.turnstile}
+            {#if fieldErrors.turnstile && !turnstileToken && !turnstileServerErrorDismissed}
               <small>{fieldErrors.turnstile}</small>
             {/if}
           </div>
@@ -677,8 +765,9 @@
           <button
             class="contact-form__submit"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || (browser && hasTurnstile && !turnstileToken)}
             aria-busy={isSubmitting}
+            aria-describedby={hasTurnstile ? 'turnstile-status' : undefined}
           >
             {isSubmitting ? '送信中...' : '内容を送信'}
           </button>
@@ -975,6 +1064,23 @@
     min-height: 65px;
   }
 
+  .contact-form__turnstile-retry {
+    justify-self: start;
+    min-width: 220px;
+    min-height: 44px;
+    padding: 8px 16px;
+    border: 1px solid var(--color-ink-soft);
+    border-radius: 8px;
+    color: var(--color-ink);
+    background: #fff;
+    font-weight: 700;
+  }
+
+  .contact-form__turnstile-retry:disabled {
+    cursor: progress;
+    opacity: 0.68;
+  }
+
   .contact-form__submit {
     justify-self: start;
     min-width: 180px;
@@ -988,7 +1094,7 @@
   }
 
   .contact-form__submit:disabled {
-    cursor: progress;
+    cursor: not-allowed;
     opacity: 0.68;
   }
 

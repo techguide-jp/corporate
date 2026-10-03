@@ -156,3 +156,25 @@ await test('an omitted subject uses the selected category label', () => {
   assert.ok(result.ok);
   if (result.ok) assert.equal(result.submission.subject, 'LP・Webサイト制作の相談');
 });
+
+await test('verification failures expose only a safe reason, preserve input and never send mail', async () => {
+  for (const [reason, expected] of [
+    ['server_expired_or_duplicate', 'server_expired_or_duplicate'],
+    ['private@example.com', 'server_unknown'],
+  ]) {
+    const result = await submitContactForm(makeForm(), {
+      shouldMock: () => Promise.resolve(false),
+      verify: () => Promise.resolve({ ok: false as const, message: '再確認してください', reason }),
+      send: () => {
+        throw new Error('Mail must not be sent');
+      },
+    });
+    assert.equal(result.status, 400);
+    assert.ok(
+      'analyticsErrorReason' in result.data && result.data.analyticsErrorReason === expected,
+    );
+    assert.equal(result.data.values.name, 'フォーム検証');
+    assert.equal(result.data.values.message, '検証用の相談内容');
+    assert.ok(!('receipt' in result.data));
+  }
+});

@@ -1,12 +1,13 @@
 import { createEmptyContactFormValues } from '../../contact/form.ts';
 import type { ContactReceipt } from '../../contact/lead.ts';
 import { parseContactFormData, type ContactSubmission } from './validation.ts';
+import { normalizeTurnstileServerReason } from '../../contact/turnstile.ts';
 
 type ServiceResult = { ok: true; message?: string } | { ok: false; message: string };
 
 interface SubmitDependencies {
   shouldMock: () => Promise<boolean>;
-  verify: () => Promise<ServiceResult>;
+  verify: () => Promise<ServiceResult & { reason?: string }>;
   send: (submission: ContactSubmission) => Promise<ServiceResult>;
 }
 
@@ -40,6 +41,7 @@ export async function submitContactForm(formData: FormData, dependencies: Submit
         values: submission,
         fieldErrors: { turnstile: turnstile.message },
         analyticsError: 'turnstile' as const,
+        analyticsErrorReason: normalizeTurnstileServerReason(turnstile.reason),
         message: turnstile.message,
       },
     };

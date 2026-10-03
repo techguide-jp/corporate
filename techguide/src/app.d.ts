@@ -24,6 +24,7 @@ declare global {
           'response-field'?: boolean;
           callback?: (token: string) => void;
           'expired-callback'?: () => void;
+          'timeout-callback'?: () => void;
           'error-callback'?: (errorCode?: string) => boolean | void;
         },
       ) => string;
