@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Private storage and SSR permissions for MacClipy monthly messages and survey responses
+Parameters:
+  AmplifyAppId:
+    Type: String
+    Default: d1ei4wu36fr0u9
+  SSRComputeRoleName:
+    Type: String
+    Default: TechGuideAmplifySsrComputeRole
+Resources:
+  MonthlyBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireSurveyResponses
+            Status: Enabled
+            Prefix: macclipy-monthly/responses/
+            ExpirationInDays: 730
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 7
+          - Id: RemoveOldVersions
+            Status: Enabled
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 7
+  MonthlyPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref SSRComputeRoleName
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # 未設定の月をGetObjectで404として判別するため、専用bucketのListBucketはprefix条件を付けない。
+          - Effect: Allow
+            Action: s3:ListBucket
+            Resource: !GetAtt MonthlyBucket.Arn
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+            Resource: !Sub '${MonthlyBucket.Arn}/macclipy-monthly/*'
+          - Effect: Allow
+            Action: ssm:GetParameter
+            Resource:
+              - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_MONTHLY_BUCKET'
+              - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_ADMIN_PASSWORD'
+              - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_FEEDBACK_SECRET'
+Outputs:
+  BucketName:
+    Value: !Ref MonthlyBucket
+  SSRPolicyArn:
+    Value: !Ref MonthlyPolicy

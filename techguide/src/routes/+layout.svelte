@@ -10,6 +10,8 @@
   let previousUrl = '';
   // Navigation is the trigger; updating the referrer must not trigger another PV.
   afterNavigate(() => {
+    // 回答画面・管理画面の内容をサイトの計測へ送らない。
+    if (/^\/macclipy\/(survey|admin)(\/|$)/.test(window.location.pathname)) return;
     getBrowserAttribution();
     const location = sanitizeAnalyticsUrl(window.location.href);
     if (location === previousUrl) return;
