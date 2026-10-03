@@ -5,6 +5,7 @@ import {
   monthlyRepository,
   readMonthlyForm,
   surveyLimiter,
+  notifySurveySlack,
 } from '$lib/server/macclipy/monthlyRuntime';
 import { getPublicCampaign, saveSurvey } from '$lib/server/macclipy/monthlyService';
 import { SurveyInputError, formText } from '$lib/server/macclipy/monthlyValidation';
@@ -69,7 +70,7 @@ export const actions: Actions = {
           .getAll(key)
           .filter((value): value is string => typeof value === 'string');
     try {
-      await saveSurvey(repository, params.month, form, secret);
+      await saveSurvey(repository, params.month, form, secret, undefined, notifySurveySlack);
       return {
         ok: true,
         message: 'ご回答ありがとうございました。改善の参考にさせていただきます。',

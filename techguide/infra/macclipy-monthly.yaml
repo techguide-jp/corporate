@@ -59,6 +59,7 @@ Resources:
               - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_MONTHLY_BUCKET'
               - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_ADMIN_PASSWORD'
               - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_FEEDBACK_SECRET'
+              - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/amplify/shared/${AmplifyAppId}/MACCLIPY_SURVEY_SLACK_WEBHOOK_URL'
 Outputs:
   BucketName:
     Value: !Ref MonthlyBucket
