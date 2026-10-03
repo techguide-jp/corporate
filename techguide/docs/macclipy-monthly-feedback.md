@@ -13,11 +13,12 @@
 ## 本番設定
 
 1. `infra/macclipy-monthly.yaml` で非公開S3 bucketとIAM policyを作成する。`AmplifyAppId` と `SSRComputeRoleName` は対象環境の値を指定する。bucketは公開しない。
-2. policyは指定した既存のAmplify SSR Compute roleへ自動で付与される。対象bucket内の取得・保存と、月次機能の3つのSSM parameterの取得だけを許可する。ブラウザやアプリへAWS認証情報を渡さない。
+2. policyは指定した既存のAmplify SSR Compute roleへ自動で付与される。対象bucket内の取得・保存と、月次機能の4つのSSM parameterの取得だけを許可する。ブラウザやアプリへAWS認証情報を渡さない。
 3. 以下をAmplify shared SSM parametersへ設定する（既存の `/amplify/shared/<app-id>/` prefix を使用）。
    - `MACCLIPY_MONTHLY_BUCKET`: bucket名。
    - `MACCLIPY_ADMIN_PASSWORD`: ランダムな24文字以上の管理用パスワード。
    - `MACCLIPY_FEEDBACK_SECRET`: ランダムな32文字以上の署名用秘密情報。
+   - `MACCLIPY_SURVEY_SLACK_WEBHOOK_URL`: TechGuideの`system-info`専用Incoming Webhook URL（SecureString）。
 4. Webをデプロイし、配信API、ログイン、内容編集、実際の回答保存とCSVを確認する。
 5. MacClipyを `MONTHLY_MESSAGES_ENABLED=1` で署名・公証して配布する。Release workflowの手動入力 `monthly_messages` またはrepository variable `MONTHLY_MESSAGES_ENABLED=1` でも有効にできる。Webが未設定の間は既定の0を維持する。
 
@@ -61,3 +62,13 @@ aws cloudformation deploy \
 ```
 
 管理用パスワードと署名キーは開発用とは別のランダム値にし、SSMの `SecureString` に保存する。ローカル保管が必要な場合はgit管理外の `.env.macclipy-production` を使用し、ファイル権限を600にする。秘密情報はPR本文、ログ、リリースノートへ記載しない。
+
+## アンケート回答のSlack通知
+
+回答を新規保存した後、本番サーバーからTechGuideの非公開`system-info`チャンネルへ通知する。対象月、日本時間の回答日時、該当月の管理画面へのリンクを表示し、自由記述や職種など回答内容はSlackへ送らない。同じ送信ticketでの再送や並行送信では新規保存した1回だけが通知し、入力エラー・保存失敗・開発環境では通知しない。
+
+SlackアプリのIncoming Webhooksを有効にし、`system-info`を選んで接続する。既存の別チャンネル用Webhookでは通知先を変更できない。接続先のURLはSSMの`/amplify/shared/d1ei4wu36fr0u9/MACCLIPY_SURVEY_SLACK_WEBHOOK_URL`へSecureStringで保存する。ブラウザ、Git、ログへ公開しない。infraのIAM policy更新とSSM設定の後にSSRを再デプロイする（設定値はプロセスでキャッシュされる）。
+
+通知は最大3秒で待機し、失敗しても回答の保存・送信完了を維持する。成功はSlackのHTTP成功応答と本文`ok`の両方で判定する。応答不明時の重複投稿を避けるため、自動再送はしない。障害中の回答は管理画面で確認できるが、Slack通知は未配信になり得る。`macclipy_survey_slack_failed`ログには月・回答ID・理由コード・必要ならHTTP statusだけを記録する。Webhook・回答内容・例外本文は記録しない。
+
+検証では新規回答1件の管理画面への保存とSlack着信を確認し、同じticketの再送で通知が増えないことも確認する。

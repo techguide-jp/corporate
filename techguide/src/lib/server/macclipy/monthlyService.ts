@@ -34,6 +34,7 @@ export async function saveSurvey(
   form: FormData,
   secret: string,
   now = new Date(),
+  notify?: (response: SurveyResponse) => Promise<void>,
 ): Promise<void> {
   if (form.get('website')) throw new SurveyInputError('送信できませんでした。');
   const campaign = await getPublicCampaign(repository, month);
@@ -63,6 +64,19 @@ export async function saveSurvey(
       | undefined;
     if (!existing || JSON.stringify(existing.answers) !== JSON.stringify(answers))
       throw new SurveyInputError('この回答は送信済みです。');
+    return;
+  }
+  // 新規保存を確定した呼び出しだけが通知する。Slackの失敗で保存済み回答を再送させない。
+  if (notify) {
+    try {
+      await notify(response);
+    } catch {
+      console.error('macclipy_survey_slack_failed', {
+        month,
+        responseId: id,
+        reason: 'notification_failed',
+      });
+    }
   }
 }
 export async function getResponses(

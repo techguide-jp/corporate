@@ -1,3 +1,5 @@
+import type { SurveyResponse } from '../../macclipy/monthly';
+import { sendSurveySlackNotification } from './monthlySurveySlack';
 import { dev } from '$app/environment';
 import { getServerEnv } from '../env';
 import { requireMonthlySecret } from './monthlyConfiguration';
@@ -77,4 +79,13 @@ export async function readMonthlyForm(request: Request): Promise<FormData> {
     headers: { 'content-type': contentType },
     body: bytes.buffer,
   }).formData();
+}
+
+export async function notifySurveySlack(response: SurveyResponse): Promise<void> {
+  // 開発中の回答から運営チャンネルへ通知しない。本番SSMのWebhookだけを利用する。
+  if (dev) return;
+  await sendSurveySlackNotification(
+    response,
+    await getServerEnv('MACCLIPY_SURVEY_SLACK_WEBHOOK_URL'),
+  );
 }
