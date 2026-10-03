@@ -7,6 +7,16 @@ if (!['127.0.0.1', 'localhost'].includes(base.hostname)) {
 const password = process.env.MACCLIPY_VERIFY_PASSWORD;
 if (!password) throw new Error('MACCLIPY_VERIFY_PASSWORDを指定してください。');
 
+const monthly = await fetch(new URL('/api/macclipy/monthly/', base), { redirect: 'manual' });
+assert.equal(
+  monthly.status,
+  200,
+  '月次配信APIはMacClipyが使うURLで転送せず応答する必要があります。',
+);
+const message = await monthly.json();
+assert.match(message.month, /^20\d{2}-(0[1-9]|1[0-2])$/);
+assert.equal(message.surveyURL, `https://techguide.jp/macclipy/survey/${message.month}/`);
+
 const unauthenticated = await fetch(new URL('/macclipy/admin/', base), { redirect: 'manual' });
 assert.equal(unauthenticated.status, 303);
 assert.equal(unauthenticated.headers.get('location'), '/macclipy/admin/login/');
