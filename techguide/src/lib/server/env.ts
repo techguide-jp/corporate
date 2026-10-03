@@ -9,6 +9,9 @@ import { GetParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
 const DEFAULT_AMPLIFY_APP_ID = 'd1ei4wu36fr0u9';
 const SSM_SECRET_NAMES = new Set([
   'MACCLIPY_GA_API_SECRET',
+  'MACCLIPY_MONTHLY_BUCKET',
+  'MACCLIPY_FEEDBACK_SECRET',
+  'MACCLIPY_ADMIN_PASSWORD',
   'RESEND_API_KEY',
   'TURNSTILE_SECRET_KEY',
 ]);
