@@ -40,7 +40,9 @@ export const pageSeo: Record<
   | 'profile'
   | 'recruit'
   | 'macclipy'
-  | 'macclipyPrivacy',
+  | 'macclipyPrivacy'
+  | 'safeqr'
+  | 'safeqrPrivacy',
   PageSeo
 > = {
   home: {
@@ -111,6 +113,20 @@ export const pageSeo: Record<
     description:
       'MacClipyが取り扱うデータ、匿名の利用状況の送信内容、利用目的、停止方法、保存期間について説明します。',
     path: '/macclipy/privacy/',
+  },
+  safeqr: {
+    title: 'SafeQR サポート | TechGuide',
+    description:
+      'QRのリンクを開く前に確認するiPhone・iPadアプリ、SafeQRの使い方とお問い合わせ窓口です。',
+    path: '/safeqr/',
+    image: '/images/safeqr/app-icon.png',
+    imageAlt: 'SafeQRのアプリアイコン',
+  },
+  safeqrPrivacy: {
+    title: 'SafeQR プライバシーポリシー | TechGuide',
+    description:
+      'SafeQRのカメラ・端末内履歴、任意のGoogle安全性照会、リンク先への通信とお問い合わせについて説明します。',
+    path: '/safeqr/privacy/',
   },
 };
 

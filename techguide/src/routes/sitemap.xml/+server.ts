@@ -19,6 +19,8 @@ const sitemapEntries = [
   { path: pageSeo.recruit.path, changefreq: 'weekly', priority: '0.7' },
   { path: pageSeo.macclipy.path, changefreq: 'weekly', priority: '0.8' },
   { path: pageSeo.macclipyPrivacy.path, changefreq: 'monthly', priority: '0.4' },
+  { path: pageSeo.safeqr.path, changefreq: 'monthly', priority: '0.5' },
+  { path: pageSeo.safeqrPrivacy.path, changefreq: 'monthly', priority: '0.4' },
   { path: pageSeo.contact.path, changefreq: 'monthly', priority: '0.7' },
 ] as const;
 
