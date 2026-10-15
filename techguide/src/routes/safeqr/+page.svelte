@@ -26,7 +26,7 @@
     <div class="container safeqr-hero__inner">
       <img
         class="safeqr-icon"
-        src="/images/safeqr/app-icon.png"
+        src="/images/safeqr/app-icon-small.png"
         width="104"
         height="104"
         alt="SafeQRのアプリアイコン"
