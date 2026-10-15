@@ -31,6 +31,10 @@ pnpm build
   MacClipyの製品・ダウンロード案内
 - `/macclipy/privacy`
   MacClipyのプライバシーポリシー
+- `/safeqr/`
+  SafeQRのサポート・使い方・メール窓口（アプリのApp Store配布は準備中）
+- `/safeqr/privacy/`
+  SafeQRのカメラ・履歴・任意照会・Web閲覧のプライバシーポリシー
 - `/api/macclipy/analytics`
   署名済みMacClipyから匿名イベントを受け取るAPI
 
