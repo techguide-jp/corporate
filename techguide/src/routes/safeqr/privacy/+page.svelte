@@ -3,12 +3,14 @@
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
-  import { companyProfile, contactInfo, navItems, pageSeo } from '$lib/data/site';
+  import { companyProfile, navItems, pageSeo } from '$lib/data/site';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import '../safeqr.css';
 
   const supportHref = resolve('/safeqr/');
-  const emailHref = `mailto:${contactInfo.email}?subject=${encodeURIComponent('SafeQRのプライバシーについて')}`;
+  const contactHref = resolve(
+    '/contact/?category=other&subject=SafeQRのプライバシーについて&source_page=/safeqr/privacy/',
+  );
   const structuredData = [
     buildWebPageJsonLd({ ...pageSeo.safeqrPrivacy, name: pageSeo.safeqrPrivacy.title }),
     buildBreadcrumbJsonLd([
@@ -29,7 +31,7 @@
       <p class="safeqr-eyebrow">SafeQR</p>
       <h1>プライバシーポリシー</h1>
       <p class="safeqr-lead">アプリで扱う情報と、外部への通信について。</p>
-      <p>最終更新日：2026年10月15日</p>
+      <p>最終更新日：2026年10月16日</p>
     </div>
   </header>
   <div class="container safeqr-policy__layout">
@@ -102,7 +104,7 @@
       <section id="support">
         <h2>5. お問い合わせと本Webサイト</h2>
         <p>
-          メールでお問い合わせいただいた場合、返信先やお問い合わせ内容を、対応・連絡のために利用します。QRやURLに含まれる個人情報など、相談に必要のない情報の送付はお控えください。
+          問い合わせフォームへ入力いただいた情報は、お問い合わせへの対応・連絡のために利用します。QRやURLに含まれる個人情報など、相談に必要のない情報の送付はお控えください。
         </p>
         <p>
           本Webサイトはアプリとは別に、AWSのホスティングやGoogle
@@ -117,7 +119,9 @@
       <section id="operator">
         <h2>6. 運営者・お問い合わせ</h2>
         <p>運営者：{companyProfile.name}</p>
-        <p>お問い合わせ：<a href={emailHref}>{contactInfo.email}</a></p>
+        <p>
+          お問い合わせ：<a href={contactHref}>問い合わせフォーム</a>
+        </p>
         <p>使い方や動作については、<a href={supportHref}>SafeQR サポート</a>をご覧ください。</p>
       </section>
     </article>

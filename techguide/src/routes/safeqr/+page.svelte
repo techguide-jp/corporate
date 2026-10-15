@@ -3,12 +3,14 @@
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
-  import { companyProfile, contactInfo, navItems, pageSeo } from '$lib/data/site';
+  import { companyProfile, navItems, pageSeo } from '$lib/data/site';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import './safeqr.css';
 
   const privacyHref = resolve('/safeqr/privacy/');
-  const supportHref = `mailto:${contactInfo.email}?subject=${encodeURIComponent('SafeQRについて')}`;
+  const contactHref = resolve(
+    '/contact/?category=other&subject=SafeQRについて&source_page=/safeqr/',
+  );
   const structuredData = [
     buildWebPageJsonLd({ ...pageSeo.safeqr, name: pageSeo.safeqr.title, type: 'ContactPage' }),
     buildBreadcrumbJsonLd([
@@ -123,8 +125,7 @@
         </p>
       </div>
       <div class="safeqr-contact__links">
-        <a class="safeqr-button" href={supportHref}>メールで問い合わせる</a>
-        <p>{contactInfo.email}</p>
+        <a class="safeqr-button" href={contactHref}>問い合わせフォームへ</a>
         <a href={privacyHref}>プライバシーポリシー</a><small>運営：{companyProfile.name}</small>
       </div>
     </section>
