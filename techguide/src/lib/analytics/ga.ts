@@ -26,6 +26,7 @@ export interface AnalyticsMetadata {
     | 'form_start'
     | 'form_submit_attempt'
     | 'form_submit_error'
+    | 'turnstile_error'
     | 'service_view'
     | 'service_cta_click'
     | 'contact_form_fallback_click'

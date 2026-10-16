@@ -7,6 +7,8 @@
   import {
     classifyTurnstileClientError,
     normalizeTurnstileServerReason,
+    turnstileClientErrorParams,
+    type TurnstileClientErrorSource,
     type TurnstileClientReason,
   } from '$lib/contact/turnstile';
   import {
@@ -45,14 +47,14 @@
   let turnstileContainer = $state<HTMLDivElement>();
   let turnstileToken = $state('');
   let turnstileClientError = $state('');
-  let turnstileClientReason = $state<TurnstileClientReason>('client_pending');
+  let turnstileClientErrorKind = $state('turnstile_client_pending');
   let turnstileIsLoading = $state(false);
   let turnstileServerErrorDismissed = $state(false);
   let turnstileWidgetId: string | undefined;
   let turnstileLoadPromise: Promise<void> | undefined;
   let turnstileRetryCount = 0;
   let turnstileGeneration = 0;
-  const reportedClientErrors = new SvelteSet<TurnstileClientReason>();
+  const reportedClientErrors = new SvelteSet<string>();
 
   const values = $derived.by<ContactFormValues>(() => ({
     ...data.initialValues,
@@ -174,7 +176,7 @@
     if (hasTurnstile && !turnstileToken) {
       cancel();
       formEvent('form_submit_attempt');
-      formEvent('form_submit_error', `turnstile_${turnstileClientReason}`);
+      formEvent('form_submit_error', turnstileClientErrorKind);
       turnstileClientError ||= '迷惑投稿対策の確認が完了していません。';
       turnstileContainer?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -236,13 +238,24 @@
     });
   }
 
-  function setTurnstileError(reason: TurnstileClientReason, message: string, report = true) {
+  function setTurnstileError(
+    reason: TurnstileClientReason,
+    message: string,
+    source: TurnstileClientErrorSource,
+    code?: unknown,
+  ) {
+    const params = turnstileClientErrorParams(reason, source, code);
     turnstileToken = '';
-    turnstileClientReason = reason;
+    turnstileClientErrorKind = params.error_kind;
     turnstileClientError = message;
-    if (report && !reportedClientErrors.has(reason)) {
-      reportedClientErrors.add(reason);
-      formEvent('form_submit_error', `turnstile_${reason}`);
+    // 送信前にも発生するため、認証コールバックを送信失敗には数えない。
+    if (source !== 'expired_callback' && !reportedClientErrors.has(params.error_kind)) {
+      reportedClientErrors.add(params.error_kind);
+      trackEvent('turnstile_error', {
+        form_name: 'contact',
+        inquiry_type: selectedCategory || 'unknown',
+        ...params,
+      });
     }
   }
 
@@ -256,6 +269,7 @@
         setTurnstileError(
           'client_load',
           '迷惑投稿対策を読み込めませんでした。再確認をお試しください。',
+          'initialization',
         );
       }
     } finally {
@@ -288,24 +302,30 @@
         turnstileRetryCount = 0;
         turnstileToken = token;
         turnstileClientError = '';
-        turnstileClientReason = 'client_pending';
+        turnstileClientErrorKind = 'turnstile_client_pending';
         turnstileServerErrorDismissed = true;
       },
       'expired-callback': () => {
         setTurnstileError(
           'client_expired',
           '確認の有効期限が切れました。再確認してください。',
-          false,
+          'expired_callback',
         );
       },
       'timeout-callback': () => {
-        setTurnstileError('client_timeout', '確認が時間切れになりました。再確認してください。');
+        setTurnstileError(
+          'client_timeout',
+          '確認が時間切れになりました。再確認してください。',
+          'timeout_callback',
+        );
       },
       'error-callback': (code) => {
         turnstileRetryCount += 1;
         setTurnstileError(
           classifyTurnstileClientError(code),
           '迷惑投稿対策の確認に失敗しました。再確認をお試しください。',
+          'error_callback',
+          code,
         );
         return turnstileRetryCount > 2;
       },
@@ -360,12 +380,12 @@
   function resetTurnstile() {
     turnstileToken = '';
     turnstileClientError = '';
-    turnstileClientReason = 'client_pending';
+    turnstileClientErrorKind = 'turnstile_client_pending';
     turnstileRetryCount = 0;
     try {
       if (turnstileWidgetId) window.turnstile?.reset(turnstileWidgetId);
     } catch {
-      setTurnstileError('client_unknown', '迷惑投稿対策を再確認できませんでした。');
+      setTurnstileError('client_unknown', '迷惑投稿対策を再確認できませんでした。', 'reset');
     }
   }
 
@@ -381,6 +401,7 @@
       setTurnstileError(
         'client_unknown',
         '迷惑投稿対策を再確認できませんでした。ページを再読み込みしてください。',
+        'remove',
       );
       return;
     }
