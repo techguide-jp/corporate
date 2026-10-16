@@ -26,6 +26,14 @@ export type TurnstileClientReason =
   | 'client_challenge'
   | 'client_unknown';
 
+export type TurnstileClientErrorSource =
+  | 'initialization'
+  | 'error_callback'
+  | 'timeout_callback'
+  | 'expired_callback'
+  | 'reset'
+  | 'remove';
+
 export function normalizeTurnstileServerReason(reason: unknown): TurnstileServerReason {
   return TURNSTILE_SERVER_REASONS.find((allowed) => allowed === reason) ?? 'server_unknown';
 }
@@ -39,4 +47,22 @@ export function classifyTurnstileClientError(code: unknown): TurnstileClientReas
   if (code === '200500') return 'client_iframe';
   if (/^(300|600)\d{3}$/.test(code)) return 'client_challenge';
   return 'client_unknown';
+}
+
+export function turnstileClientErrorParams(
+  reason: TurnstileClientReason,
+  source: TurnstileClientErrorSource,
+  code?: unknown,
+) {
+  // 外部コールバックの詳細は保存せず、既知の数値コードだけを計測に渡す。
+  const safeCode =
+    typeof code === 'string' && classifyTurnstileClientError(code) !== 'client_unknown'
+      ? code
+      : undefined;
+  return {
+    // 登録済みのerror_kindだけでも発生箇所と時間切れの種類を判別できる。
+    error_kind: `turnstile_${reason}_${source}${safeCode ? `_${safeCode}` : ''}`,
+    turnstile_source: source,
+    turnstile_error_code: safeCode,
+  };
 }

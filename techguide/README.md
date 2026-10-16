@@ -61,6 +61,13 @@ pnpm build
 
 採用ページからは `/contact?category=recruit` に遷移し、フォームカテゴリを「採用・パートナー応募」に初期選択します。
 
+Turnstileの認証エラーは `turnstile_error`、利用者の送信操作に伴う入力不備・認証未完了・サーバーエラーは `form_submit_error` に分けます。通常のトークン有効期限切れだけではエラーイベントを送信しません。認証開始タイミング、再確認UI、サーバー検証の10秒制限は変更していません。
+
+- `error_kind` には安全な理由・発生箇所・既知の数値コードを格納します。`turnstile_client_timeout_error_callback_110600` は確認処理の時間切れ、末尾 `110620` は操作待ちの時間切れ、`turnstile_client_timeout_timeout_callback` は操作待ちの時間切れコールバックです。
+- `turnstile_source` は `initialization` / `error_callback` / `timeout_callback` / `expired_callback` / `reset` / `remove`、`turnstile_error_code` は既知のコードだけです。トークン、フォーム入力、例外文、未知のコードは送信しません。自動再試行の同一エラーは重複計上せず、手動再確認時に重複抑制をリセットします。
+- 追加パラメーターのGA4カスタム定義は自動登録しません。日次監視は登録済みの `error_kind` を使って発生箇所と時間切れの種類を確認できます。
+- 変更前の `form_submit_error` は送信前の認証エラーを含みます。公開前後の件数を連続した送信失敗指標として比較せず、`turnstile_error` は公開・初回受信を確認するまで未検証として扱います。計測の切り替えは本番デプロイ後に有効になり、公開確認とGA4の実受信確認は分けて行います。
+
 ### 画像アセット
 
 画像は [static/images/](./static/images/) 配下で管理しています。
