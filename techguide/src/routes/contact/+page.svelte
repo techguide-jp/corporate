@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { enhance } from '$app/forms';
+  import { beforeNavigate } from '$app/navigation';
   import { trackEvent } from '$lib/analytics';
   import { getBrowserAttribution } from '$lib/analytics/visit';
   import { createLeadEventTracker } from '$lib/contact/lead';
@@ -36,6 +37,8 @@
 
   const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script';
   const MIN_SUBMITTING_MS = 1000;
+  const UNKNOWN_SUBMISSION_MESSAGE =
+    '送信結果を確認できませんでした。入力内容は保持しています。受付メールを確認し、届いていない場合は時間をおいて再度お試しください。';
   const leadEvent = createLeadEventTracker();
   let attribution = $state({ landingPage: '', sourcePage: '' });
 
@@ -56,6 +59,7 @@
   let turnstileServerErrorDismissed = $state(false);
   let turnstileLoadPromise: Promise<TurnstileClient> | undefined;
   let activeSubmission: AbortController | undefined;
+  let submissionGeneration = 0;
   let disposed = false;
   const turnstileChallenge = createTurnstileChallenge(loadTurnstileScript);
 
@@ -153,6 +157,20 @@
     };
   });
 
+  beforeNavigate(() => {
+    // 遷移先の読み込み中はまだ画面が残るため、破棄時より先に待機を無効化する。
+    submissionGeneration += 1;
+    turnstileChallenge.cancel();
+    activeSubmission?.abort();
+    activeSubmission = undefined;
+    turnstileToken = '';
+    isAuthenticating = false;
+    if (isSubmitting) {
+      isSubmitting = false;
+      submissionError = UNKNOWN_SUBMISSION_MESSAGE;
+    }
+  });
+
   $effect(() => {
     // 認証中の再描画で入力を初期値に戻さず、サーバー応答時だけ同期する。
     values = { ...data.initialValues, ...form?.values };
@@ -171,6 +189,7 @@
       return;
     }
     formEvent('form_submit_attempt');
+    const generation = ++submissionGeneration;
     submissionError = '';
     activeSubmission = controller;
 
@@ -180,8 +199,7 @@
       turnstileClientError = '';
       turnstileServerErrorDismissed = true;
       await tick();
-      if (disposed) {
-        isAuthenticating = false;
+      if (disposed || generation !== submissionGeneration) {
         cancel();
         return;
       }
@@ -189,11 +207,11 @@
       const result: TurnstileChallengeResult = turnstileContainer
         ? await turnstileChallenge.run(turnstileContainer, data.turnstileSiteKey)
         : ({ status: 'failure', reason: 'client_load', source: 'initialization' } as const);
-      isAuthenticating = false;
-      if (disposed || result.status === 'cancelled') {
+      if (disposed || generation !== submissionGeneration || result.status === 'cancelled') {
         cancel();
         return;
       }
+      isAuthenticating = false;
       if (result.status === 'failure') {
         cancel();
         activeSubmission = undefined;
@@ -211,17 +229,18 @@
     scrollSubmissionStatusIntoView();
 
     return async ({ result, update }) => {
+      if (disposed || generation !== submissionGeneration) return;
       let shouldScrollResult = false;
 
       try {
         if (result.type === 'error') {
           // 送信結果が不明な通信エラーは自動再送せず、入力を保持して利用者に返す。
-          submissionError =
-            '送信結果を確認できませんでした。入力内容は保持しています。受付メールを確認し、届いていない場合は時間をおいて再度お試しください。';
+          submissionError = UNKNOWN_SUBMISSION_MESSAGE;
           formEvent('form_submit_error', 'request');
         } else {
           await update();
         }
+        if (disposed || generation !== submissionGeneration) return;
         if (result.type === 'failure') {
           const kind = result.data?.analyticsError;
           turnstileServerErrorDismissed = false;
@@ -241,11 +260,13 @@
           await wait(remainingDelay);
         }
       } finally {
-        turnstileToken = '';
-        activeSubmission = undefined;
-        isSubmitting = false;
-        if (shouldScrollResult) {
-          scrollSubmissionStatusIntoView();
+        if (!disposed && generation === submissionGeneration) {
+          turnstileToken = '';
+          activeSubmission = undefined;
+          isSubmitting = false;
+          if (shouldScrollResult) {
+            scrollSubmissionStatusIntoView();
+          }
         }
       }
     };
