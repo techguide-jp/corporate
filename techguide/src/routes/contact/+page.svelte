@@ -5,12 +5,16 @@
   import { getBrowserAttribution } from '$lib/analytics/visit';
   import { createLeadEventTracker } from '$lib/contact/lead';
   import {
-    classifyTurnstileClientError,
     normalizeTurnstileServerReason,
     turnstileClientErrorParams,
     type TurnstileClientErrorSource,
     type TurnstileClientReason,
   } from '$lib/contact/turnstile';
+  import {
+    createTurnstileChallenge,
+    type TurnstileChallengeResult,
+    type TurnstileClient,
+  } from '$lib/contact/turnstileChallenge';
   import {
     CONTACT_CATEGORIES,
     MACCLIPY_CATEGORY_ID,
@@ -27,7 +31,6 @@
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
   import { tick } from 'svelte';
-  import { SvelteSet } from 'svelte/reactivity';
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { PageProps } from './$types';
 
@@ -39,7 +42,9 @@
   let { data, form }: PageProps = $props();
   const initialSelectedCategory = () => data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
+  let isAuthenticating = $state(false);
   let isSubmitting = $state(false);
+  let submissionError = $state('');
   let formElement = $state<HTMLFormElement>();
   let formStarted = false;
   let formViewed = false;
@@ -48,23 +53,23 @@
   let turnstileToken = $state('');
   let turnstileClientError = $state('');
   let turnstileClientErrorKind = $state('turnstile_client_pending');
-  let turnstileIsLoading = $state(false);
   let turnstileServerErrorDismissed = $state(false);
-  let turnstileWidgetId: string | undefined;
-  let turnstileLoadPromise: Promise<void> | undefined;
-  let turnstileRetryCount = 0;
-  let turnstileGeneration = 0;
-  const reportedClientErrors = new SvelteSet<string>();
+  let turnstileLoadPromise: Promise<TurnstileClient> | undefined;
+  let activeSubmission: AbortController | undefined;
+  let disposed = false;
+  const turnstileChallenge = createTurnstileChallenge(loadTurnstileScript);
 
-  const values = $derived.by<ContactFormValues>(() => ({
+  const initialFormValues = (): ContactFormValues => ({
     ...data.initialValues,
     ...form?.values,
-  }));
+  });
+  let values = $state<ContactFormValues>(initialFormValues());
   const fieldErrors = $derived.by<ContactFieldErrors>(() => form?.fieldErrors ?? {});
   const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
   const isMacClipy = $derived(selectedCategory === MACCLIPY_CATEGORY_ID);
   const isShusei = $derived(selectedCategory === SHUSEI_CATEGORY_ID);
   const hasTurnstile = $derived(data.turnstileSiteKey.length > 0);
+  const isBusy = $derived(isAuthenticating || isSubmitting);
   const showSuccessPanel = $derived(!isSubmitting && form?.ok === true);
   const hideContactForm = $derived(isSubmitting || showSuccessPanel);
   const contactStructuredData = [
@@ -141,24 +146,16 @@
   });
 
   $effect(() => {
-    if (!browser || !hasTurnstile || !turnstileContainer) {
-      return;
-    }
-
-    void initializeTurnstile();
-
     return () => {
-      turnstileGeneration += 1;
-      if (turnstileWidgetId && window.turnstile?.remove) {
-        window.turnstile.remove(turnstileWidgetId);
-      }
-      turnstileWidgetId = undefined;
-      turnstileToken = '';
-      turnstileRetryCount = 0;
+      disposed = true;
+      turnstileChallenge.cancel();
+      activeSubmission?.abort();
     };
   });
 
   $effect(() => {
+    // 認証中の再描画で入力を初期値に戻さず、サーバー応答時だけ同期する。
+    values = { ...data.initialValues, ...form?.values };
     if (form?.values?.category !== undefined) {
       selectedCategory = form.values.category;
     }
@@ -168,21 +165,48 @@
     selectedCategory = (event.currentTarget as HTMLSelectElement).value as ContactCategoryId | '';
   }
 
-  const handleSubmit: SubmitFunction = ({ cancel }) => {
-    if (isSubmitting) {
+  const handleSubmit: SubmitFunction = async ({ cancel, formData, controller }) => {
+    if (isBusy || disposed) {
       cancel();
       return;
     }
-    if (hasTurnstile && !turnstileToken) {
-      cancel();
-      formEvent('form_submit_attempt');
-      formEvent('form_submit_error', turnstileClientErrorKind);
-      turnstileClientError ||= '迷惑投稿対策の確認が完了していません。';
-      turnstileContainer?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    const startedAt = Date.now();
     formEvent('form_submit_attempt');
+    submissionError = '';
+    activeSubmission = controller;
+
+    if (hasTurnstile) {
+      isAuthenticating = true;
+      turnstileToken = '';
+      turnstileClientError = '';
+      turnstileServerErrorDismissed = true;
+      await tick();
+      if (disposed) {
+        isAuthenticating = false;
+        cancel();
+        return;
+      }
+      turnstileContainer?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const result: TurnstileChallengeResult = turnstileContainer
+        ? await turnstileChallenge.run(turnstileContainer, data.turnstileSiteKey)
+        : ({ status: 'failure', reason: 'client_load', source: 'initialization' } as const);
+      isAuthenticating = false;
+      if (disposed || result.status === 'cancelled') {
+        cancel();
+        return;
+      }
+      if (result.status === 'failure') {
+        cancel();
+        activeSubmission = undefined;
+        setTurnstileError(result.reason, result.source, result.code);
+        formEvent('form_submit_error', turnstileClientErrorKind);
+        return;
+      }
+      turnstileToken = result.token;
+      // enhanceは認証前にFormDataを作るため、取得直後のトークンを明示的に渡す。
+      formData.set('cf-turnstile-response', result.token);
+    }
+
+    const startedAt = Date.now();
     isSubmitting = true;
     scrollSubmissionStatusIntoView();
 
@@ -190,8 +214,14 @@
       let shouldScrollResult = false;
 
       try {
-        await update();
-        resetTurnstile();
+        if (result.type === 'error') {
+          // 送信結果が不明な通信エラーは自動再送せず、入力を保持して利用者に返す。
+          submissionError =
+            '送信結果を確認できませんでした。入力内容は保持しています。受付メールを確認し、届いていない場合は時間をおいて再度お試しください。';
+          formEvent('form_submit_error', 'request');
+        } else {
+          await update();
+        }
         if (result.type === 'failure') {
           const kind = result.data?.analyticsError;
           turnstileServerErrorDismissed = false;
@@ -203,8 +233,6 @@
                 ? kind
                 : 'server',
           );
-        } else if (result.type === 'error') {
-          formEvent('form_submit_error', 'request');
         }
         shouldScrollResult = result.type === 'success';
 
@@ -213,6 +241,8 @@
           await wait(remainingDelay);
         }
       } finally {
+        turnstileToken = '';
+        activeSubmission = undefined;
         isSubmitting = false;
         if (shouldScrollResult) {
           scrollSubmissionStatusIntoView();
@@ -240,17 +270,20 @@
 
   function setTurnstileError(
     reason: TurnstileClientReason,
-    message: string,
     source: TurnstileClientErrorSource,
     code?: unknown,
   ) {
     const params = turnstileClientErrorParams(reason, source, code);
     turnstileToken = '';
     turnstileClientErrorKind = params.error_kind;
-    turnstileClientError = message;
-    // 送信前にも発生するため、認証コールバックを送信失敗には数えない。
-    if (source !== 'expired_callback' && !reportedClientErrors.has(params.error_kind)) {
-      reportedClientErrors.add(params.error_kind);
+    turnstileClientError =
+      reason === 'client_load'
+        ? '迷惑投稿対策を読み込めませんでした。入力内容は保持しています。再度お試しください。'
+        : reason === 'client_timeout' || reason === 'client_expired'
+          ? '迷惑投稿対策の確認が時間切れになりました。入力内容は保持しています。再度お試しください。'
+          : '迷惑投稿対策の確認に失敗しました。入力内容は保持しています。再度お試しください。';
+    // 1回の認証結果につき1件だけ記録し、通常のトークン期限切れは診断に含めない。
+    if (source !== 'expired_callback') {
       trackEvent('turnstile_error', {
         form_name: 'contact',
         inquiry_type: selectedCategory || 'unknown',
@@ -259,89 +292,16 @@
     }
   }
 
-  async function initializeTurnstile() {
-    const generation = turnstileGeneration;
-    turnstileIsLoading = true;
-    try {
-      await renderTurnstile(generation);
-    } catch {
-      if (generation === turnstileGeneration) {
-        setTurnstileError(
-          'client_load',
-          '迷惑投稿対策を読み込めませんでした。再確認をお試しください。',
-          'initialization',
-        );
-      }
-    } finally {
-      if (generation === turnstileGeneration) turnstileIsLoading = false;
-    }
-  }
-
-  async function renderTurnstile(generation: number) {
-    await tick();
-    if (!turnstileContainer || turnstileWidgetId) {
-      return;
-    }
-
-    await loadTurnstileScript();
-    if (generation !== turnstileGeneration) return;
-    if (!turnstileContainer || !window.turnstile) {
-      throw new Error('Turnstile is unavailable.');
-    }
-
-    turnstileWidgetId = window.turnstile.render(turnstileContainer, {
-      sitekey: data.turnstileSiteKey,
-      action: 'contact',
-      appearance: 'always',
-      execution: 'render',
-      language: 'ja',
-      size: 'normal',
-      theme: 'light',
-      'response-field': false,
-      callback: (token) => {
-        turnstileRetryCount = 0;
-        turnstileToken = token;
-        turnstileClientError = '';
-        turnstileClientErrorKind = 'turnstile_client_pending';
-        turnstileServerErrorDismissed = true;
-      },
-      'expired-callback': () => {
-        setTurnstileError(
-          'client_expired',
-          '確認の有効期限が切れました。再確認してください。',
-          'expired_callback',
-        );
-      },
-      'timeout-callback': () => {
-        setTurnstileError(
-          'client_timeout',
-          '確認が時間切れになりました。再確認してください。',
-          'timeout_callback',
-        );
-      },
-      'error-callback': (code) => {
-        turnstileRetryCount += 1;
-        setTurnstileError(
-          classifyTurnstileClientError(code),
-          '迷惑投稿対策の確認に失敗しました。再確認をお試しください。',
-          'error_callback',
-          code,
-        );
-        return turnstileRetryCount > 2;
-      },
-    });
-  }
-
   function loadTurnstileScript() {
     if (window.turnstile) {
-      return Promise.resolve();
+      return Promise.resolve(window.turnstile);
     }
 
     if (turnstileLoadPromise) {
       return turnstileLoadPromise;
     }
 
-    turnstileLoadPromise = new Promise<void>((resolve, reject) => {
+    turnstileLoadPromise = new Promise<TurnstileClient>((resolve, reject) => {
       const existingScript = document.getElementById(
         TURNSTILE_SCRIPT_ID,
       ) as HTMLScriptElement | null;
@@ -358,7 +318,8 @@
       };
       const loaded = () => {
         cleanup();
-        resolve();
+        if (window.turnstile) resolve(window.turnstile);
+        else failed();
       };
       const failed = () => {
         cleanup();
@@ -375,40 +336,6 @@
     });
 
     return turnstileLoadPromise;
-  }
-
-  function resetTurnstile() {
-    turnstileToken = '';
-    turnstileClientError = '';
-    turnstileClientErrorKind = 'turnstile_client_pending';
-    turnstileRetryCount = 0;
-    try {
-      if (turnstileWidgetId) window.turnstile?.reset(turnstileWidgetId);
-    } catch {
-      setTurnstileError('client_unknown', '迷惑投稿対策を再確認できませんでした。', 'reset');
-    }
-  }
-
-  async function retryTurnstile() {
-    if (turnstileIsLoading || isSubmitting) return;
-    turnstileServerErrorDismissed = true;
-    reportedClientErrors.clear();
-    resetTurnstile();
-    if (turnstileWidgetId && !turnstileClientError) return;
-    try {
-      if (turnstileWidgetId) window.turnstile?.remove?.(turnstileWidgetId);
-    } catch {
-      setTurnstileError(
-        'client_unknown',
-        '迷惑投稿対策を再確認できませんでした。ページを再読み込みしてください。',
-        'remove',
-      );
-      return;
-    }
-    turnstileWidgetId = undefined;
-    turnstileLoadPromise = undefined;
-    if (!window.turnstile) document.getElementById(TURNSTILE_SCRIPT_ID)?.remove();
-    await initializeTurnstile();
   }
 </script>
 
@@ -522,6 +449,7 @@
           class="contact-form"
           hidden={hideContactForm}
           aria-hidden={hideContactForm ? 'true' : undefined}
+          aria-busy={isBusy}
           use:enhance={handleSubmit}
         >
           <input
@@ -539,214 +467,217 @@
             <p>{contactPageContent.formDescription}</p>
           </div>
 
-          {#if form?.message}
+          {#if submissionError || form?.message}
             <p
-              class:contact-form__status--success={form.ok}
-              class:contact-form__status--error={!form.ok}
+              class:contact-form__status--success={!submissionError && form?.ok}
+              class:contact-form__status--error={submissionError || !form?.ok}
               class="contact-form__status"
-              role={form.ok ? 'status' : 'alert'}
+              role={!submissionError && form?.ok ? 'status' : 'alert'}
             >
-              {form.message}
+              {submissionError || form?.message}
             </p>
           {/if}
 
-          <div class="contact-form__field contact-form__field--trap" aria-hidden="true">
-            <label for="website">Webサイト</label>
-            <input id="website" name="website" tabindex="-1" autocomplete="off" />
-          </div>
+          <fieldset class="contact-form__fields" disabled={isBusy}>
+            <div class="contact-form__field contact-form__field--trap" aria-hidden="true">
+              <label for="website">Webサイト</label>
+              <input id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
 
-          <label class="contact-form__field" for="category">
-            <span>お問い合わせカテゴリ <strong>必須</strong></span>
-            <select
-              id="category"
-              name="category"
-              required
-              value={selectedCategory}
-              onchange={updateCategory}
-              aria-invalid={fieldErrors.category ? 'true' : undefined}
-              aria-describedby={fieldErrors.category ? 'category-error' : undefined}
-            >
-              <option value="">下から選んでください</option>
-              {#each CONTACT_CATEGORIES as category (category.id)}
-                <option value={category.id}>{category.label}</option>
-              {/each}
-            </select>
-            {#if fieldErrors.category}
-              <small id="category-error">{fieldErrors.category}</small>
-            {/if}
-          </label>
-
-          <div class="contact-form__grid">
-            <label class="contact-form__field" for="name">
-              <span>お名前 <strong>必須</strong></span>
-              <input
-                id="name"
-                name="name"
+            <label class="contact-form__field" for="category">
+              <span>お問い合わせカテゴリ <strong>必須</strong></span>
+              <select
+                id="category"
+                name="category"
                 required
-                value={values.name ?? ''}
-                autocomplete="name"
-                aria-invalid={fieldErrors.name ? 'true' : undefined}
-                aria-describedby={fieldErrors.name ? 'name-error' : undefined}
-              />
-              {#if fieldErrors.name}
-                <small id="name-error">{fieldErrors.name}</small>
+                value={selectedCategory}
+                onchange={updateCategory}
+                aria-invalid={fieldErrors.category ? 'true' : undefined}
+                aria-describedby={fieldErrors.category ? 'category-error' : undefined}
+              >
+                <option value="">下から選んでください</option>
+                {#each CONTACT_CATEGORIES as category (category.id)}
+                  <option value={category.id}>{category.label}</option>
+                {/each}
+              </select>
+              {#if fieldErrors.category}
+                <small id="category-error">{fieldErrors.category}</small>
               {/if}
             </label>
 
-            <label class="contact-form__field" for="email">
-              <span>メールアドレス <strong>必須</strong></span>
+            <div class="contact-form__grid">
+              <label class="contact-form__field" for="name">
+                <span>お名前 <strong>必須</strong></span>
+                <input
+                  id="name"
+                  name="name"
+                  required
+                  bind:value={values.name}
+                  autocomplete="name"
+                  aria-invalid={fieldErrors.name ? 'true' : undefined}
+                  aria-describedby={fieldErrors.name ? 'name-error' : undefined}
+                />
+                {#if fieldErrors.name}
+                  <small id="name-error">{fieldErrors.name}</small>
+                {/if}
+              </label>
+
+              <label class="contact-form__field" for="email">
+                <span>メールアドレス <strong>必須</strong></span>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  bind:value={values.email}
+                  autocomplete="email"
+                  aria-invalid={fieldErrors.email ? 'true' : undefined}
+                  aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+                />
+                {#if fieldErrors.email}
+                  <small id="email-error">{fieldErrors.email}</small>
+                {/if}
+              </label>
+            </div>
+
+            <label class="contact-form__field" for="company">
+              <span>会社名・屋号</span>
               <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={values.email ?? ''}
-                autocomplete="email"
-                aria-invalid={fieldErrors.email ? 'true' : undefined}
-                aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+                id="company"
+                name="company"
+                bind:value={values.company}
+                autocomplete="organization"
               />
-              {#if fieldErrors.email}
-                <small id="email-error">{fieldErrors.email}</small>
+            </label>
+
+            <label class="contact-form__field" for="subject">
+              <span>件名（任意）</span>
+              <input
+                id="subject"
+                name="subject"
+                bind:value={values.subject}
+                aria-invalid={fieldErrors.subject ? 'true' : undefined}
+                aria-describedby={fieldErrors.subject ? 'subject-error' : undefined}
+              />
+              {#if fieldErrors.subject}
+                <small id="subject-error">{fieldErrors.subject}</small>
               {/if}
             </label>
-          </div>
 
-          <label class="contact-form__field" for="company">
-            <span>会社名・屋号</span>
-            <input
-              id="company"
-              name="company"
-              value={values.company ?? ''}
-              autocomplete="organization"
-            />
-          </label>
+            <label class="contact-form__field" for="message">
+              <span>お問い合わせ内容 <strong>必須</strong></span>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows="8"
+                bind:value={values.message}
+                aria-invalid={fieldErrors.message ? 'true' : undefined}
+                aria-describedby="message-help"
+              ></textarea>
+              <em id="message-help">
+                {isMacClipy
+                  ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
+                  : isShusei
+                    ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
+                    : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
+              </em>
+              {#if fieldErrors.message}
+                <small>{fieldErrors.message}</small>
+              {/if}
+            </label>
 
-          <label class="contact-form__field" for="subject">
-            <span>件名（任意）</span>
-            <input
-              id="subject"
-              name="subject"
-              value={values.subject ?? ''}
-              aria-invalid={fieldErrors.subject ? 'true' : undefined}
-              aria-describedby={fieldErrors.subject ? 'subject-error' : undefined}
-            />
-            {#if fieldErrors.subject}
-              <small id="subject-error">{fieldErrors.subject}</small>
+            {#if isRecruit}
+              <fieldset class="contact-form__recruit">
+                <legend>採用・パートナー応募の追加情報</legend>
+
+                <div class="contact-form__grid">
+                  <label class="contact-form__field" for="role">
+                    <span>職種・主な役割 <strong>必須</strong></span>
+                    <input
+                      id="role"
+                      name="role"
+                      bind:value={values.role}
+                      placeholder="例: フロントエンドエンジニア"
+                      aria-invalid={fieldErrors.role ? 'true' : undefined}
+                    />
+                    {#if fieldErrors.role}
+                      <small>{fieldErrors.role}</small>
+                    {/if}
+                  </label>
+
+                  <label class="contact-form__field" for="experienceYears">
+                    <span>経験年数</span>
+                    <input
+                      id="experienceYears"
+                      name="experienceYears"
+                      bind:value={values.experienceYears}
+                      placeholder="例: Web開発5年"
+                    />
+                  </label>
+                </div>
+
+                <div class="contact-form__grid">
+                  <label class="contact-form__field" for="workStyle">
+                    <span>現在の働き方 <strong>必須</strong></span>
+                    <input
+                      id="workStyle"
+                      name="workStyle"
+                      bind:value={values.workStyle}
+                      placeholder="例: 副業 / フリーランス / 正社員"
+                      aria-invalid={fieldErrors.workStyle ? 'true' : undefined}
+                    />
+                    {#if fieldErrors.workStyle}
+                      <small>{fieldErrors.workStyle}</small>
+                    {/if}
+                  </label>
+
+                  <label class="contact-form__field" for="availability">
+                    <span>週の稼働可能時間 <strong>必須</strong></span>
+                    <input
+                      id="availability"
+                      name="availability"
+                      bind:value={values.availability}
+                      placeholder="例: 週5〜10時間"
+                      aria-invalid={fieldErrors.availability ? 'true' : undefined}
+                    />
+                    {#if fieldErrors.availability}
+                      <small>{fieldErrors.availability}</small>
+                    {/if}
+                  </label>
+                </div>
+
+                <label class="contact-form__field" for="aiTools">
+                  <span>使用しているAIツール <strong>必須</strong></span>
+                  <input
+                    id="aiTools"
+                    name="aiTools"
+                    bind:value={values.aiTools}
+                    placeholder="例: ChatGPT / Codex / Claude / Cursor"
+                    aria-invalid={fieldErrors.aiTools ? 'true' : undefined}
+                  />
+                  {#if fieldErrors.aiTools}
+                    <small>{fieldErrors.aiTools}</small>
+                  {/if}
+                </label>
+
+                <label class="contact-form__field" for="portfolioUrl">
+                  <span>ポートフォリオ / GitHub URL</span>
+                  <input
+                    id="portfolioUrl"
+                    name="portfolioUrl"
+                    type="url"
+                    bind:value={values.portfolioUrl}
+                    placeholder="https://github.com/..."
+                    aria-invalid={fieldErrors.portfolioUrl ? 'true' : undefined}
+                  />
+                  {#if fieldErrors.portfolioUrl}
+                    <small>{fieldErrors.portfolioUrl}</small>
+                  {/if}
+                </label>
+              </fieldset>
             {/if}
-          </label>
-
-          <label class="contact-form__field" for="message">
-            <span>お問い合わせ内容 <strong>必須</strong></span>
-            <textarea
-              id="message"
-              name="message"
-              required
-              rows="8"
-              aria-invalid={fieldErrors.message ? 'true' : undefined}
-              aria-describedby="message-help">{values.message ?? ''}</textarea
-            >
-            <em id="message-help">
-              {isMacClipy
-                ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
-                : isShusei
-                  ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
-                  : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
-            </em>
-            {#if fieldErrors.message}
-              <small>{fieldErrors.message}</small>
-            {/if}
-          </label>
-
-          {#if isRecruit}
-            <fieldset class="contact-form__recruit">
-              <legend>採用・パートナー応募の追加情報</legend>
-
-              <div class="contact-form__grid">
-                <label class="contact-form__field" for="role">
-                  <span>職種・主な役割 <strong>必須</strong></span>
-                  <input
-                    id="role"
-                    name="role"
-                    value={values.role ?? ''}
-                    placeholder="例: フロントエンドエンジニア"
-                    aria-invalid={fieldErrors.role ? 'true' : undefined}
-                  />
-                  {#if fieldErrors.role}
-                    <small>{fieldErrors.role}</small>
-                  {/if}
-                </label>
-
-                <label class="contact-form__field" for="experienceYears">
-                  <span>経験年数</span>
-                  <input
-                    id="experienceYears"
-                    name="experienceYears"
-                    value={values.experienceYears ?? ''}
-                    placeholder="例: Web開発5年"
-                  />
-                </label>
-              </div>
-
-              <div class="contact-form__grid">
-                <label class="contact-form__field" for="workStyle">
-                  <span>現在の働き方 <strong>必須</strong></span>
-                  <input
-                    id="workStyle"
-                    name="workStyle"
-                    value={values.workStyle ?? ''}
-                    placeholder="例: 副業 / フリーランス / 正社員"
-                    aria-invalid={fieldErrors.workStyle ? 'true' : undefined}
-                  />
-                  {#if fieldErrors.workStyle}
-                    <small>{fieldErrors.workStyle}</small>
-                  {/if}
-                </label>
-
-                <label class="contact-form__field" for="availability">
-                  <span>週の稼働可能時間 <strong>必須</strong></span>
-                  <input
-                    id="availability"
-                    name="availability"
-                    value={values.availability ?? ''}
-                    placeholder="例: 週5〜10時間"
-                    aria-invalid={fieldErrors.availability ? 'true' : undefined}
-                  />
-                  {#if fieldErrors.availability}
-                    <small>{fieldErrors.availability}</small>
-                  {/if}
-                </label>
-              </div>
-
-              <label class="contact-form__field" for="aiTools">
-                <span>使用しているAIツール <strong>必須</strong></span>
-                <input
-                  id="aiTools"
-                  name="aiTools"
-                  value={values.aiTools ?? ''}
-                  placeholder="例: ChatGPT / Codex / Claude / Cursor"
-                  aria-invalid={fieldErrors.aiTools ? 'true' : undefined}
-                />
-                {#if fieldErrors.aiTools}
-                  <small>{fieldErrors.aiTools}</small>
-                {/if}
-              </label>
-
-              <label class="contact-form__field" for="portfolioUrl">
-                <span>ポートフォリオ / GitHub URL</span>
-                <input
-                  id="portfolioUrl"
-                  name="portfolioUrl"
-                  type="url"
-                  value={values.portfolioUrl ?? ''}
-                  placeholder="https://github.com/..."
-                  aria-invalid={fieldErrors.portfolioUrl ? 'true' : undefined}
-                />
-                {#if fieldErrors.portfolioUrl}
-                  <small>{fieldErrors.portfolioUrl}</small>
-                {/if}
-              </label>
-            </fieldset>
-          {/if}
+          </fieldset>
 
           <div class="contact-form__turnstile">
             {#if hasTurnstile}
@@ -755,24 +686,24 @@
                 class="contact-form__turnstile-widget"
                 bind:this={turnstileContainer}
                 aria-live="polite"
+                hidden={!isAuthenticating}
               ></div>
               <p id="turnstile-status" role="status" aria-live="polite">
                 {turnstileClientError ||
                   (turnstileToken
                     ? '迷惑投稿対策の確認が完了しました。'
-                    : turnstileIsLoading
-                      ? '迷惑投稿対策を読み込んでいます。'
-                      : '迷惑投稿対策の確認待ちです。')}
+                    : isAuthenticating
+                      ? '迷惑投稿対策を確認しています。完了後に送信します。'
+                      : '送信時に迷惑投稿対策の確認を行います。')}
               </p>
               {#if turnstileClientError || (fieldErrors.turnstile && !turnstileServerErrorDismissed)}
                 <button
                   class="contact-form__turnstile-retry"
-                  type="button"
-                  onclick={retryTurnstile}
-                  disabled={turnstileIsLoading || isSubmitting}
-                  aria-busy={turnstileIsLoading}
+                  type="submit"
+                  disabled={isBusy}
+                  aria-busy={isAuthenticating}
                 >
-                  {turnstileIsLoading ? '再確認中...' : '迷惑投稿対策を再確認'}
+                  確認して再送信
                 </button>
               {/if}
             {:else}
@@ -786,11 +717,11 @@
           <button
             class="contact-form__submit"
             type="submit"
-            disabled={isSubmitting || (browser && hasTurnstile && !turnstileToken)}
-            aria-busy={isSubmitting}
+            disabled={isBusy}
+            aria-busy={isBusy}
             aria-describedby={hasTurnstile ? 'turnstile-status' : undefined}
           >
-            {isSubmitting ? '送信中...' : '内容を送信'}
+            {isAuthenticating ? '認証中...' : isSubmitting ? '送信中...' : '内容を送信'}
           </button>
         </form>
       </div>
@@ -843,6 +774,11 @@
   .contact-page__details {
     display: grid;
     gap: 18px;
+  }
+
+  .contact-page__details[hidden],
+  .contact-form[hidden] {
+    display: none;
   }
 
   .contact-page__panel,
@@ -962,6 +898,15 @@
   .contact-form__header {
     display: grid;
     gap: 8px;
+  }
+
+  .contact-form__fields {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
   }
 
   .contact-form__status {

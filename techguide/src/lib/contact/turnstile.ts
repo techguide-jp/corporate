@@ -28,6 +28,8 @@ export type TurnstileClientReason =
 
 export type TurnstileClientErrorSource =
   | 'initialization'
+  | 'execution'
+  | 'verification_timeout'
   | 'error_callback'
   | 'timeout_callback'
   | 'expired_callback'
