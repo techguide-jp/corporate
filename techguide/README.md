@@ -61,10 +61,12 @@ pnpm build
 
 採用ページからは `/contact?category=recruit` に遷移し、フォームカテゴリを「採用・パートナー応募」に初期選択します。
 
-Turnstileの認証エラーは `turnstile_error`、利用者の送信操作に伴う入力不備・認証未完了・サーバーエラーは `form_submit_error` に分けます。通常のトークン有効期限切れだけではエラーイベントを送信しません。認証開始タイミング、再確認UI、サーバー検証の10秒制限は変更していません。
+Turnstileは送信操作後にだけ読み込み、`execution: execute` で認証を開始します。入力中にトークンを発行せず、認証成功後に新しいトークンを付けて自動的に1回だけ送信します。認証中はフォームを表示したまま編集・二重送信を止め、失敗時は入力内容を保持して「確認して再送信」から再試行できます。読み込みは15秒、送信操作後の認証待ちは全体で120秒を上限とし、サーバー検証の10秒制限は維持します。画面遷移の開始時点で認証・送信待ちを中断し、遷移先の読み込み中や古い認証コールバックから送信を再開しません。送信結果が不明な通信エラーも自動再送しません。送信開始後の中断ではサーバー側の処理完了は不明として扱い、画面に残る場合は受付メールの確認を案内します。
+
+Turnstileの認証エラーは `turnstile_error`、利用者の送信操作に伴う入力不備・認証失敗・サーバーエラーは `form_submit_error` に分けます。送信操作は認証開始前に1件、認証に失敗した場合の送信エラーはその操作につき1件だけ計上します。通常のトークン有効期限切れだけでは診断イベントを送信しません。
 
 - `error_kind` には安全な理由・発生箇所・既知の数値コードを格納します。`turnstile_client_timeout_error_callback_110600` は確認処理の時間切れ、末尾 `110620` は操作待ちの時間切れ、`turnstile_client_timeout_timeout_callback` は操作待ちの時間切れコールバックです。
-- `turnstile_source` は `initialization` / `error_callback` / `timeout_callback` / `expired_callback` / `reset` / `remove`、`turnstile_error_code` は既知のコードだけです。トークン、フォーム入力、例外文、未知のコードは送信しません。自動再試行の同一エラーは重複計上せず、手動再確認時に重複抑制をリセットします。
+- `turnstile_source` は `initialization` / `execution` / `verification_timeout` / `error_callback` / `timeout_callback` / `expired_callback`（旧形式では `reset` / `remove` も使用）、`turnstile_error_code` は既知のコードだけです。`verification_timeout` は送信操作後120秒の無応答、`timeout_callback` はTurnstileの操作待ち時間切れを示します。トークン、フォーム入力、例外文、未知のコードは送信しません。認証の自動再試行・期限切れ時の自動更新は無効にし、1操作を1結果として扱います。
 - 追加パラメーターのGA4カスタム定義は自動登録しません。日次監視は登録済みの `error_kind` を使って発生箇所と時間切れの種類を確認できます。
 - 変更前の `form_submit_error` は送信前の認証エラーを含みます。公開前後の件数を連続した送信失敗指標として比較せず、`turnstile_error` は公開・初回受信を確認するまで未検証として扱います。計測の切り替えは本番デプロイ後に有効になり、公開確認とGA4の実受信確認は分けて行います。
 
