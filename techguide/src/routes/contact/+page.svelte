@@ -720,7 +720,7 @@
                     required
                     rows="4"
                     bind:value={values.portfolioUrl}
-                    placeholder="https://example.com/portfolio&#10;https://example.com/resume"
+                    placeholder="https://example.com/portfolio"
                     aria-invalid={fieldErrors.portfolioUrl ? 'true' : undefined}
                     aria-describedby={fieldErrors.portfolioUrl
                       ? 'portfolioUrl-help portfolioUrl-error'
