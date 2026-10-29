@@ -38,7 +38,7 @@ function makeRecruitForm() {
 
 await test('recruit applications require experience, portfolio URL and nearest station', () => {
   for (const field of ['experienceYears', 'portfolioUrl', 'nearestStation']) {
-    for (const value of [undefined, '', '   ']) {
+    for (const value of [undefined, '', '   ', '\n \n']) {
       const form = makeRecruitForm();
       if (value === undefined) form.delete(field);
       else form.set(field, value);
@@ -53,6 +53,40 @@ await test('recruit applications require experience, portfolio URL and nearest s
   form.set('portfolioUrl', 'example.com/portfolio');
   const invalidUrl = parseContactFormData(form);
   assert.ok(!invalidUrl.ok && invalidUrl.fieldErrors.portfolioUrl);
+});
+
+await test('applications accept multiple portfolio and resume URLs with blank lines and CRLF', () => {
+  const form = makeRecruitForm();
+  form.set('portfolioUrl', ' https://example.com/portfolio \r\n\r\n http://example.com/resume ');
+  const result = parseContactFormData(form);
+  if (!result.ok) throw new Error('Expected multiple valid URLs to be accepted');
+  for (const email of [
+    buildAdminEmail(result.submission),
+    buildAutoReplyEmail(result.submission),
+  ]) {
+    assert.ok(
+      email.text.includes(
+        'ポートフォリオ・経歴書などあなたがわかるもの（URL）: https://example.com/portfolio\nhttp://example.com/resume',
+      ),
+    );
+    assert.match(email.html, /https:\/\/example.com\/portfolio<br>http:\/\/example.com\/resume/);
+  }
+});
+
+await test('every portfolio URL is validated, including URLs after the first line', () => {
+  for (const invalid of [
+    'invalid-url',
+    'javascript:alert(1)',
+    'ftp://example.com/resume',
+    'https://',
+    'https://invalid host/resume',
+    'https://example.com/one https://example.com/two',
+  ]) {
+    const form = makeRecruitForm();
+    form.set('portfolioUrl', `https://example.com/portfolio\n${invalid}`);
+    const result = parseContactFormData(form);
+    assert.ok(!result.ok && result.fieldErrors.portfolioUrl, `Must reject ${invalid}`);
+  }
 });
 
 await test('recruit applications accept omitted availability, AI practices and strengths', () => {
@@ -73,6 +107,9 @@ await test('partnership inquiries do not require recruitment-specific fields', (
 
 await test('new application fields are preserved on errors and included in both email copies', async () => {
   const form = makeRecruitForm();
+  const portfolioUrls =
+    'https://example.com/portfolio\nhttps://example.com/resume?file=a&format=pdf';
+  form.set('portfolioUrl', portfolioUrls);
   form.set('aiUsagePractices', '目的を明確にする\n出力を<レビュー>する');
   form.set('strengths', '要件整理 & 改善提案');
   const dependencies = {
@@ -92,6 +129,7 @@ await test('new application fields are preserved on errors and included in both 
   for (const result of [invalid, verificationFailed, deliveryFailed]) {
     assert.equal(result.data.ok, false);
     assert.equal(result.data.values.nearestStation, '品川駅');
+    assert.equal(result.data.values.portfolioUrl, portfolioUrls);
     assert.equal(result.data.values.aiUsagePractices, '目的を明確にする\n出力を<レビュー>する');
     assert.equal(result.data.values.strengths, '要件整理 & 改善提案');
   }
@@ -105,7 +143,10 @@ await test('new application fields are preserved on errors and included in both 
     assert.match(email.text, /経験年数: Web開発5年/);
     assert.match(email.text, /週の稼働可能時間: 未入力/);
     assert.match(email.text, /最寄駅: 品川駅/);
-    assert.match(email.text, /ポートフォリオ・URL: https:\/\/example.com\/portfolio/);
+    assert.ok(
+      email.text.includes(`ポートフォリオ・経歴書などあなたがわかるもの（URL）: ${portfolioUrls}`),
+    );
+    assert.match(email.html, /https:\/\/example.com\/resume\?file=a&amp;format=pdf/);
     assert.match(email.text, /AI利用時に工夫していること: 目的を明確にする\n出力を<レビュー>する/);
     assert.match(email.text, /あなたの強み: 要件整理 & 改善提案/);
     assert.match(email.html, /目的を明確にする<br>出力を&lt;レビュー&gt;する/);
