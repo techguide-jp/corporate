@@ -43,8 +43,11 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     experienceYears: readText(formData, 'experienceYears'),
     workStyle: readText(formData, 'workStyle'),
     availability: readText(formData, 'availability'),
+    nearestStation: readText(formData, 'nearestStation'),
     aiTools: readText(formData, 'aiTools'),
     portfolioUrl: readText(formData, 'portfolioUrl'),
+    aiUsagePractices: readText(formData, 'aiUsagePractices'),
+    strengths: readText(formData, 'strengths'),
   };
 
   const rawCategory = readText(formData, 'category');
@@ -77,14 +80,20 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     if (!hasValue(values.role)) {
       fieldErrors.role = '職種・主な役割を入力してください。';
     }
+    if (!hasValue(values.experienceYears)) {
+      fieldErrors.experienceYears = '経験年数を入力してください。';
+    }
     if (!hasValue(values.workStyle)) {
       fieldErrors.workStyle = '現在の働き方を入力してください。';
     }
-    if (!hasValue(values.availability)) {
-      fieldErrors.availability = '週あたりの稼働可能時間を入力してください。';
+    if (!hasValue(values.nearestStation)) {
+      fieldErrors.nearestStation = '最寄駅を入力してください。';
     }
     if (!hasValue(values.aiTools)) {
       fieldErrors.aiTools = '利用しているAIツールを入力してください。';
+    }
+    if (!hasValue(values.portfolioUrl)) {
+      fieldErrors.portfolioUrl = 'ポートフォリオ・URLを入力してください。';
     }
   }
 

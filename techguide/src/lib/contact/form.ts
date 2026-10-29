@@ -33,8 +33,11 @@ export interface ContactFormValues extends ContactAttribution {
   experienceYears: string;
   workStyle: string;
   availability: string;
+  nearestStation: string;
   aiTools: string;
   portfolioUrl: string;
+  aiUsagePractices: string;
+  strengths: string;
 }
 
 export type ContactFieldErrors = Partial<Record<keyof ContactFormValues | 'turnstile', string>>;
@@ -71,8 +74,11 @@ export function createEmptyContactFormValues(
     experienceYears: '',
     workStyle: '',
     availability: '',
+    nearestStation: '',
     aiTools: '',
     portfolioUrl: '',
+    aiUsagePractices: '',
+    strengths: '',
   };
 }
 
