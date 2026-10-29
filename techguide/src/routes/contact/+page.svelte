@@ -43,7 +43,7 @@
   let attribution = $state({ landingPage: '', sourcePage: '' });
 
   let { data, form }: PageProps = $props();
-  const initialSelectedCategory = () => data.selectedCategory;
+  const initialSelectedCategory = () => form?.values?.category ?? data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
   let isAuthenticating = $state(false);
   let isSubmitting = $state(false);
@@ -618,6 +618,7 @@
                     <input
                       id="role"
                       name="role"
+                      required
                       bind:value={values.role}
                       placeholder="例: フロントエンドエンジニア"
                       aria-invalid={fieldErrors.role ? 'true' : undefined}
@@ -628,13 +629,21 @@
                   </label>
 
                   <label class="contact-form__field" for="experienceYears">
-                    <span>経験年数</span>
+                    <span>経験年数 <strong>必須</strong></span>
                     <input
                       id="experienceYears"
                       name="experienceYears"
+                      required
                       bind:value={values.experienceYears}
                       placeholder="例: Web開発5年"
+                      aria-invalid={fieldErrors.experienceYears ? 'true' : undefined}
+                      aria-describedby={fieldErrors.experienceYears
+                        ? 'experienceYears-error'
+                        : undefined}
                     />
+                    {#if fieldErrors.experienceYears}
+                      <small id="experienceYears-error">{fieldErrors.experienceYears}</small>
+                    {/if}
                   </label>
                 </div>
 
@@ -644,6 +653,7 @@
                     <input
                       id="workStyle"
                       name="workStyle"
+                      required
                       bind:value={values.workStyle}
                       placeholder="例: 副業 / フリーランス / 正社員"
                       aria-invalid={fieldErrors.workStyle ? 'true' : undefined}
@@ -654,7 +664,7 @@
                   </label>
 
                   <label class="contact-form__field" for="availability">
-                    <span>週の稼働可能時間 <strong>必須</strong></span>
+                    <span>週の稼働可能時間（任意）</span>
                     <input
                       id="availability"
                       name="availability"
@@ -668,11 +678,30 @@
                   </label>
                 </div>
 
+                <label class="contact-form__field" for="nearestStation">
+                  <span>最寄駅 <strong>必須</strong></span>
+                  <input
+                    id="nearestStation"
+                    name="nearestStation"
+                    required
+                    bind:value={values.nearestStation}
+                    placeholder="例: 品川駅"
+                    aria-invalid={fieldErrors.nearestStation ? 'true' : undefined}
+                    aria-describedby={fieldErrors.nearestStation
+                      ? 'nearestStation-error'
+                      : undefined}
+                  />
+                  {#if fieldErrors.nearestStation}
+                    <small id="nearestStation-error">{fieldErrors.nearestStation}</small>
+                  {/if}
+                </label>
+
                 <label class="contact-form__field" for="aiTools">
                   <span>使用しているAIツール <strong>必須</strong></span>
                   <input
                     id="aiTools"
                     name="aiTools"
+                    required
                     bind:value={values.aiTools}
                     placeholder="例: ChatGPT / Codex / Claude / Cursor"
                     aria-invalid={fieldErrors.aiTools ? 'true' : undefined}
@@ -683,18 +712,36 @@
                 </label>
 
                 <label class="contact-form__field" for="portfolioUrl">
-                  <span>ポートフォリオ / GitHub URL</span>
+                  <span>ポートフォリオ・URL <strong>必須</strong></span>
                   <input
                     id="portfolioUrl"
                     name="portfolioUrl"
                     type="url"
+                    required
                     bind:value={values.portfolioUrl}
                     placeholder="https://github.com/..."
                     aria-invalid={fieldErrors.portfolioUrl ? 'true' : undefined}
+                    aria-describedby={fieldErrors.portfolioUrl ? 'portfolioUrl-error' : undefined}
                   />
                   {#if fieldErrors.portfolioUrl}
-                    <small>{fieldErrors.portfolioUrl}</small>
+                    <small id="portfolioUrl-error">{fieldErrors.portfolioUrl}</small>
                   {/if}
+                </label>
+
+                <label class="contact-form__field" for="aiUsagePractices">
+                  <span>AI利用時に工夫していること（任意）</span>
+                  <textarea
+                    id="aiUsagePractices"
+                    name="aiUsagePractices"
+                    rows="4"
+                    bind:value={values.aiUsagePractices}
+                  ></textarea>
+                </label>
+
+                <label class="contact-form__field" for="strengths">
+                  <span>あなたの強み（任意）</span>
+                  <textarea id="strengths" name="strengths" rows="4" bind:value={values.strengths}
+                  ></textarea>
                 </label>
               </fieldset>
             {/if}

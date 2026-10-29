@@ -33,8 +33,11 @@ function formatSubmissionLines(submission: ContactSubmission) {
       formatOptional('経験年数', submission.experienceYears),
       formatOptional('現在の働き方', submission.workStyle),
       formatOptional('週の稼働可能時間', submission.availability),
+      formatOptional('最寄駅', submission.nearestStation),
       formatOptional('使用しているAIツール', submission.aiTools),
-      formatOptional('ポートフォリオ/GitHub URL', submission.portfolioUrl),
+      formatOptional('ポートフォリオ・URL', submission.portfolioUrl),
+      formatOptional('AI利用時に工夫していること', submission.aiUsagePractices),
+      formatOptional('あなたの強み', submission.strengths),
     );
   }
 

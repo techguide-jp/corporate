@@ -21,6 +21,98 @@ function makeForm() {
   return data;
 }
 
+function makeRecruitForm() {
+  const data = makeForm();
+  for (const [key, value] of Object.entries({
+    category: 'recruit',
+    role: 'Webエンジニア',
+    experienceYears: 'Web開発5年',
+    workStyle: 'フリーランス',
+    nearestStation: '品川駅',
+    aiTools: 'ChatGPT / Codex',
+    portfolioUrl: 'https://example.com/portfolio',
+  }))
+    data.set(key, value);
+  return data;
+}
+
+await test('recruit applications require experience, portfolio URL and nearest station', () => {
+  for (const field of ['experienceYears', 'portfolioUrl', 'nearestStation']) {
+    for (const value of [undefined, '', '   ']) {
+      const form = makeRecruitForm();
+      if (value === undefined) form.delete(field);
+      else form.set(field, value);
+      const result = parseContactFormData(form);
+      assert.equal(result.ok, false, `${field} must not accept ${JSON.stringify(value)}`);
+      if (result.ok) throw new Error('Expected validation failure');
+      assert.ok(result.fieldErrors[field as keyof typeof result.fieldErrors]);
+    }
+  }
+
+  const form = makeRecruitForm();
+  form.set('portfolioUrl', 'example.com/portfolio');
+  const invalidUrl = parseContactFormData(form);
+  assert.ok(!invalidUrl.ok && invalidUrl.fieldErrors.portfolioUrl);
+});
+
+await test('recruit applications accept omitted availability, AI practices and strengths', () => {
+  const result = parseContactFormData(makeRecruitForm());
+  assert.ok(result.ok);
+  if (!result.ok) throw new Error('Expected valid application');
+  assert.equal(result.submission.availability, '');
+  assert.equal(result.submission.aiUsagePractices, '');
+  assert.equal(result.submission.strengths, '');
+});
+
+await test('partnership inquiries do not require recruitment-specific fields', () => {
+  const form = makeForm();
+  form.set('category', 'partnership');
+  const result = parseContactFormData(form);
+  assert.ok(result.ok && !result.submission.isRecruit);
+});
+
+await test('new application fields are preserved on errors and included in both email copies', async () => {
+  const form = makeRecruitForm();
+  form.set('aiUsagePractices', '目的を明確にする\n出力を<レビュー>する');
+  form.set('strengths', '要件整理 & 改善提案');
+  const dependencies = {
+    shouldMock: () => Promise.resolve(false),
+    verify: () => Promise.resolve({ ok: true as const }),
+    send: () => Promise.resolve({ ok: false as const, message: '送信失敗' }),
+  };
+
+  form.set('experienceYears', '');
+  const invalid = await submitContactForm(form, dependencies);
+  form.set('experienceYears', 'Web開発5年');
+  const verificationFailed = await submitContactForm(form, {
+    ...dependencies,
+    verify: () => Promise.resolve({ ok: false as const, message: '認証失敗' }),
+  });
+  const deliveryFailed = await submitContactForm(form, dependencies);
+  for (const result of [invalid, verificationFailed, deliveryFailed]) {
+    assert.equal(result.data.ok, false);
+    assert.equal(result.data.values.nearestStation, '品川駅');
+    assert.equal(result.data.values.aiUsagePractices, '目的を明確にする\n出力を<レビュー>する');
+    assert.equal(result.data.values.strengths, '要件整理 & 改善提案');
+  }
+
+  const result = parseContactFormData(form);
+  if (!result.ok) throw new Error('Expected valid application');
+  for (const email of [
+    buildAdminEmail(result.submission),
+    buildAutoReplyEmail(result.submission),
+  ]) {
+    assert.match(email.text, /経験年数: Web開発5年/);
+    assert.match(email.text, /週の稼働可能時間: 未入力/);
+    assert.match(email.text, /最寄駅: 品川駅/);
+    assert.match(email.text, /ポートフォリオ・URL: https:\/\/example.com\/portfolio/);
+    assert.match(email.text, /AI利用時に工夫していること: 目的を明確にする\n出力を<レビュー>する/);
+    assert.match(email.text, /あなたの強み: 要件整理 & 改善提案/);
+    assert.match(email.html, /目的を明確にする<br>出力を&lt;レビュー&gt;する/);
+    assert.match(email.html, /要件整理 &amp; 改善提案/);
+  }
+});
+
 await test('preserves attribution on validation errors and successful retry', () => {
   const form = makeForm();
   form.set('email', 'invalid');
