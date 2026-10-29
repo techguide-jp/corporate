@@ -1,4 +1,5 @@
 import type { ContactSubmission } from './validation';
+import { parsePortfolioUrls, PORTFOLIO_URL_LABEL } from '../../contact/form.ts';
 
 function escapeHtml(value: string) {
   return value
@@ -35,7 +36,7 @@ function formatSubmissionLines(submission: ContactSubmission) {
       formatOptional('週の稼働可能時間', submission.availability),
       formatOptional('最寄駅', submission.nearestStation),
       formatOptional('使用しているAIツール', submission.aiTools),
-      formatOptional('ポートフォリオ・URL', submission.portfolioUrl),
+      formatOptional(PORTFOLIO_URL_LABEL, parsePortfolioUrls(submission.portfolioUrl).join('\n')),
       formatOptional('AI利用時に工夫していること', submission.aiUsagePractices),
       formatOptional('あなたの強み', submission.strengths),
     );

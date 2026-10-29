@@ -3,6 +3,7 @@ import { normalizeAttributionPage, type ContactAttribution } from '../analytics/
 export const RECRUIT_CATEGORY_ID = 'recruit';
 export const MACCLIPY_CATEGORY_ID = 'macclipy';
 export const SHUSEI_CATEGORY_ID = 'shusei';
+export const PORTFOLIO_URL_LABEL = 'ポートフォリオ・経歴書などあなたがわかるもの（URL）';
 
 export const CONTACT_CATEGORIES = [
   { id: 'discovery', label: '課題整理・導入前の相談' },
@@ -41,6 +42,13 @@ export interface ContactFormValues extends ContactAttribution {
 }
 
 export type ContactFieldErrors = Partial<Record<keyof ContactFormValues | 'turnstile', string>>;
+
+export function parsePortfolioUrls(value: string): string[] {
+  return value
+    .split(/\r\n?|\n/)
+    .map((url) => url.trim())
+    .filter(Boolean);
+}
 
 export function isContactCategoryId(value: string): value is ContactCategoryId {
   return CONTACT_CATEGORIES.some((category) => category.id === value);

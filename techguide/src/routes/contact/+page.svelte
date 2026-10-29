@@ -19,6 +19,7 @@
   import {
     CONTACT_CATEGORIES,
     MACCLIPY_CATEGORY_ID,
+    PORTFOLIO_URL_LABEL,
     RECRUIT_CATEGORY_ID,
     SHUSEI_CATEGORY_ID,
     type ContactFieldErrors,
@@ -712,17 +713,22 @@
                 </label>
 
                 <label class="contact-form__field" for="portfolioUrl">
-                  <span>ポートフォリオ・URL <strong>必須</strong></span>
-                  <input
+                  <span>{PORTFOLIO_URL_LABEL} <strong>必須</strong></span>
+                  <textarea
                     id="portfolioUrl"
                     name="portfolioUrl"
-                    type="url"
                     required
+                    rows="4"
                     bind:value={values.portfolioUrl}
-                    placeholder="https://github.com/..."
+                    placeholder="https://example.com/portfolio&#10;https://example.com/resume"
                     aria-invalid={fieldErrors.portfolioUrl ? 'true' : undefined}
-                    aria-describedby={fieldErrors.portfolioUrl ? 'portfolioUrl-error' : undefined}
-                  />
+                    aria-describedby={fieldErrors.portfolioUrl
+                      ? 'portfolioUrl-help portfolioUrl-error'
+                      : 'portfolioUrl-help'}
+                  ></textarea>
+                  <em id="portfolioUrl-help"
+                    >URLは1行に1つずつ入力してください。複数入力できます。</em
+                  >
                   {#if fieldErrors.portfolioUrl}
                     <small id="portfolioUrl-error">{fieldErrors.portfolioUrl}</small>
                   {/if}
@@ -1014,6 +1020,8 @@
   }
 
   .contact-form__field strong {
+    flex-shrink: 0;
+    white-space: nowrap;
     padding: 2px 7px;
     border-radius: var(--radius-pill);
     color: #fff;

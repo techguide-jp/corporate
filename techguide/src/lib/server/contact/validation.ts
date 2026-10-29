@@ -1,6 +1,8 @@
 import {
   getContactCategoryLabel,
   isContactCategoryId,
+  parsePortfolioUrls,
+  PORTFOLIO_URL_LABEL,
   RECRUIT_CATEGORY_ID,
   type ContactCategoryId,
   type ContactFieldErrors,
@@ -27,6 +29,16 @@ function readText(formData: FormData, key: string) {
 
 function hasValue(value: string) {
   return value.length > 0;
+}
+
+function isHttpUrl(value: string) {
+  if (!/^https?:\/\//i.test(value) || /\s/.test(value)) return false;
+  try {
+    const url = new URL(value);
+    return (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 export function parseContactFormData(formData: FormData): ContactValidationResult {
@@ -76,6 +88,7 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
   }
 
   const isRecruit = values.category === RECRUIT_CATEGORY_ID;
+  const portfolioUrls = parsePortfolioUrls(values.portfolioUrl);
   if (isRecruit) {
     if (!hasValue(values.role)) {
       fieldErrors.role = '職種・主な役割を入力してください。';
@@ -92,13 +105,14 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     if (!hasValue(values.aiTools)) {
       fieldErrors.aiTools = '利用しているAIツールを入力してください。';
     }
-    if (!hasValue(values.portfolioUrl)) {
-      fieldErrors.portfolioUrl = 'ポートフォリオ・URLを入力してください。';
+    if (portfolioUrls.length === 0) {
+      fieldErrors.portfolioUrl = `${PORTFOLIO_URL_LABEL}を1件以上入力してください。`;
     }
   }
 
-  if (values.portfolioUrl && !/^https?:\/\/.+/i.test(values.portfolioUrl)) {
-    fieldErrors.portfolioUrl = 'URLは http:// または https:// から入力してください。';
+  if (portfolioUrls.some((url) => !isHttpUrl(url))) {
+    fieldErrors.portfolioUrl =
+      'http:// または https:// から始まる有効なURLを、1行に1つずつ入力してください。';
   }
 
   if (Object.keys(fieldErrors).length > 0 || !values.category) {
