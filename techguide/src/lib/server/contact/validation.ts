@@ -60,6 +60,7 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     portfolioUrl: readText(formData, 'portfolioUrl'),
     aiUsagePractices: readText(formData, 'aiUsagePractices'),
     strengths: readText(formData, 'strengths'),
+    discoverySource: readText(formData, 'discoverySource'),
   };
 
   const rawCategory = readText(formData, 'category');

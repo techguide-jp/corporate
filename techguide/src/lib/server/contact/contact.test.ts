@@ -89,13 +89,20 @@ await test('every portfolio URL is validated, including URLs after the first lin
   }
 });
 
-await test('recruit applications accept omitted availability, AI practices and strengths', () => {
+await test('recruit applications accept omitted optional information', () => {
   const result = parseContactFormData(makeRecruitForm());
   assert.ok(result.ok);
   if (!result.ok) throw new Error('Expected valid application');
   assert.equal(result.submission.availability, '');
   assert.equal(result.submission.aiUsagePractices, '');
   assert.equal(result.submission.strengths, '');
+  assert.equal(result.submission.discoverySource, '');
+  for (const email of [
+    buildAdminEmail(result.submission),
+    buildAutoReplyEmail(result.submission),
+  ]) {
+    assert.match(email.text, /TechGuideを知ったきっかけ: 未入力/);
+  }
 });
 
 await test('partnership inquiries do not require recruitment-specific fields', () => {
@@ -112,6 +119,7 @@ await test('new application fields are preserved on errors and included in both 
   form.set('portfolioUrl', portfolioUrls);
   form.set('aiUsagePractices', '目的を明確にする\n出力を<レビュー>する');
   form.set('strengths', '要件整理 & 改善提案');
+  form.set('discoverySource', ' Google検索 & SNSの<募集投稿> ');
   const dependencies = {
     shouldMock: () => Promise.resolve(false),
     verify: () => Promise.resolve({ ok: true as const }),
@@ -132,6 +140,7 @@ await test('new application fields are preserved on errors and included in both 
     assert.equal(result.data.values.portfolioUrl, portfolioUrls);
     assert.equal(result.data.values.aiUsagePractices, '目的を明確にする\n出力を<レビュー>する');
     assert.equal(result.data.values.strengths, '要件整理 & 改善提案');
+    assert.equal(result.data.values.discoverySource, 'Google検索 & SNSの<募集投稿>');
   }
 
   const result = parseContactFormData(form);
@@ -149,6 +158,8 @@ await test('new application fields are preserved on errors and included in both 
     assert.match(email.html, /https:\/\/example.com\/resume\?file=a&amp;format=pdf/);
     assert.match(email.text, /AI利用時に工夫していること: 目的を明確にする\n出力を<レビュー>する/);
     assert.match(email.text, /あなたの強み: 要件整理 & 改善提案/);
+    assert.match(email.text, /TechGuideを知ったきっかけ: Google検索 & SNSの<募集投稿>/);
+    assert.match(email.html, /TechGuideを知ったきっかけ: Google検索 &amp; SNSの&lt;募集投稿&gt;/);
     assert.match(email.html, /目的を明確にする<br>出力を&lt;レビュー&gt;する/);
     assert.match(email.html, /要件整理 &amp; 改善提案/);
   }

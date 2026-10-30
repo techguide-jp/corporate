@@ -749,6 +749,17 @@
                   <textarea id="strengths" name="strengths" rows="4" bind:value={values.strengths}
                   ></textarea>
                 </label>
+
+                <label class="contact-form__field" for="discoverySource">
+                  <span>TechGuideを知ったきっかけ（任意）</span>
+                  <input
+                    id="discoverySource"
+                    name="discoverySource"
+                    bind:value={values.discoverySource}
+                    aria-describedby="discoverySource-help"
+                  />
+                  <em id="discoverySource-help">例: Google検索、SNS、知人の紹介、募集サイトなど</em>
+                </label>
               </fieldset>
             {/if}
           </fieldset>

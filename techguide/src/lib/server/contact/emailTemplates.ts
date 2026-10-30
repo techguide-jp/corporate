@@ -39,6 +39,7 @@ function formatSubmissionLines(submission: ContactSubmission) {
       formatOptional(PORTFOLIO_URL_LABEL, parsePortfolioUrls(submission.portfolioUrl).join('\n')),
       formatOptional('AI利用時に工夫していること', submission.aiUsagePractices),
       formatOptional('あなたの強み', submission.strengths),
+      formatOptional('TechGuideを知ったきっかけ', submission.discoverySource),
     );
   }
 
