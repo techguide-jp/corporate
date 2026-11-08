@@ -86,10 +86,10 @@ export const beforeToolSelectionArticle: Article = {
     {
       type: 'cta',
       cta: {
-        label: '業務自動化できるか診断する',
+        label: 'Excel業務を置き換える選び方を見る',
         description:
-          '具体的にどの作業を自動化できるか確認したい方は、Ready-mockの診断を利用できます。',
-        href: `https://www.ready-mock.com/business-automation-check?${readyMockReferralParams}&utm_content=before_tool_selection_inline_cta`,
+          '表の改善、既存サービス、専用画面を比較し、案件・納期管理のモックを操作できます。',
+        href: `https://www.ready-mock.com/guides/excel-workflow?${readyMockReferralParams}&utm_content=before_tool_selection_inline_cta`,
         eventName: 'ready_mock_outbound_click',
         target: 'ready-mock',
         placement: 'inline',
@@ -176,9 +176,9 @@ export const beforeToolSelectionArticle: Article = {
     tone: 'warm',
   },
   secondaryCta: {
-    label: '業務自動化できるか診断する',
-    description: '具体的に自動化しやすい業務を確認したい方は、Ready-mockの診断へ進めます。',
-    href: `https://www.ready-mock.com/business-automation-check?${readyMockReferralParams}&utm_content=before_tool_selection_bottom_cta`,
+    label: 'Excel業務を置き換える選び方を見る',
+    description: '表の改善、既存サービス、専用画面を比較し、案件・納期管理のモックを操作できます。',
+    href: `https://www.ready-mock.com/guides/excel-workflow?${readyMockReferralParams}&utm_content=before_tool_selection_bottom_cta`,
     eventName: 'ready_mock_outbound_click',
     target: 'ready-mock',
     placement: 'bottom',

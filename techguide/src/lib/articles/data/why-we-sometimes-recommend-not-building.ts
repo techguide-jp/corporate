@@ -1,3 +1,4 @@
+import { readyMockReferralParams } from '../links';
 import type { Article } from '../types';
 
 export const whyWeSometimesRecommendNotBuildingArticle: Article = {
@@ -199,11 +200,12 @@ export const whyWeSometimesRecommendNotBuildingArticle: Article = {
     tone: 'warm',
   },
   secondaryCta: {
-    label: 'TechGuideの支援内容を見る',
-    description: '相談できる内容や、TechGuideがお手伝いできることを確認できます。',
-    href: '/services/#consulting',
-    eventName: 'article_cta_click',
-    target: 'techguide-service',
+    label: '開発費用と作る範囲の見直し方を見る',
+    description: '既存サービス・小さな試作・本開発を比較し、見積もり前に必要な範囲を整理できます。',
+    href: `https://www.ready-mock.com/guides/development-cost?${readyMockReferralParams}&utm_content=cost_article`,
+    eventName: 'ready_mock_outbound_click',
+    target: 'ready-mock-article',
+    isExternal: true,
     placement: 'bottom',
     tone: 'light',
   },

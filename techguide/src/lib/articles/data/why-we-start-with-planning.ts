@@ -53,10 +53,9 @@ export const whyWeStartWithPlanningArticle: Article = {
     {
       type: 'cta',
       cta: {
-        label: '開発外注前チェックリストを見る',
-        description:
-          '具体的な確認項目を自分で整理したい方は、Ready-mockのチェックリストを利用できます。',
-        href: `https://www.ready-mock.com/articles/development-outsourcing-checklist?${readyMockReferralParams}&utm_content=why_we_start_with_planning_inline_cta`,
+        label: '新規サービスの試作範囲を整理する',
+        description: '画面案・操作できる試作・MVPを比較し、最初に確かめる流れを整理できます。',
+        href: `https://www.ready-mock.com/guides/service-prototype?${readyMockReferralParams}&utm_content=why_we_start_with_planning_inline_cta`,
         eventName: 'ready_mock_outbound_click',
         target: 'ready-mock-article',
         placement: 'inline',
@@ -159,9 +158,9 @@ export const whyWeStartWithPlanningArticle: Article = {
     tone: 'warm',
   },
   secondaryCta: {
-    label: '開発外注前チェックリストを見る',
-    description: '具体的な確認項目を自分で整理したい方は、Ready-mockのチェックリストへ進めます。',
-    href: `https://www.ready-mock.com/articles/development-outsourcing-checklist?${readyMockReferralParams}&utm_content=why_we_start_with_planning_bottom_cta`,
+    label: '新規サービスの試作範囲を整理する',
+    description: '画面案・操作できる試作・MVPを比較し、最初に確かめる流れを整理できます。',
+    href: `https://www.ready-mock.com/guides/service-prototype?${readyMockReferralParams}&utm_content=why_we_start_with_planning_bottom_cta`,
     eventName: 'ready_mock_outbound_click',
     target: 'ready-mock-article',
     placement: 'bottom',
