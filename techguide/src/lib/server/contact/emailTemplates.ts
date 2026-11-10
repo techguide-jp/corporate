@@ -29,7 +29,7 @@ function formatSubmissionLines(submission: ContactSubmission) {
   if (submission.isRecruit) {
     lines.push(
       '',
-      '採用・パートナー応募情報:',
+      `${submission.categoryLabel}情報:`,
       formatOptional('職種・主な役割', submission.role),
       formatOptional('経験年数', submission.experienceYears),
       formatOptional('現在の働き方', submission.workStyle),
@@ -72,7 +72,7 @@ export function buildAdminEmail(submission: ContactSubmission) {
 
 export function buildAutoReplyEmail(submission: ContactSubmission) {
   const recruitNote = submission.isRecruit
-    ? ['', '採用・パートナー応募については、内容確認後にカジュアル面談可否をご連絡します。']
+    ? ['', `${submission.categoryLabel}については、内容確認後にカジュアル面談可否をご連絡します。`]
     : [];
 
   const lines = [

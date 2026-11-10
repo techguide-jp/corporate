@@ -12,8 +12,7 @@ export const CONTACT_CATEGORIES = [
   { id: 'development', label: '受託開発・システム開発の相談' },
   { id: 'ai', label: 'AI活用・業務改善の相談' },
   { id: 'education', label: '技術教育・伴走支援の相談' },
-  { id: 'partnership', label: '協業・パートナーの相談' },
-  { id: RECRUIT_CATEGORY_ID, label: '採用・パートナー応募' },
+  { id: RECRUIT_CATEGORY_ID, label: '採用・協業・パートナー応募' },
   { id: 'media', label: '取材・登壇の相談' },
   { id: MACCLIPY_CATEGORY_ID, label: 'MacClipyについて' },
   { id: SHUSEI_CATEGORY_ID, label: '守成クラブについて' },
@@ -60,6 +59,11 @@ export function getContactCategoryLabel(categoryId: ContactCategoryId) {
 }
 
 export function getInitialCategory(value: string | null): ContactCategoryId | '' {
+  // 統合前のリンクや開いたままのフォームも、追加情報が必要な応募として扱う。
+  if (value === 'partnership') {
+    return RECRUIT_CATEGORY_ID;
+  }
+
   if (!value) {
     return '';
   }

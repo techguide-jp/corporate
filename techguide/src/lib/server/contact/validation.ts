@@ -1,6 +1,6 @@
 import {
   getContactCategoryLabel,
-  isContactCategoryId,
+  getInitialCategory,
   parsePortfolioUrls,
   PORTFOLIO_URL_LABEL,
   RECRUIT_CATEGORY_ID,
@@ -43,7 +43,7 @@ function isHttpUrl(value: string) {
 
 export function parseContactFormData(formData: FormData): ContactValidationResult {
   const values: ContactFormValues = {
-    category: '',
+    category: getInitialCategory(readText(formData, 'category')),
     landingPage: normalizeAttributionPage(readText(formData, 'landingPage')),
     sourcePage: normalizeAttributionPage(readText(formData, 'sourcePage')),
     name: readText(formData, 'name'),
@@ -62,11 +62,6 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     strengths: readText(formData, 'strengths'),
     discoverySource: readText(formData, 'discoverySource'),
   };
-
-  const rawCategory = readText(formData, 'category');
-  if (isContactCategoryId(rawCategory)) {
-    values.category = rawCategory;
-  }
 
   const fieldErrors: ContactFieldErrors = {};
 

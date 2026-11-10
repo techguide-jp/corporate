@@ -18,6 +18,7 @@
   } from '$lib/contact/turnstileChallenge';
   import {
     CONTACT_CATEGORIES,
+    getContactCategoryLabel,
     MACCLIPY_CATEGORY_ID,
     PORTFOLIO_URL_LABEL,
     RECRUIT_CATEGORY_ID,
@@ -611,7 +612,7 @@
 
             {#if isRecruit}
               <fieldset class="contact-form__recruit">
-                <legend>採用・パートナー応募の追加情報</legend>
+                <legend>{getContactCategoryLabel(RECRUIT_CATEGORY_ID)}の追加情報</legend>
 
                 <div class="contact-form__grid">
                   <label class="contact-form__field" for="role">

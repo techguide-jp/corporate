@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createContactFormValuesFromSearchParams } from '../../contact/form.ts';
+import { CONTACT_CATEGORIES, createContactFormValuesFromSearchParams } from '../../contact/form.ts';
 import { createLeadEventTracker } from '../../contact/lead.ts';
 import { parseContactFormData } from './validation.ts';
 import { buildAdminEmail, buildAutoReplyEmail } from './emailTemplates.ts';
@@ -105,10 +105,72 @@ await test('recruit applications accept omitted optional information', () => {
   }
 });
 
-await test('partnership inquiries do not require recruitment-specific fields', () => {
+await test('recruit and legacy partnership links select the same application category', () => {
+  const applicationCategories = CONTACT_CATEGORIES.filter((category) =>
+    /採用|協業|パートナー/.test(category.label),
+  );
+  assert.deepEqual(applicationCategories, [{ id: 'recruit', label: '採用・協業・パートナー応募' }]);
+  for (const category of ['recruit', 'partnership']) {
+    const values = createContactFormValuesFromSearchParams(
+      new URLSearchParams({ category, subject: '協業の応募', message: '応募内容' }),
+    );
+    assert.equal(values.category, 'recruit');
+    assert.equal(values.subject, '協業の応募');
+    assert.equal(values.message, '応募内容');
+  }
+});
+
+await test('legacy partnership submissions require application fields and preserve input for retry', () => {
   const form = makeForm();
   form.set('category', 'partnership');
   const result = parseContactFormData(form);
+  assert.equal(result.ok, false);
+  if (result.ok) throw new Error('Expected application fields to be required');
+  assert.equal(result.values.category, 'recruit');
+  assert.equal(result.values.name, 'フォーム検証');
+  assert.equal(result.values.message, '検証用の相談内容');
+  for (const field of [
+    'role',
+    'experienceYears',
+    'workStyle',
+    'nearestStation',
+    'aiTools',
+    'portfolioUrl',
+  ] as const) {
+    assert.ok(result.fieldErrors[field], `${field} must be required`);
+  }
+});
+
+await test('both application categories include additional information in both email copies', () => {
+  for (const category of ['recruit', 'partnership']) {
+    const form = makeRecruitForm();
+    form.set('category', category);
+    form.delete('subject');
+    const result = parseContactFormData(form);
+    if (!result.ok) throw new Error('Expected valid application');
+    assert.equal(result.submission.category, 'recruit');
+    assert.equal(result.submission.categoryLabel, '採用・協業・パートナー応募');
+    assert.equal(result.submission.subject, '採用・協業・パートナー応募');
+    assert.equal(result.submission.isRecruit, true);
+    for (const email of [
+      buildAdminEmail(result.submission),
+      buildAutoReplyEmail(result.submission),
+    ]) {
+      assert.match(email.text, /カテゴリ: 採用・協業・パートナー応募/);
+      assert.match(email.text, /採用・協業・パートナー応募情報:/);
+      assert.match(email.text, /職種・主な役割: Webエンジニア/);
+      assert.match(email.text, /経験年数: Web開発5年/);
+      assert.match(email.text, /https:\/\/example.com\/portfolio/);
+    }
+    assert.match(
+      buildAutoReplyEmail(result.submission).text,
+      /採用・協業・パートナー応募については、内容確認後にカジュアル面談可否をご連絡します。/,
+    );
+  }
+});
+
+await test('general inquiries still accept submissions without application fields', () => {
+  const result = parseContactFormData(makeForm());
   assert.ok(result.ok && !result.submission.isRecruit);
 });
 

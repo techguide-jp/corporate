@@ -350,7 +350,7 @@ export const contactPageContent: ContactPageContent = {
     'お問い合わせは営業日に順次確認しています。送信後は入力いただいたメールアドレスへ控えをお送りします。',
   formTitle: '相談内容を送信する',
   formDescription:
-    'カテゴリを選ぶと必要な入力欄が切り替わります。採用・パートナー応募の場合は、稼働条件や利用しているAIツールもあわせてお知らせください。',
+    'カテゴリを選ぶと必要な入力欄が切り替わります。採用・協業・パートナー応募の場合は、稼働条件や利用しているAIツールもあわせてお知らせください。',
 };
 
 export const profilePageContent: ProfilePageContent = {
