@@ -42,7 +42,7 @@ export const whyWeSometimesRecommendNotBuildingArticle: Article = {
       type: 'paragraph',
       text: [
         { type: 'strong', text: '作る費用だけでなく、その後のお金と手間も考えます。' },
-        '月に数回の作業を楽にするために、毎日の確認が増えたら、かえって大変になるからです。',
+        '使うサービスによっては、月額利用料や保守費がかかります。月に数回の作業を楽にするために、毎日の確認が増えたら、かえって大変です。',
       ],
     },
     {
@@ -89,7 +89,7 @@ export const whyWeSometimesRecommendNotBuildingArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: '一部の申込で試して、入力の手間や確認漏れが減るかを担当者と確かめます。キャンセルや内容の変更があったときも、困らずに対応できるかを見ます。',
+      text: '一部の申込で試し、転記にかかる時間や確認漏れが試す前より減ったかを担当者と確かめます。キャンセルや内容の変更があったときも、フォームや管理表で最新の情報を確認し、対応できるかを見ます。',
     },
     {
       type: 'paragraph',
@@ -114,7 +114,7 @@ export const whyWeSometimesRecommendNotBuildingArticle: Article = {
       type: 'list',
       items: [
         '必要な作業がツールではできず、毎回手作業で補っている',
-        'いくつものツールを行き来して、確認や修正に時間がかかる',
+        'ツール同士をつないでも、行き来や転記が残り、確認や修正に時間がかかる',
         '担当者によって見せる情報を分けるなど、必要な管理ができない',
       ],
     },
@@ -155,7 +155,7 @@ export const whyWeSometimesRecommendNotBuildingArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: 'どのくらい増えたら見直すか、誰がいつ確認するかも、仕事に合わせて決めます。かかった時間や困ったことを残しておくと、次に何を変えるべきか考えやすくなります。',
+      text: '例えば、申込件数、月ごとの転記時間、確認漏れの件数を記録し、決めておいた基準を超えたら運用方法を見直します。誰がいつ確認するかも決めておくと、作業が増えたときに次に変えることを判断しやすくなります。',
     },
     {
       type: 'heading',

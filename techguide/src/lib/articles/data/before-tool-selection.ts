@@ -1,6 +1,12 @@
 import { readyMockHomeHref, readyMockReferralParams } from '../links';
 import type { Article } from '../types';
 
+const excelWorkflowGuideCopy = {
+  label: 'Excel管理の見直し方を見る',
+  description:
+    'Excelの表と更新ルールを見直す方法や、既存サービス・専用画面を検討する目安を紹介します。',
+};
+
 export const beforeToolSelectionArticle: Article = {
   slug: 'before-tool-selection',
   title: 'IT導入で、最初にツール選定から入らない理由',
@@ -15,7 +21,7 @@ export const beforeToolSelectionArticle: Article = {
     src: '/images/articles/before-tool-selection.webp',
     alt: 'IT導入前に業務導線を整理するためのワークフロー図とノートの打ち合わせ風景',
   },
-  lead: 'IT導入の相談では、最初に「どのツールを使えばよいですか」と聞かれることがあります。ただ、TechGuideではいきなりツール選定から始めることは多くありません。先に、何を改善したいのか、誰が使うのか、どの業務に乗せるのかを整理します。',
+  lead: '「顧客管理には、どのツールがいいですか？」営業担当者が顧客情報を共有したいのか、問い合わせ窓口で対応履歴を管理したいのかで、必要な機能は変わります。TechGuideでは、どの業務を改善したいのか、誰が使うのか、今の業務をどう進めているのかを先に整理します。',
   blocks: [
     {
       type: 'paragraph',
@@ -56,7 +62,7 @@ export const beforeToolSelectionArticle: Article = {
       text: [
         'こうした状態では、どのツールを選んでも「使ってみないと分からない」になりがちです。そこでTechGuideでは、',
         { type: 'strong', text: '選ぶ前に判断の軸を整えます' },
-        '。',
+        '。例えば、導入後に入力時間をどれだけ減らしたいかを決めておくと、候補を同じ基準で比較できます。',
       ],
     },
     {
@@ -66,11 +72,7 @@ export const beforeToolSelectionArticle: Article = {
     },
     {
       type: 'paragraph',
-      text: [
-        '最初に整理するのは、',
-        { type: 'strong', text: '業務の流れと責任の置き方' },
-        'です。誰が入力し、誰が確認し、どのタイミングで次の作業に進むのかが見えると、必要な仕組みの形も見えやすくなります。',
-      ],
+      text: '例えば請求業務なら、誰が請求データを作成し、誰が金額を確認し、いつ請求書を送るのかを整理します。そのうえで、二重入力が起きている箇所や、確認待ちで作業が止まる箇所を確認します。こうして業務の流れを把握すると、ツールに必要な機能を絞り込めます。',
     },
     {
       type: 'list',
@@ -86,9 +88,7 @@ export const beforeToolSelectionArticle: Article = {
     {
       type: 'cta',
       cta: {
-        label: 'Excel業務を置き換える選び方を見る',
-        description:
-          '表の改善、既存サービス、専用画面を比較し、案件・納期管理のモックを操作できます。',
+        ...excelWorkflowGuideCopy,
         href: `https://www.ready-mock.com/guides/excel-workflow?${readyMockReferralParams}&utm_content=before_tool_selection_inline_cta`,
         eventName: 'ready_mock_outbound_click',
         target: 'ready-mock',
@@ -113,9 +113,9 @@ export const beforeToolSelectionArticle: Article = {
     {
       type: 'list',
       items: [
-        '既存ツールで足りる',
-        'フォーム、スプレッドシート、通知で小さく始める',
-        'Notionなどで運用を整理する',
+        '今のツールの設定や使い方を見直す',
+        'フォーム、スプレッドシート、通知を組み合わせ、入力や連絡を楽にする',
+        'Notionなどで情報の置き場所や共有方法をそろえる',
         [
           {
             type: 'link',
@@ -125,17 +125,16 @@ export const beforeToolSelectionArticle: Article = {
             target: 'ready-mock',
             isExternal: true,
           },
-          'で試作して判断材料を作る',
+          'で試作し、画面や操作の流れを確かめる',
         ],
-        '個別開発として本格的に作る',
+        '既存サービスで対応できない要件は、個別開発を検討する',
       ],
     },
     {
       type: 'paragraph',
       text: [
-        '大切なのは、最初から大きな導入に寄せすぎないことです。',
         { type: 'strong', text: '業務に合う最小の形から始め' },
-        '、必要に応じて広げる方が、現場に定着しやすくなります。',
+        '、使いながら必要な範囲を広げます。複数の部署で同じデータを使う場合は、入力や更新のルールを先にそろえたうえで、一部の部署から試す方法もあります。',
       ],
     },
     {
@@ -176,8 +175,7 @@ export const beforeToolSelectionArticle: Article = {
     tone: 'warm',
   },
   secondaryCta: {
-    label: 'Excel業務を置き換える選び方を見る',
-    description: '表の改善、既存サービス、専用画面を比較し、案件・納期管理のモックを操作できます。',
+    ...excelWorkflowGuideCopy,
     href: `https://www.ready-mock.com/guides/excel-workflow?${readyMockReferralParams}&utm_content=before_tool_selection_bottom_cta`,
     eventName: 'ready_mock_outbound_click',
     target: 'ready-mock',
