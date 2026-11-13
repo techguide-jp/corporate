@@ -24,9 +24,11 @@
     navItems,
     pageSeo,
     productItems,
+    productLinks,
     services,
     story,
     workItems,
+    workLinks,
   } from '$lib/data/site';
   import { getPublishedNewsItems } from '$lib/news/get-news';
 
@@ -62,14 +64,16 @@
   <ShowcaseSection
     id="products"
     title="プロダクト"
-    subtitle="イベント運営や制作実績の把握に役立つプロダクト・アーカイブです。"
+    subtitle="TechGuideが開発・運営するサービスとアプリです。"
     items={productItems}
+    links={productLinks}
   />
   <ShowcaseSection
     id="works"
     title="実績"
     subtitle="実際の公開サイトで、構成や導線整理まで含めた制作実績をご覧いただけます。"
     items={workItems}
+    links={workLinks}
     surface="soft"
   />
   <Company profile={companyProfile} access={accessInfo} contact={contactInfo} />

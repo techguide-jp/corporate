@@ -2,7 +2,7 @@
   import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
-  import type { ShowcaseItem } from '$lib/types/content';
+  import type { ActionLink, ShowcaseItem } from '$lib/types/content';
   import { getResolveArgs, isInternalHref } from '$lib/utils/paths';
 
   interface Props {
@@ -10,23 +10,34 @@
     title: string;
     subtitle?: string;
     items: ShowcaseItem[];
+    links?: Pick<ActionLink, 'label' | 'href'>[];
     surface?: 'plain' | 'soft';
   }
 
-  let { id, title, subtitle, items, surface = 'plain' }: Props = $props();
+  let { id, title, subtitle, items, links = [], surface = 'plain' }: Props = $props();
 
-  function handleItemClick(item: ShowcaseItem) {
-    if (isInternalHref(item.href)) {
-      return;
-    }
-
+  function trackOutboundLink(href: string, label: string) {
     trackEvent('outbound_link_click', {
       section: id,
-      link_label: item.title,
-      destination_host: new URL(item.href).hostname,
+      link_label: label,
+      destination_host: new URL(href).hostname,
     });
   }
 </script>
+
+{#snippet textLink(href: string, label: string, trackingLabel = label)}
+  {#if isInternalHref(href)}
+    <a class="showcase__text-link" href={resolve(...getResolveArgs(href))}>{label}</a>
+  {:else}
+    <a
+      class="showcase__text-link showcase__text-link--external"
+      {href}
+      target="_blank"
+      rel="external noreferrer"
+      onclick={() => trackOutboundLink(href, trackingLabel)}>{label}</a
+    >
+  {/if}
+{/snippet}
 
 <section class={`section showcase showcase--${surface}`} {id}>
   <div class="container">
@@ -50,7 +61,7 @@
               target="_blank"
               rel="external noreferrer"
               aria-label={`${item.title} を開く`}
-              onclick={() => handleItemClick(item)}
+              onclick={() => trackOutboundLink(item.href, item.title)}
             >
               <img src={asset(item.image)} alt={item.title} loading="lazy" />
             </a>
@@ -62,25 +73,19 @@
             {#if item.scope}
               <p class="showcase-card__scope"><strong>担当範囲</strong>{item.scope}</p>
             {/if}
-            {#if isInternalHref(item.href)}
-              <a class="showcase-card__link" href={resolve(...getResolveArgs(item.href))}>
-                {item.ctaLabel}
-              </a>
-            {:else}
-              <a
-                class="showcase-card__link showcase-card__link--external"
-                href={item.href}
-                target="_blank"
-                rel="external noreferrer"
-                onclick={() => handleItemClick(item)}
-              >
-                {item.ctaLabel}
-              </a>
-            {/if}
+            {@render textLink(item.href, item.ctaLabel, item.title)}
           </div>
         </article>
       {/each}
     </div>
+
+    {#if links.length}
+      <ul class="showcase__links">
+        {#each links as link (link.href)}
+          <li>{@render textLink(link.href, link.label)}</li>
+        {/each}
+      </ul>
+    {/if}
   </div>
 </section>
 
@@ -143,7 +148,17 @@
     color: var(--color-ink-soft);
   }
 
-  .showcase-card__link {
+  .showcase__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 24px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .showcase__text-link {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -153,6 +168,11 @@
     font-weight: 800;
     text-decoration: underline;
     text-underline-offset: 6px;
+  }
+
+  .showcase__links .showcase__text-link {
+    min-height: 44px;
+    margin: 0;
   }
 
   .showcase-card__scope {
@@ -167,12 +187,12 @@
     color: var(--color-ink);
   }
 
-  .showcase-card__link::after {
+  .showcase__text-link::after {
     content: '→';
     font-size: 0.95em;
   }
 
-  .showcase-card__link--external::after {
+  .showcase__text-link--external::after {
     content: '↗';
     font-size: 0.95em;
   }

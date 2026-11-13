@@ -1,5 +1,6 @@
 import type {
   AccessInfo,
+  ActionLink,
   CompanyProfile,
   ContactPageContent,
   ContactInfo,
@@ -278,26 +279,35 @@ export const services: ServiceItem[] = [
 
 export const productItems: ShowcaseItem[] = [
   {
-    title: 'MacClipy',
-    description: 'コピー履歴をすぐに呼び出せるmacOS用クリップボード管理アプリ',
-    image: '/images/macclipy/product-hero.png',
-    href: '/macclipy/',
-    ctaLabel: '無料でダウンロード',
-  },
-  {
     title: 'TicketCraft',
-    description: '申込・決済・受付・配信を一本化するイベント運営プロダクト',
+    description: 'イベントの申込・決済・当日受付をまとめて管理できます。',
     image: '/images/showcase/ticketcraft-hero.webp',
     href: 'https://ticketcraft.jp/',
-    ctaLabel: 'プロダクトを見る',
+    ctaLabel: 'イベント運営サービスを見る',
   },
   {
-    title: 'その他事例集',
-    description: '制作実績を横断して見られるポートフォリオ集',
-    image: '/images/showcase/portfolio-hero.webp',
-    href: 'https://portfolio-site-sage-seven.vercel.app/',
-    ctaLabel: '事例集を見る',
+    title: 'AudioScript',
+    description: '音声や動画を文字起こしし、聞き返したい発言をすぐに探せます。',
+    image: '/images/showcase/audioscript.webp',
+    href: 'https://audioscript.work/',
+    ctaLabel: '文字起こしツールを見る',
   },
+  {
+    title: 'Koi-Tre（コイトレ）',
+    description: '初対面やデートの会話をAI相手に練習し、返し方のヒントを得られます。',
+    image: '/images/showcase/koi-tre.webp',
+    href: 'https://app.koi-tre.com/try',
+    ctaLabel: '登録なしで30秒試す',
+  },
+];
+
+export const productLinks: Pick<ActionLink, 'label' | 'href'>[] = [
+  { label: 'MacClipy', href: '/macclipy/' },
+  { label: 'SafeQR', href: '/safeqr/' },
+];
+
+export const workLinks: Pick<ActionLink, 'label' | 'href'>[] = [
+  { label: 'その他事例集を見る', href: 'https://portfolio-site-sage-seven.vercel.app/' },
 ];
 
 export { workItems } from './works';
