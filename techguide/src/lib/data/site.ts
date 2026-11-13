@@ -89,7 +89,7 @@ export const pageSeo: Record<
   profile: {
     title: 'プロフィール | 高橋雄太（ゆーちゃん） | TechGuide',
     description:
-      'TechGuide合同会社 代表 高橋雄太のプロフィールページ。IT・AI活用、試作開発、イベント設計、実績、相談先を紹介します。',
+      'TechGuide合同会社代表・Webエンジニアの高橋雄太（ゆーちゃん）。試作開発、業務改善、イベント設計の事例や、参加しているビジネス行動管理大学（UBM）を紹介します。',
     path: '/profile/',
     image: '/images/about/ceo.webp',
     imageAlt: 'TechGuide合同会社 代表 高橋雄太',
@@ -355,73 +355,36 @@ export const contactPageContent: ContactPageContent = {
 
 export const profilePageContent: ProfilePageContent = {
   hero: {
-    eyebrow: 'Profile',
     name: '高橋 雄太（ゆーちゃん）',
-    role: 'TechGuide合同会社 代表',
-    tagline: 'アイデアを形にする\n伴走パートナー',
-    specialties: ['IT・AI活用', '試作開発', 'イベント設計'],
-    lead: 'Webエンジニアとしての実装力を軸に、企業・個人事業主が「アイデアを形にする」までを一気通貫で支援しています。',
+    role: 'TechGuide合同会社 代表・Webエンジニア',
+    lead: '「新しいサービスを試したい」「日々の手作業を減らしたい」。そんな相談から、まず何を変えるとよいかを一緒に考えます。試作やツールの導入から、現場で使い始めて分かった課題の改善までお手伝いします。',
+    experience: 'Web開発に14年以上携わり、2021年にTechGuideを設立しました。',
     image: '/images/about/ceo.webp',
     imageAlt: 'TechGuide合同会社 代表 高橋雄太',
-    highlights: [
-      '14年間の Web エンジニア経験',
-      '2021年に TechGuide合同会社を設立',
-      '相談から試作・改善・イベント設計まで伴走',
-    ],
   },
-  overviewTitle: '概要',
-  overviewSubtitle:
-    '企画段階で止まりやすい案件を、実装・判断・体験設計まで前に進めることを得意としています。',
-  overviewParagraphs: [
-    'TechGuide合同会社 代表。Webエンジニアとしての実装力を軸に、企業・個人事業主が「アイデアを形にする」までを一気通貫で支援しています。',
-    '単に作るのではなく、今どこで止まっているのか、何を小さく試すべきか、誰にとってどんな体験価値があるのかを整理しながら進めるのが役割です。',
-    '技術、事業、イベント体験を切り分けず、現場で使える形に整えて前進させることを重視しています。',
-  ],
-  overviewFocusTitle: '強みが出やすいご相談',
-  overviewFocusItems: [
-    '企画段階で止まってしまっているアイデア',
-    '技術選定や進め方がわからず PoC に進めない案件',
-    'イベントやコミュニティを「価値ある体験」として設計したいケース',
-  ],
   background: {
     title: '経歴と人となり',
-    subtitle:
-      '技術・事業・コミュニティに関わってきた背景が、現在の支援スタイルと伴走の進め方につながっています。',
     careerItems: [
       {
-        meta: 'Career',
-        title: '14年間の Web エンジニア経験',
-        description:
-          'ホームページ制作、業務システム開発、受託開発を中心に、企画から実装、改善、運用まで一通りの現場を経験してきました。',
+        title: '公立はこだて未来大学 大学院修了',
       },
       {
-        meta: '2021',
-        title: '2021年4月12日に TechGuide合同会社を設立',
+        title: '会社員として4社に勤務（通算11年）',
         description:
-          '技術を難しいままにせず、現場で使える形に整えることを軸に、相談段階から改善まで伴走する体制をつくってきました。',
+          'Webサイト制作や業務システムの受託開発に携わり、企画・実装から公開後の運用・改善まで経験しました。',
       },
       {
-        meta: 'Expansion',
-        title: 'Web制作から PoC・AI活用・イベント設計へ支援領域を拡張',
+        title: '2021年にTechGuide合同会社を設立',
         description:
-          'ホームページやシステム開発に加えて、PoC、運用改善、AIを活用した効率化、イベント導線や体験設計まで、必要に応じて関わる範囲を広げています。',
-      },
-      {
-        meta: 'Style',
-        title: '小さく試して改善する進め方を重視',
-        description:
-          '「何を作るべきか分からない」段階から壁打ちし、まず触れるものをつくって判断材料を増やす進め方を大切にしています。',
+          'Web制作やシステム開発に加え、新規事業の試作、AIを使った業務改善、イベント運営の支援にも取り組んでいます。',
       },
     ],
     personalGroups: [
       {
-        title: '関心テーマ',
+        title: '仕事以外で関心があること',
         items: [
-          '習慣化やセルフコントロールを整えること',
-          '瞑想や人間理解を通じて、自分と相手を深く見ること',
-          '新技術や新発見に触れ続けること',
-          'コミュニケーションの質を高めること',
-          '「まんなか」を探る感覚を持ち続けること',
+          '習慣づくりや、日々の行動を振り返ること',
+          '瞑想や対話を通じて、自分や相手への理解を深めること',
         ],
       },
       {
@@ -432,150 +395,96 @@ export const profilePageContent: ProfilePageContent = {
         ],
       },
       {
-        title: '地域の背景',
+        title: '暮らしてきた場所',
         items: [
-          '帯広・函館・札幌から、北松戸、自由が丘、東神奈川、豊田まで、北海道から関東にかけて複数地域で暮らしてきました。',
-          'いろいろな土地の空気に触れてきたことが、人や現場に合わせて進め方を変える感覚にもつながっています。',
+          '帯広・函館・札幌、北松戸、自由が丘、東神奈川、豊田など、いくつかの街で暮らしてきました。',
         ],
       },
       {
-        title: 'コミュニティ・活動領域',
-        items: ['UBM', '守成クラブ（ヒルノ品川）', 'きみきみフェス', 'リベシティ'],
+        title: '関わってきたコミュニティ',
+        items: ['守成クラブ（ヒルノ品川）', 'キミキミフェス', 'リベシティ'],
       },
     ],
   },
-  valuesTitle: '提供できる価値',
-  valuesSubtitle:
-    '試作開発、イベント設計、IT・AI活用支援まで、目的と現場運用の両方を見ながら進めます。',
+  valuesTitle: 'こんな相談から始められます',
   values: [
     {
-      id: 'prototype',
-      title: '1. 試作（PoC・MVP）を最短距離で形にする',
+      title: 'アイデアを試したい',
       description:
-        '「ちゃんと作る前に、まず触れるものを作りたい」ニーズに対して、試作に特化した設計と実装を行います。',
-      points: ['技術的に作れるかの検証', 'ユーザー体験の早期確認', '事業判断のための材料づくり'],
-      closing:
-        '“作り切らない前提の開発” を通じて、技術検証と事業判断を進めやすくすることが得意です。',
-      cta: {
-        label: '試作サービスを見る',
-        href: 'https://ready-mock.com/',
-        image: 'https://portfolio-site-sage-seven.vercel.app/thumbnails/www-ready-mock-com.webp',
-        imageAlt: 'Ready Mock のサムネイル',
-      },
+        '本開発の前に、使う人に触ってもらえる試作品を作り、必要な機能や使い方を確かめます。',
+      cta: { label: '試作開発サービスを見る', href: 'https://ready-mock.com/' },
     },
     {
-      id: 'event-design',
-      title: '2. イベントチケットサイト運営・イベント設計',
+      title: '手作業を減らしたい',
       description:
-        '単なる集客イベントではなく、参加者にとって価値の高い “リッチなイベント体験” を設計・運営しています。',
-      points: [
-        'チケット販売・参加者管理',
-        'イベント後の導線設計（アンケート・コミュニティ接続）',
-        'オフライン × オンラインを絡めた体験設計',
-      ],
-      closing: 'イベントを一過性で終わらせない設計を重視しています。',
-      cta: {
-        label: '最新イベントサイトを見る',
-        href: 'https://ticketcraft.jp/#event-showcase',
-        image: '/images/showcase/profile-ticketcraft-event.webp',
-        imageAlt: 'TicketCraft の公開イベント実例',
-      },
+        '二重入力や集計など、手間のかかる作業から見直し、今あるツールやAIで省ける工程を探します。',
+      cta: { label: 'IT・業務改善の支援を見る', href: '/services/' },
     },
     {
-      id: 'it-ai-support',
-      title: '3. IT・AI活用の伴走支援（非エンジニア歓迎）',
+      title: 'イベントを運営しやすくしたい',
       description:
-        'エンジニアがいない、IT が苦手、AI をどう業務に組み込めばいいかわからない企業・個人事業主の方に対して、わかる言葉で現実的な使い方を提案します。',
-      points: [
-        'ツール選定の整理',
-        '実際の業務フローへの落とし込み',
-        '小さく試して使える形に整える伴走',
-      ],
-      closing:
-        'プチセミナーやアプリ作る会も含め、技術を難しいままで終わらせず現場に乗せることを大切にしています。',
+        'チケット販売や受付、当日の会場案内を整え、参加者と運営側が迷わず動けるようにします。',
+      cta: { label: 'TicketCraftの事例を見る', href: 'https://ticketcraft.jp/#event-showcase' },
     },
   ],
-  events: {
-    title: '直近のイベント一覧',
-    subtitle: '開催案内、参加受付中、公開予定のイベントをまとめています。',
-    items: [
-      {
-        date: '2026.04.22',
-        dateIso: '2026-04-22',
-        status: '開催案内',
-        isAccepting: true,
-        title: 'エンジニア人生相談会',
-        description:
-          'エンジニアとしての働き方やキャリアの悩みを、気軽に相談できる場として開催しています。',
-        href: 'https://forms.gle/ndwE2RjDYZE6Kpz86',
-        ctaLabel: '申込フォームを見る',
-      },
-      {
-        date: '2026.05.13',
-        dateIso: '2026-05-13',
-        status: '申込受付中',
-        isAccepting: true,
-        title: 'エンジニア人生相談会',
-        description:
-          'エンジニアとしての働き方やキャリアの悩みを、気軽に相談できる場として開催します。現在申込受付中です。',
-        href: 'https://forms.gle/ndwE2RjDYZE6Kpz86',
-        ctaLabel: '申込フォームを見る',
-      },
-      {
-        date: '2026.05.31',
-        dateIso: '2026-05-31',
-        status: '申込受付中',
-        isAccepting: true,
-        title: 'キミキミフェス〜チャレンジ〜',
-        description:
-          '一人ひとりのチャレンジを応援するフェスです。新しい出会いや体験を通じて、次の一歩を踏み出すきっかけをつくります。',
-        href: 'https://ticketcraft.jp/r/REFJM72EV5QZT',
-        ctaLabel: '申込ページを見る',
-      },
-      {
-        date: '2026.06.04',
-        dateIso: '2026-06-04',
-        status: '申込受付中',
-        isAccepting: true,
-        title: '2000人フェス',
-        description:
-          '北原孝彦Academy Fes 2026に、アプリ開発・ブース出展・セミナー登壇で参加予定です。',
-        href: '/profile/academy-fes-2026/',
-        ctaLabel: '紹介ページを見る',
-      },
-    ],
-  },
-  portfolioTitle: '実績・ポートフォリオ',
-  portfolioSubtitle:
-    'LP、コミュニティ運営、イベント導線、試作開発まで、実際に公開している制作物を中心に掲載しています。',
-  portfolioItems: [
+  pastEvents: [
     {
-      title: '北原孝彦アカデミーフェス 2026',
-      description:
-        '100ブース・100セミナーが集まる大型イベントのサイト。来場者・出展者導線、会場情報、当日の回遊導線を整理しました。',
-      image: '/images/showcase/academy-fes-2026-hero.webp',
-      href: 'https://fes.kitaharatakahiko-academy.com/',
-      ctaLabel: 'サイトを見る',
+      dateIso: '2026-06-04',
+      title: '北原孝彦Academy Fes 2026',
+      description: 'アプリ開発・ブース出展・セミナー登壇で参加しました。',
+      href: '/profile/academy-fes-2026/',
     },
     {
-      title: '守成クラブ品川グループHP',
+      dateIso: '2026-05-31',
+      title: 'キミキミフェス〜チャレンジ〜',
+      description: '一人ひとりのチャレンジを応援するフェスです。',
+    },
+    {
+      dateIso: '2026-05-13',
+      title: 'エンジニア人生相談会',
+      description: 'エンジニアとしての働き方やキャリアの悩みを話せる相談会です。',
+    },
+    {
+      dateIso: '2026-04-22',
+      title: 'エンジニア人生相談会',
+      description: 'エンジニアとしての働き方やキャリアの悩みを話せる相談会です。',
+    },
+  ],
+  portfolioTitle: '制作・開発事例',
+  portfolioItems: [
+    {
+      title: '北原孝彦Academy Fes 2026',
       description:
-        '守成グループの紹介やメンバー一覧・イベント一覧を見られるサイト。管理やマイページでの各会員操作も行いやすくしています。',
+        '100ブース・100セミナーの中から行きたい場所を探せる、来場者向けアプリを開発しました。',
+      image: '/images/showcase/academy-fes-2026-hero.webp',
+      href: '/news/academy-fes-2026/',
+      ctaLabel: '開発・出展レポートを見る',
+    },
+    {
+      title: '守成クラブ 品川グループ',
+      description:
+        '2会場の例会案内と会員情報を一つの公式サイトにまとめ、参加申込みや会員向けの更新機能も整えました。',
       image: '/images/showcase/shusei-shinagawa-hero.webp',
       href: 'https://www.shusei-tokyoshinagawa.com/',
       ctaLabel: 'サイトを見る',
     },
     {
-      title: 'アロマイン：アクセサリーワークショップLP・HP',
-      description:
-        'LP に加え、制作クラスや講師クラスへの申し込み、講師一覧まで見られる導線を整えたサイトです。',
+      title: 'MacClipy',
+      description: 'コピーしたテキストを後から検索して使い直せる、macOS向けの自社アプリです。',
+      image: '/images/macclipy/macclipy-web-hero-rich.webp',
+      href: '/macclipy/',
+      ctaLabel: 'アプリを見る',
+    },
+    {
+      title: 'AROMINE｜講座紹介・申込みサイト',
+      description: '講座の内容、講師一覧、制作・講師クラスへの申込みを一つのサイトにまとめました。',
       image: '/images/showcase/profile-aromine.webp',
       href: 'https://aromine.vercel.app/',
       ctaLabel: 'サイトを見る',
     },
     {
-      title: 'LP制作事業はじめました。2026/03/24',
-      description: '人数限定で、制作だけでなく運用まで考えてトータルに伴走する LP 制作支援です。',
+      title: 'LPBoost｜LP制作・運用支援',
+      description: 'サービスの紹介ページを制作し、公開後の運用や改善も支援します。',
       image: '/images/showcase/profile-lpboost.webp',
       href: 'https://lpboost-prod.lpboost.workers.dev/',
       ctaLabel: 'サービスを見る',
@@ -595,87 +504,27 @@ export const profilePageContent: ProfilePageContent = {
       href: 'https://my-tetris-mu.vercel.app/',
       ctaLabel: '遊んでみる',
     },
-    {
-      title: 'その他ポートフォリオ一覧',
-      description: '実際に手を動かしてきたプロジェクトや試作事例を横断して見られる一覧です。',
-      image: '/images/showcase/portfolio-hero.webp',
-      href: 'https://portfolio-site-sage-seven.vercel.app/',
-      ctaLabel: '一覧を見る',
-    },
-    {
-      title: '会社サイト',
-      description:
-        'TechGuide合同会社の公式サイト。支援内容、会社情報、お問い合わせ導線を掲載しています。',
-      image: 'https://techguide.jp/images/hero/hero.webp',
-      href: 'https://techguide.jp/',
-      ctaLabel: '会社サイトを見る',
-    },
   ],
-  stanceTitle: 'TechGuide のスタンス',
-  stanceLead: '「作れるか？」ではなく「作る意味があるか？」から一緒に考える。',
-  stanceItems: [
-    '技術を押し売りしない',
-    '作ること自体をゴールにしない',
-    '事業・目的に対して最適かどうかを最優先する',
-  ],
-  audienceTitle: 'こんな企業・団体に向いています',
-  audienceItems: [
-    '新規事業や新サービスの検証を早く回したい',
-    'イベントやコミュニティを事業につなげたい',
-    'AI・ITを使いたいが、何から始めればいいかわからない',
-    '開発会社に丸投げする前に、整理役・壁打ち相手が欲しい',
-  ],
-  contactTitle: '連絡先',
-  contactLead:
-    '「まずは相談だけ」でも問題ありません。アイデア段階・構想段階からでもお気軽にご連絡ください。',
   contactItems: [
     {
-      platformLabel: 'SNS：X（旧Twitter）',
+      platformLabel: 'X',
       platformImage: '/images/social/x.svg',
-      platformImageAlt: 'X',
       title: 'エンジニア向け発信',
-      description: '具体的なキャリア戦略と収入アップ術を発信しています。',
+      description: 'エンジニアの働き方やキャリアについて発信しています。',
       href: 'https://x.com/tashua314',
-      ctaLabel: 'Xを見る',
     },
     {
-      platformLabel: 'SNS：Instagram',
+      platformLabel: 'Instagram',
       platformImage: '/images/social/instagram.svg',
-      platformImageAlt: 'Instagram',
       title: '起業家向け発信',
-      description: '「ITをもっと身近に」をテーマに、IT活用や伴走支援に関する発信をしています。',
+      description: '日々の仕事にITやAIを取り入れるヒントを発信しています。',
       href: instagramProfileUrl,
-      ctaLabel: 'Instagramを見る',
     },
     {
       title: '起業家向けサポート用LINE',
-      description: 'イベントの集客やお誘い導線を整えたい方におすすめです。',
-      descriptionSegments: [
-        {
-          text: 'LINE に登録して「イベントお誘い」とメッセージ',
-          strong: true,
-        },
-        {
-          text: 'を送っていただいた方へ、プレゼントとして',
-        },
-        {
-          text: '「イベントお誘いツール」',
-          strong: true,
-        },
-        {
-          text: 'をお渡ししています。イベントの集客やお誘い導線を整えたい方におすすめです。',
-        },
-      ],
+      platformLabel: 'LINE',
+      description: '登録後に「イベントお誘い」と送ると、イベントお誘いツールをお渡しします。',
       href: 'https://lin.ee/76ZzaJl',
-      buttonImage: 'https://scdn.line-apps.com/n/line_add_friends/btn/ja.png',
-      buttonImageAlt: '友だち追加',
-    },
-    {
-      title: 'TechGuide お問い合わせ',
-      description:
-        '具体的なご相談や制作依頼は、会社サイトのお問い合わせページから受け付けています。',
-      href: 'https://techguide.jp/contact/',
-      ctaLabel: 'お問い合わせページへ',
     },
   ],
 };

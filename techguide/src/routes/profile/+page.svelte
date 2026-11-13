@@ -1,105 +1,39 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
   import { asset, resolve } from '$app/paths';
   import { trackEvent } from '$lib/analytics';
-  import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
-  import ContactCta from '$lib/components/sections/ContactCta.svelte';
+  import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import ActionButton from '$lib/components/ui/ActionButton.svelte';
-  import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { getContactCategoryLabel, UBM_CATEGORY_ID } from '$lib/contact/form';
+  import { companyProfile, navItems, pageSeo, profilePageContent } from '$lib/data/site';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
-  import {
-    companyProfile,
-    contactInfo,
-    navItems,
-    pageSeo,
-    profilePageContent,
-  } from '$lib/data/site';
-  import type { ProfileContactItem, ProfileEventItem } from '$lib/types/content';
+  import type { ProfileEventItem, ShowcaseItem } from '$lib/types/content';
   import { getResolveArgs, isInternalHref } from '$lib/utils/paths';
+  import type { PageProps } from './$types';
 
-  function handleOutboundClick(section: string, label: string, href: string) {
-    trackEvent('outbound_link_click', {
-      section,
-      link_label: label,
-      destination_host: new URL(href).hostname,
-    });
-  }
+  let { data }: PageProps = $props();
+  const {
+    hero,
+    background,
+    values,
+    valuesTitle,
+    pastEvents: recordedEvents,
+    portfolioTitle,
+    portfolioItems,
+    contactItems,
+  } = profilePageContent;
+  const featuredWorks = portfolioItems.slice(0, 3);
+  const otherWorks = portfolioItems.slice(3);
+  const portfolioUrl = 'https://portfolio-site-sage-seven.vercel.app/';
+  const eventListUrl = 'https://ticketcraft.jp/organizers/techguide';
 
-  function resolveImageSrc(src: string) {
-    return /^https?:\/\//.test(src) ? src : asset(src);
-  }
-
-  function resolveLinkHref(href: string) {
-    return isInternalHref(href) ? resolve(...getResolveArgs(href)) : href;
-  }
-
-  function handleProfileEventClick(item: ProfileEventView) {
-    if (!item.isInteractive || isInternalHref(item.href)) {
-      return;
-    }
-
-    handleOutboundClick('profile_events', item.title, item.href);
-  }
-
-  function getTokyoTodayIso(date = new Date()) {
-    const formatter = new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'Asia/Tokyo',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
-
-    const parts = formatter.formatToParts(date);
-    const year = parts.find((part) => part.type === 'year')?.value;
-    const month = parts.find((part) => part.type === 'month')?.value;
-    const day = parts.find((part) => part.type === 'day')?.value;
-
-    return year && month && day ? `${year}-${month}-${day}` : '';
-  }
-
-  type ProfileEventView = ProfileEventItem & {
-    computedStatus: string;
-    statusTone: 'accepting' | 'upcoming' | 'ended';
-    isEnded: boolean;
-    isInteractive: boolean;
-    metaLabel: string;
-  };
-
-  function getEventView(item: ProfileEventItem, todayTokyoIso: string): ProfileEventView {
-    const canJudge = todayTokyoIso !== '';
-    const isEnded = todayTokyoIso !== '' && item.dateIso < todayTokyoIso;
-
-    return {
-      ...item,
-      computedStatus: isEnded ? '終了' : item.status,
-      statusTone: isEnded ? 'ended' : item.isAccepting ? 'accepting' : 'upcoming',
-      isEnded,
-      isInteractive: canJudge && !isEnded,
-      metaLabel: isEnded ? '終了しました' : item.ctaLabel,
-    };
-  }
-
-  function getSortedEventViews(
-    items: ProfileEventItem[],
-    todayTokyoIso: string,
-  ): ProfileEventView[] {
-    return items
-      .map((item, index) => ({
-        item: getEventView(item, todayTokyoIso),
-        index,
-      }))
-      .sort((a, b) => {
-        if (a.item.isEnded !== b.item.isEnded) {
-          return a.item.isEnded ? 1 : -1;
-        }
-
-        return a.index - b.index;
-      })
-      .map(({ item }) => item);
-  }
+  const ubmUrl = 'https://m.ubm.school/l/c/pu1ifRjY/XT9b8czm';
+  const ubmContactSearch = new URLSearchParams({
+    category: UBM_CATEGORY_ID,
+    subject: getContactCategoryLabel(UBM_CATEGORY_ID),
+  });
+  const ubmLinkLabel = 'UBMの内容・入会案内を見る';
 
   const profileStructuredData = [
     buildWebPageJsonLd({
@@ -113,33 +47,34 @@
     ]),
   ].map((item) => serializeJsonLd(item));
 
-  const heroTaglineLines = profilePageContent.hero.tagline.split('\n');
-
-  const ubmUrl = 'https://m.ubm.school/l/c/pu1ifRjY/XT9b8czm';
-  const ubmLinkLabel = 'UBMの内容・入会案内を見る';
-  const ubmContactSearch = new URLSearchParams({
-    category: UBM_CATEGORY_ID,
-    subject: getContactCategoryLabel(UBM_CATEGORY_ID),
+  const eventDateFormatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
   });
-  const ubmContactHref = resolve(`/contact/?${ubmContactSearch}#contact-form`);
+  const eventTimeFormatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: false,
+  });
+  const upcomingEvents = $derived(data.ticketcraftEvents?.upcoming ?? []);
+  const pastEvents = $derived(
+    [...recordedEvents, ...(data.ticketcraftEvents?.past ?? [])].sort(
+      (first, second) => Date.parse(second.dateIso) - Date.parse(first.dateIso),
+    ),
+  );
 
-  function getInitialTodayTokyoIso() {
-    if (!browser) {
-      return getTokyoTodayIso();
-    }
-
-    return document.documentElement.dataset.profileTodayIso || getTokyoTodayIso();
+  function trackOutbound(section: string, label: string, href: string) {
+    if (isInternalHref(href)) return;
+    trackEvent('outbound_link_click', {
+      section,
+      link_label: label,
+      destination_host: new URL(href).hostname,
+    });
   }
-
-  // Static HTML uses the prerender/build date so event links remain usable without JS.
-  // Browsers then upgrade this with the boot script's current Tokyo date before hydration.
-  const todayTokyoIso = getInitialTodayTokyoIso();
-  const profileEventViews = getSortedEventViews(profilePageContent.events.items, todayTokyoIso);
 </script>
-
-<svelte:head>
-  <script type="module" src={asset('/scripts/profile-events-boot.js')}></script>
-</svelte:head>
 
 <SeoHead
   title={pageSeo.profile.title}
@@ -150,1428 +85,710 @@
   jsonLd={profileStructuredData}
 />
 
-{#snippet profileContactCardContent(item: ProfileContactItem)}
-  {#if item.platformImage}
-    <img
-      class="profile-contact__watermark"
-      src={resolveImageSrc(item.platformImage)}
-      alt=""
-      aria-hidden="true"
-      loading="lazy"
-      decoding="async"
-    />
-  {/if}
-
-  <div class="profile-contact__card-body">
-    {#if item.platformLabel}
-      <p class="profile-contact__platform">
-        {#if item.platformImage}
-          <img
-            class="profile-contact__platform-image"
-            src={resolveImageSrc(item.platformImage)}
-            alt={item.platformImageAlt ?? ''}
-            loading="lazy"
-            decoding="async"
-          />
-        {/if}
-        <span>{item.platformLabel}</span>
-      </p>
-    {/if}
-    <h2>{item.title}</h2>
-    <p>
-      {#if item.descriptionSegments}
-        {#each item.descriptionSegments as segment, index (segment.text + index)}
-          {#if segment.strong}
-            <strong>{segment.text}</strong>
-          {:else}
-            {segment.text}
-          {/if}
-        {/each}
-      {:else}
-        {item.description}
-      {/if}
-    </p>
+{#snippet workCardContent(item: ShowcaseItem)}
+  <img
+    src={item.image.startsWith('https://') ? item.image : asset(item.image)}
+    alt=""
+    width="400"
+    height="225"
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="work-copy">
+    <h4>{item.title}</h4>
+    <p>{item.description}</p>
+    <span>{item.ctaLabel}</span>
   </div>
-
-  {#if item.href}
-    <div class="profile-contact__actions">
-      <span
-        class={item.buttonImage
-          ? 'profile-contact__button profile-contact__button--image'
-          : 'profile-contact__button'}
-      >
-        {#if item.buttonImage}
-          <img
-            src={resolveImageSrc(item.buttonImage)}
-            alt={item.buttonImageAlt ?? item.title}
-            loading="lazy"
-            decoding="async"
-          />
-        {:else}
-          {item.ctaLabel ?? '外部サイトを開く'}
-        {/if}
-      </span>
-    </div>
-  {/if}
 {/snippet}
 
-{#snippet profileEventCardContent(item: ProfileEventView)}
-  <div class="profile-events__date-block">
-    <p class="profile-events__date">{item.date}</p>
-    <span
-      class={`profile-events__status profile-events__status--${item.statusTone}`}
-      data-event-status
-    >
-      {item.computedStatus}
-    </span>
+{#snippet workCards(items: ShowcaseItem[])}
+  <div class="work-grid">
+    {#each items as item (item.href)}
+      {@const href = item.href}
+      {#if isInternalHref(href)}
+        <a class="work-card" href={resolve(...getResolveArgs(href))}>
+          {@render workCardContent(item)}
+        </a>
+      {:else}
+        <a
+          class="work-card"
+          {href}
+          target="_blank"
+          rel="external noreferrer"
+          onclick={() => trackOutbound('profile_portfolio', item.title, href)}
+        >
+          {@render workCardContent(item)}
+        </a>
+      {/if}
+    {/each}
   </div>
+{/snippet}
 
-  <div class="profile-events__body">
-    <h2>{item.title}</h2>
-    <p>{item.description}</p>
-  </div>
-
-  <span
-    class={`profile-events__meta${isInternalHref(item.href) ? ' profile-events__meta--internal' : ''}${
-      item.isEnded ? ' profile-events__meta--ended' : ''
-    }`}
-    data-event-meta
-  >
-    {item.metaLabel}
-  </span>
+{#snippet eventList(items: ProfileEventItem[])}
+  <ul class="event-list">
+    {#each items as item (item.href ?? item.dateIso + item.title)}
+      {@const href = item.href}
+      {@const date = new Date(item.dateIso)}
+      <li>
+        <time datetime={item.dateIso}>{eventDateFormatter.format(date)}</time>
+        <div>
+          <p class="event-title">{item.title}</p>
+          {#if item.status || item.description}
+            <p>
+              {#if item.status}{eventTimeFormatter.format(date)}開始{/if}
+              {#if item.status && item.description}・{/if}{item.description}
+            </p>
+          {/if}
+          {#if href && isInternalHref(href)}
+            <a class="text-link" href={resolve(...getResolveArgs(href))}>紹介ページを見る</a>
+          {:else if href}
+            <a
+              class="text-link"
+              {href}
+              target="_blank"
+              rel="external noreferrer"
+              onclick={() => trackOutbound('profile_events', item.title, href)}
+              >{item.status === '申込受付中' ? '詳細・申込み' : 'イベント詳細'}</a
+            >
+          {/if}
+        </div>
+        {#if item.status}
+          <span class="event-status" class:event-status--accepting={item.status === '申込受付中'}>
+            {item.status}
+          </span>
+        {/if}
+      </li>
+    {/each}
+  </ul>
 {/snippet}
 
 <Header items={navItems} />
 
 <main class="profile-page">
-  <section class="section profile-hero">
-    <div class="container profile-hero__inner">
-      <div class="profile-hero__copy">
-        <p class="profile-hero__eyebrow">{profilePageContent.hero.eyebrow}</p>
-        <ul class="profile-hero__specialties" aria-label="主な支援領域">
-          {#each profilePageContent.hero.specialties as specialty (specialty)}
-            <li>{specialty}</li>
-          {/each}
-        </ul>
-        <h1 class="profile-hero__tagline" aria-label={heroTaglineLines.join(' ')}>
-          {#each heroTaglineLines as line (line)}
-            <span class="profile-hero__tagline-line">{line}</span>
-          {/each}
-        </h1>
+  <section class="container profile-hero" aria-labelledby="profile-name">
+    <div class="hero-copy">
+      <p class="hero-role">{hero.role}</p>
+      <h1 id="profile-name">{hero.name}</h1>
+      <p class="hero-lead">{hero.lead}</p>
+      <p class="hero-experience">{hero.experience}</p>
+      <nav aria-label="プロフィール内の案内" class="profile-nav">
+        <a href="#profile-work">仕事・実績</a>
+        <a href="#ubm">UBMで学ぶ</a>
+        <a href="#profile-events">活動・発信</a>
+        <a href="#contact">お問い合わせ</a>
+      </nav>
+    </div>
+    <img
+      class="profile-portrait"
+      src={asset(hero.image)}
+      alt={hero.imageAlt}
+      width="2808"
+      height="3255"
+      fetchpriority="high"
+    />
+  </section>
 
-        <div class="profile-hero__identity">
-          <p class="profile-hero__name">{profilePageContent.hero.name}</p>
-          <p class="profile-hero__role">{profilePageContent.hero.role}</p>
+  <section class="profile-section" id="profile-work" aria-labelledby="profile-work-heading">
+    <div class="container section-stack">
+      <h2 id="profile-work-heading">仕事・実績</h2>
+
+      <div class="section-group">
+        <h3>{valuesTitle}</h3>
+        <div class="value-grid">
+          {#each values as item (item.title)}
+            {@const { href, label } = item.cta}
+            <div class="value-card">
+              <h4>{item.title}</h4>
+              <p>{item.description}</p>
+              {#if isInternalHref(href)}
+                <a class="text-link" href={resolve(...getResolveArgs(href))}>{label}</a>
+              {:else}
+                <a
+                  class="text-link"
+                  {href}
+                  target="_blank"
+                  rel="external noreferrer"
+                  onclick={() => trackOutbound('profile_value', label, href)}>{label}</a
+                >
+              {/if}
+            </div>
+          {/each}
         </div>
-
-        <p class="profile-hero__lead">{profilePageContent.hero.lead}</p>
-
-        <ul class="profile-hero__highlights">
-          {#each profilePageContent.hero.highlights as highlight (highlight)}
-            <li>{highlight}</li>
-          {/each}
-        </ul>
       </div>
 
-      <div class="profile-hero__visual">
-        <div class="profile-hero__image-frame">
-          <img
-            src={asset(profilePageContent.hero.image)}
-            alt={profilePageContent.hero.imageAlt}
-            loading="eager"
+      <div class="section-group" id="profile-portfolio">
+        <h3>{portfolioTitle}</h3>
+        {@render workCards(featuredWorks)}
+        {#if otherWorks.length}
+          <details class="profile-details">
+            <summary>ほかの制作・開発事例</summary>
+            <div class="details-body">
+              {@render workCards(otherWorks)}
+            </div>
+          </details>
+        {/if}
+        <a
+          class="text-link"
+          href={portfolioUrl}
+          target="_blank"
+          rel="external noreferrer"
+          onclick={() =>
+            trackOutbound('profile_portfolio', 'ポートフォリオ一覧を見る', portfolioUrl)}
+          >ポートフォリオ一覧を見る</a
+        >
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-section ubm-section" id="ubm" aria-labelledby="profile-ubm-heading">
+    <div class="container ubm-panel">
+      <div class="ubm-copy">
+        <p class="ubm-name">ビジネス行動管理大学（UBM）</p>
+        <h2 id="profile-ubm-heading">UBMで、一緒に<span>事業づくり</span>を学びませんか？</h2>
+        <p>
+          僕がUBMに入ったのは、技術を通じて役に立てる人を増やすために、事業の育て方も学びたかったからです。今は、事業で何に取り組むかを決めて、日々の行動に落とし込むことを学んでいます。
+        </p>
+        <p>お互いの事業で試したことを持ち寄って、話せる仲間が増えたらうれしいです。</p>
+        <div class="ubm-action">
+          <ActionButton
+            href={ubmUrl}
+            label={ubmLinkLabel}
+            analytics={{
+              eventName: 'outbound_link_click',
+              params: {
+                section: 'profile_ubm',
+                link_label: ubmLinkLabel,
+                destination_host: new URL(ubmUrl).hostname,
+              },
+            }}
           />
         </div>
+        <p class="ubm-note">
+          普段の学び方や、参加して感じたことは、僕の経験からお答えします。オンラインで少し話してみたい方は、フォームにその旨を添えてください。
+        </p>
+        <a class="text-link" href={resolve(`/contact/?${ubmContactSearch}#contact-form`)}
+          >UBMについて問い合わせる</a
+        >
       </div>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="container">
-      <div class="profile-reading-heading">
-        <SectionHeading
-          eyebrow="Overview"
-          title={profilePageContent.overviewTitle}
-          subtitle={profilePageContent.overviewSubtitle}
+      <figure class="ubm-photo">
+        <img
+          src={asset('/images/profile/ubm-with-kitahara.webp')}
+          alt="北原孝彦さんと高橋雄太が、背中合わせに座って笑っている写真"
+          width="960"
+          height="1280"
+          loading="lazy"
+          decoding="async"
         />
-      </div>
-
-      <div class="profile-overview">
-        <div class="profile-overview__story">
-          {#each profilePageContent.overviewParagraphs as paragraph (paragraph)}
-            <p>{paragraph}</p>
-          {/each}
-        </div>
-
-        <aside class="profile-overview__focus">
-          <p class="profile-overview__focus-eyebrow">Focus</p>
-          <h2>{profilePageContent.overviewFocusTitle}</h2>
-          <ul>
-            {#each profilePageContent.overviewFocusItems as item (item)}
-              <li>{item}</li>
-            {/each}
-          </ul>
-        </aside>
-      </div>
+        <figcaption>北原孝彦さんと</figcaption>
+      </figure>
     </div>
   </section>
 
-  <section class="section surface-soft">
-    <div class="container">
-      <SectionHeading
-        eyebrow="Value"
-        title={profilePageContent.valuesTitle}
-        subtitle={profilePageContent.valuesSubtitle}
-      />
-
-      <div class="profile-values">
-        {#each profilePageContent.values as item (item.id)}
-          <article class="profile-value-card">
-            <div class="profile-value-card__body">
-              <h2>{item.title}</h2>
-              <p class="profile-value-card__description">{item.description}</p>
-
-              <ul>
-                {#each item.points as point (point)}
-                  <li>{point}</li>
-                {/each}
-              </ul>
-
-              <p class="profile-value-card__closing">{item.closing}</p>
-            </div>
-
-            {#if item.cta}
-              {@const cta = item.cta}
-              <a
-                class={cta.image ? 'profile-value-card__preview' : 'profile-value-card__cta'}
-                href={cta.href}
-                target="_blank"
-                rel="external noreferrer"
-                onclick={() => handleOutboundClick('profile_value', cta.label, cta.href)}
-              >
-                {#if cta.image}
-                  <span class="profile-value-card__preview-media">
-                    <img
-                      src={resolveImageSrc(cta.image)}
-                      alt={cta.imageAlt ?? `${cta.label} のサムネイル`}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </span>
-                  <span class="profile-value-card__preview-body">
-                    <span class="profile-value-card__preview-label">{cta.label}</span>
-                    <span class="profile-value-card__preview-meta">外部サイトを開く</span>
-                  </span>
-                {:else}
-                  {cta.label}
-                {/if}
-              </a>
-            {/if}
-          </article>
-        {/each}
+  <section class="profile-section" id="profile-events" aria-labelledby="profile-activity-heading">
+    <div class="container section-stack">
+      <div class="activity-heading">
+        <h2 id="profile-activity-heading">活動・発信</h2>
+        <p class="muted">習慣づくりや対話に関心があります。好きな作品の一つは『宇宙兄弟』です。</p>
       </div>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="container">
-      <SectionHeading
-        eyebrow="Contact"
-        title={profilePageContent.contactTitle}
-        subtitle={profilePageContent.contactLead}
-      />
-
-      <div class="profile-contact">
-        {#each profilePageContent.contactItems as item (item.title)}
-          {#if item.href}
-            <a
-              class="profile-contact__card profile-contact__card--link"
-              href={item.href}
-              target="_blank"
-              rel="external noreferrer"
-              onclick={() => handleOutboundClick('profile_contact', item.title, item.href ?? '')}
-            >
-              {@render profileContactCardContent(item)}
-            </a>
+      <div class="activity-grid">
+        <div class="section-group">
+          <h3>イベント</h3>
+          {#if !data.ticketcraftEvents}
+            <p class="muted">開催予定と受付状況はTicketCraftでご確認ください。</p>
+          {:else if upcomingEvents.length}
+            {@render eventList(upcomingEvents)}
           {:else}
-            <article class="profile-contact__card">
-              {@render profileContactCardContent(item)}
-            </article>
+            <p class="muted">現在、開催予定のイベントはありません。</p>
           {/if}
-        {/each}
-      </div>
-    </div>
-  </section>
-
-  <section id="profile-events" class="section section--tight">
-    <div class="container">
-      <SectionHeading
-        eyebrow="Events"
-        title={profilePageContent.events.title}
-        subtitle={profilePageContent.events.subtitle}
-      />
-
-      <div class="profile-events">
-        {#each profileEventViews as item (item.dateIso + item.title)}
-          {#if item.isInteractive}
-            {#if isInternalHref(item.href)}
-              <a
-                class="profile-events__card"
-                data-profile-event-card
-                data-event-date-iso={item.dateIso}
-                data-event-href={resolve(...getResolveArgs(item.href))}
-                data-event-external={false}
-                data-event-accepting={item.isAccepting}
-                data-event-status-label={item.status}
-                data-event-cta-label={item.ctaLabel}
-                href={resolve(...getResolveArgs(item.href))}
-                onclick={() => handleProfileEventClick(item)}
-              >
-                {@render profileEventCardContent(item)}
-              </a>
-            {:else}
-              <a
-                class="profile-events__card"
-                data-profile-event-card
-                data-event-date-iso={item.dateIso}
-                data-event-href={item.href}
-                data-event-external={true}
-                data-event-accepting={item.isAccepting}
-                data-event-status-label={item.status}
-                data-event-cta-label={item.ctaLabel}
-                href={item.href}
-                target="_blank"
-                rel="external noreferrer"
-                onclick={() => handleProfileEventClick(item)}
-              >
-                {@render profileEventCardContent(item)}
-              </a>
-            {/if}
-          {:else}
-            <article
-              class={`profile-events__card${item.isEnded ? ' profile-events__card--ended' : ''}`}
-              data-profile-event-card
-              data-event-date-iso={item.dateIso}
-              data-event-href={resolveLinkHref(item.href)}
-              data-event-external={!isInternalHref(item.href)}
-              data-event-accepting={item.isAccepting}
-              data-event-status-label={item.status}
-              data-event-cta-label={item.ctaLabel}
-            >
-              {@render profileEventCardContent(item)}
-            </article>
-          {/if}
-        {/each}
-      </div>
-    </div>
-  </section>
-
-  <section id="profile-portfolio" class="section section--tight">
-    <div class="container">
-      <SectionHeading
-        eyebrow="Portfolio"
-        title={profilePageContent.portfolioTitle}
-        subtitle={profilePageContent.portfolioSubtitle}
-      />
-
-      <div class="profile-portfolio">
-        {#each profilePageContent.portfolioItems as item (item.href)}
           <a
-            class="profile-portfolio__card"
-            href={item.href}
+            class="text-link"
+            href={eventListUrl}
             target="_blank"
             rel="external noreferrer"
-            onclick={() => handleOutboundClick('profile_portfolio', item.title, item.href)}
+            onclick={() => trackOutbound('profile_events', '最新の開催予定を見る', eventListUrl)}
+            >TicketCraftで最新の開催予定を見る</a
           >
-            <div class="profile-portfolio__media">
-              <img
-                src={resolveImageSrc(item.image)}
-                alt={`${item.title} のサムネイル`}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-
-            <div class="profile-portfolio__body">
-              <div class="profile-portfolio__copy">
-                <h2>{item.title}</h2>
-                <p>{item.description}</p>
+          {#if pastEvents.length}
+            <details class="profile-details">
+              <summary>過去のイベント</summary>
+              <div class="details-body">
+                {@render eventList(pastEvents)}
               </div>
-
-              <span class="profile-portfolio__meta">{item.ctaLabel}</span>
-            </div>
-          </a>
-        {/each}
+            </details>
+          {/if}
+        </div>
+        <div class="section-group">
+          <h3>SNS・LINE</h3>
+          <ul class="social-list">
+            {#each contactItems as item (item.href)}
+              <li>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="external noreferrer"
+                  onclick={() => trackOutbound('profile_contact', item.title, item.href)}
+                >
+                  <span class="social-name">
+                    {#if item.platformImage}
+                      <img src={asset(item.platformImage)} alt="" width="16" height="16" />
+                    {/if}
+                    {item.platformLabel}
+                  </span>
+                  <span class="social-title">{item.title}</span>
+                  <span class="muted">{item.description}</span>
+                </a>
+              </li>
+            {/each}
+          </ul>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section profile-stance">
-    <div class="container">
-      <div class="profile-reading-heading">
-        <SectionHeading eyebrow="Stance" title={profilePageContent.stanceTitle} />
-      </div>
-
-      <div class="profile-stance__panel">
-        <p class="profile-stance__lead">{profilePageContent.stanceLead}</p>
-
-        <ul class="profile-stance__list">
-          {#each profilePageContent.stanceItems as item (item)}
-            <li>{item}</li>
-          {/each}
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--tight surface-soft">
-    <div class="container">
-      <SectionHeading eyebrow="Audience" title={profilePageContent.audienceTitle} />
-
-      <div class="profile-audience">
-        {#each profilePageContent.audienceItems as item (item)}
-          <article class="profile-audience__card">
-            <p>{item}</p>
-          </article>
-        {/each}
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--tight profile-background-section">
-    <div class="container">
-      <div class="profile-reading-heading">
-        <SectionHeading
-          eyebrow="Background"
-          title={profilePageContent.background.title}
-          subtitle={profilePageContent.background.subtitle}
-        />
-      </div>
-
-      <div class="profile-background">
-        <section class="profile-background__career" aria-labelledby="profile-career-heading">
-          <div class="profile-section-label">
-            <p class="profile-background__eyebrow">Career</p>
-            <h3 id="profile-career-heading">仕事につながる経歴</h3>
-          </div>
-
-          <div class="profile-background__timeline">
-            {#each profilePageContent.background.careerItems as item (item.title)}
-              <article class="profile-career-item">
-                {#if item.meta}
-                  <p class="profile-career-item__meta">{item.meta}</p>
+      <details class="profile-details">
+        <summary>{background.title}</summary>
+        <div class="background-grid details-body">
+          <div class="background-group">
+            <h3>経歴</h3>
+            {#each background.careerItems as item (item.title)}
+              <div>
+                <h4>{item.title}</h4>
+                {#if item.description}
+                  <p class="muted">{item.description}</p>
                 {/if}
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </article>
+              </div>
             {/each}
           </div>
-        </section>
-
-        <section class="profile-background__personal" aria-labelledby="profile-personal-heading">
-          <div class="profile-section-label">
-            <p class="profile-background__eyebrow">Personal</p>
-            <h3 id="profile-personal-heading">人となりと関心</h3>
-          </div>
-
-          <div class="profile-background__groups">
-            {#each profilePageContent.background.personalGroups as group (group.title)}
-              <article class="profile-info-group">
-                <h3>{group.title}</h3>
+          <div class="background-group">
+            <h3>関心・活動</h3>
+            {#each background.personalGroups as group (group.title)}
+              <div>
+                <h4>{group.title}</h4>
                 <ul>
                   {#each group.items as item (item)}
                     <li>{item}</li>
                   {/each}
                 </ul>
-              </article>
+              </div>
             {/each}
           </div>
-
-          <section id="ubm" class="profile-ubm" aria-labelledby="profile-ubm-heading">
-            <h4 id="profile-ubm-heading">UBMで、一緒に事業づくりを学びませんか？</h4>
-            <p>
-              僕は今、ビジネス行動管理大学（UBM）で、事業の育て方や、学んだことを日々の行動に移す方法を学んでいます。お互いの事業で試したことや、そこから得た気づきを話せる仲間が増えたらうれしいです。
-            </p>
-            <div>
-              <ActionButton
-                href={ubmUrl}
-                label={ubmLinkLabel}
-                analytics={{
-                  eventName: 'outbound_link_click',
-                  params: {
-                    section: 'profile_ubm',
-                    link_label: ubmLinkLabel,
-                    destination_host: new URL(ubmUrl).hostname,
-                  },
-                }}
-              />
-            </div>
-            <p>
-              僕が実際にどんなことを学んでいるか、一緒に学ぶとしたらどんな感じか。気になったら、気軽に聞いてください。オンラインで少し話してみたい方は、その旨も添えてもらえれば日程を調整します。
-            </p>
-            <a href={ubmContactHref}>UBMについて問い合わせる</a>
-          </section>
-        </section>
-      </div>
+        </div>
+      </details>
     </div>
   </section>
 
-  <ContactCta contact={contactInfo} />
+  <section
+    class="profile-section contact-section"
+    id="contact"
+    aria-labelledby="profile-contact-heading"
+  >
+    <div class="container contact-inner">
+      <div>
+        <h2 id="profile-contact-heading">お問い合わせ</h2>
+        <p>困っていることや、試してみたいことを、分かる範囲でお聞かせください。</p>
+      </div>
+      <ActionButton
+        href="/contact/"
+        label="お問い合わせフォームへ"
+        tone="light"
+        analytics={{ eventName: 'contact_cta_click', params: { placement: 'bottom_cta' } }}
+      />
+    </div>
+  </section>
 </main>
 
 <Footer companyName={companyProfile.name} items={navItems} />
 
 <style>
-  .profile-page :global(.container) {
-    width: min(var(--container-width), calc(100% - 36px));
+  .profile-page {
+    background: var(--color-bg);
   }
 
   .profile-hero {
-    overflow: hidden;
-    padding-top: clamp(44px, 7vw, 84px);
-    background:
-      radial-gradient(circle at top left, rgba(244, 231, 161, 0.3) 0%, transparent 34%),
-      linear-gradient(180deg, rgba(255, 252, 246, 0.98) 0%, rgba(250, 244, 232, 0.94) 100%);
-  }
-
-  .profile-hero__inner {
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
-    gap: clamp(28px, 4vw, 44px);
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 0.65fr);
     align-items: center;
+    gap: clamp(24px, 7vw, 100px);
+    padding-block: clamp(32px, 6vw, 82px);
   }
 
-  .profile-hero__copy {
+  .hero-copy {
     display: grid;
-    gap: 18px;
+    gap: 14px;
   }
 
-  .profile-hero__eyebrow,
-  .profile-overview__focus-eyebrow,
-  .profile-background__eyebrow {
-    color: rgba(135, 99, 45, 0.88);
+  .hero-role,
+  .ubm-name {
+    color: #74552d;
+    font-size: 0.9rem;
+    font-weight: 750;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-heading);
-    font-size: 0.92rem;
+    line-height: 1.35;
     font-weight: 800;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
   }
 
-  .profile-hero__specialties {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: -6px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .profile-hero__specialties li {
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.76);
-    border: 1px solid rgba(117, 92, 56, 0.12);
-    color: rgba(114, 80, 32, 0.95);
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
-
-  .profile-reading-heading :global(.section-heading) {
-    max-width: 46rem;
-    justify-items: start;
-    margin-bottom: clamp(24px, 3vw, 36px);
-    text-align: left;
-  }
-
-  .profile-reading-heading :global(.section-heading__subtitle) {
-    max-width: 46rem;
-  }
-
-  .profile-hero__tagline,
-  .profile-section-label h3,
-  .profile-career-item h3,
-  .profile-info-group h3,
-  .profile-value-card h2,
-  .profile-events__body h2,
-  .profile-portfolio__copy h2,
-  .profile-stance__lead,
-  .profile-contact__card h2,
-  .profile-overview__focus h2 {
-    font-family: var(--font-heading);
+  h1 {
+    font-size: clamp(1.95rem, 4.6vw, 3.65rem);
     letter-spacing: -0.04em;
   }
 
-  .profile-hero__tagline {
-    display: grid;
-    gap: 0.04em;
-    max-width: 10ch;
-    font-size: clamp(2.1rem, 3.3vw, 3.35rem);
-    line-height: 1.08;
-    font-weight: 800;
+  h2 {
+    font-size: clamp(1.55rem, 3vw, 2.35rem);
+    letter-spacing: -0.025em;
   }
 
-  .profile-hero__tagline-line {
-    display: block;
-    white-space: nowrap;
+  h3 {
+    font-size: 1.22rem;
   }
 
-  .profile-hero__identity {
-    display: grid;
-    gap: 4px;
-  }
-
-  .profile-hero__name {
-    font-size: clamp(1.55rem, 2.1vw, 2rem);
-    font-weight: 800;
-  }
-
-  .profile-hero__role,
-  .profile-hero__lead,
-  .profile-overview__story p,
-  .profile-career-item p,
-  .profile-value-card__description,
-  .profile-value-card__closing,
-  .profile-contact__card p,
-  .profile-audience__card p,
-  .profile-info-group li {
-    color: var(--color-ink-soft);
-    line-height: 1.72;
-  }
-
-  .profile-hero__role {
-    font-weight: 700;
-  }
-
-  .profile-hero__lead {
-    max-width: 40rem;
+  h4 {
     font-size: 1.05rem;
   }
 
-  .profile-hero__highlights {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 4px 0 0;
-    padding: 0;
-    list-style: none;
+  .hero-lead {
+    max-width: 37rem;
+    font-size: clamp(0.98rem, 1.5vw, 1.12rem);
   }
 
-  .profile-hero__highlights li {
-    padding: 10px 14px;
+  .hero-lead,
+  .hero-experience,
+  .value-card p,
+  .work-copy p,
+  .ubm-copy > p:not(.ubm-name),
+  .muted {
+    color: var(--color-ink-soft);
+  }
+
+  .hero-experience {
+    font-size: 0.92rem;
+  }
+
+  .profile-portrait {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: 50% 36%;
+    border-radius: var(--radius-large);
+    justify-self: end;
+  }
+
+  .profile-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .profile-nav a {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(117, 92, 56, 0.14);
-    box-shadow: var(--shadow-soft);
-    font-size: 0.95rem;
+    padding: 6px 13px;
+    background: var(--color-surface);
+    font-size: 0.88rem;
     font-weight: 700;
   }
 
-  .profile-hero__visual {
-    position: relative;
-  }
-
-  .profile-hero__visual::before {
-    content: '';
-    position: absolute;
-    inset: auto -16px -18px 18%;
-    height: 72%;
-    border-radius: 32px;
-    background: linear-gradient(
-      180deg,
-      rgba(246, 228, 180, 0.9) 0%,
-      rgba(228, 179, 103, 0.72) 100%
-    );
-    filter: blur(18px);
-    z-index: 0;
-  }
-
-  .profile-hero__image-frame {
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-    border-radius: 34px;
-    border: 1px solid rgba(117, 92, 56, 0.14);
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: var(--shadow-card);
-  }
-
-  .profile-hero__image-frame img {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: center top;
-  }
-
-  .profile-overview {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-    gap: clamp(22px, 3vw, 32px);
-    align-items: start;
-  }
-
-  .profile-value-card,
-  .profile-events__card,
-  .profile-portfolio__card,
-  .profile-contact__card {
-    border: 1px solid rgba(117, 92, 56, 0.12);
-    border-radius: 28px;
-    background: rgba(255, 255, 255, 0.92);
-    box-shadow: var(--shadow-card);
-  }
-
-  .profile-overview__story {
-    display: grid;
-    gap: 16px;
-    padding: 0 clamp(18px, 2.6vw, 28px) 0 0;
-    border-right: 1px solid rgba(117, 92, 56, 0.14);
-  }
-
-  .profile-overview__focus {
-    display: grid;
-    gap: 14px;
-    padding: 2px 0 2px clamp(18px, 2.6vw, 28px);
-    border-left: 2px solid rgba(214, 151, 76, 0.28);
-  }
-
-  .profile-overview__focus h2 {
-    font-size: clamp(1.35rem, 2vw, 1.8rem);
-    line-height: 1.2;
-    font-weight: 800;
-  }
-
-  .profile-overview__focus ul,
-  .profile-info-group ul,
-  .profile-value-card ul,
-  .profile-stance__list {
-    display: grid;
-    gap: 12px;
-    margin: 0;
-    padding-left: 1.2rem;
-  }
-
-  .profile-background {
-    display: grid;
-    grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
-    gap: clamp(24px, 3.2vw, 40px);
-    align-items: start;
-  }
-
-  .profile-background__career {
-    display: grid;
-    gap: 18px;
-    padding-right: clamp(14px, 2vw, 24px);
-    border-right: 1px solid rgba(117, 92, 56, 0.14);
-  }
-
-  .profile-background__personal {
-    display: grid;
-    gap: 18px;
-    padding-left: clamp(14px, 2vw, 24px);
-  }
-
-  .profile-section-label {
-    display: grid;
-    gap: 8px;
-  }
-
-  .profile-section-label h3 {
-    font-size: clamp(1.28rem, 2vw, 1.72rem);
-    font-weight: 800;
-    line-height: 1.2;
-  }
-
-  .profile-background__timeline,
-  .profile-background__groups {
-    display: grid;
-    gap: 16px;
-  }
-
-  .profile-career-item {
-    position: relative;
-    display: grid;
-    gap: 8px;
-    padding: 0 0 18px 18px;
-    border-left: 1px solid rgba(117, 92, 56, 0.18);
-  }
-
-  .profile-career-item::before {
-    content: '';
-    position: absolute;
-    top: 0.4rem;
-    left: -5px;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: rgba(214, 151, 76, 0.95);
-    box-shadow: 0 0 0 4px rgba(244, 231, 161, 0.34);
-  }
-
-  .profile-career-item:last-child {
-    padding-bottom: 0;
-  }
-
-  .profile-career-item__meta {
-    color: rgba(135, 99, 45, 0.88);
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .profile-career-item h3,
-  .profile-info-group h3 {
-    color: var(--color-ink);
-    font-size: clamp(1.02rem, 1.6vw, 1.2rem);
-    font-weight: 800;
-    line-height: 1.35;
-  }
-
-  .profile-info-group {
-    display: grid;
-    gap: 10px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(117, 92, 56, 0.14);
-  }
-
-  .profile-info-group:last-child {
-    padding-bottom: 0;
-    border-bottom: 0;
-  }
-
-  .profile-ubm {
-    display: grid;
-    gap: 14px;
-    padding: clamp(16px, 2.5vw, 24px);
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-card);
+  .profile-nav a:hover,
+  .work-card:hover {
     background: var(--color-surface-soft);
   }
 
-  .profile-ubm h4 {
-    font-size: 1.15rem;
-    line-height: 1.4;
+  .profile-section {
+    padding-block: clamp(32px, 5vw, 66px);
+    border-top: 1px solid var(--color-line);
   }
 
-  .profile-ubm p {
-    color: var(--color-ink-soft);
-  }
-
-  .profile-ubm div {
-    margin-bottom: 8px;
-  }
-
-  .profile-ubm > a {
-    justify-self: start;
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  .profile-values {
+  .section-stack {
     display: grid;
-    gap: 18px;
+    gap: clamp(22px, 3.4vw, 38px);
   }
 
-  .profile-value-card {
+  .section-group {
     display: grid;
-    gap: 18px;
-    padding: clamp(18px, 2.6vw, 28px);
-  }
-
-  .profile-value-card__body {
-    display: grid;
-    gap: 14px;
-  }
-
-  .profile-value-card h2 {
-    font-size: clamp(1.45rem, 2vw, 1.95rem);
-    line-height: 1.2;
-    font-weight: 800;
-  }
-
-  .profile-value-card__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    width: fit-content;
-    color: rgba(135, 99, 45, 0.95);
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 6px;
-  }
-
-  .profile-value-card__preview {
-    display: grid;
-    grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
-    gap: 16px;
-    align-items: center;
-    padding: 14px;
-    border-radius: 22px;
-    border: 1px solid rgba(214, 151, 76, 0.24);
-    background: linear-gradient(
-      180deg,
-      rgba(255, 251, 243, 0.98) 0%,
-      rgba(252, 247, 237, 0.96) 100%
-    );
-    color: inherit;
-    text-decoration: none;
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .profile-value-card__preview:hover,
-  .profile-events__card:hover,
-  .profile-portfolio__card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(214, 151, 76, 0.42);
-    box-shadow: 0 26px 42px rgba(111, 83, 41, 0.16);
-  }
-
-  .profile-value-card__preview-media {
-    overflow: hidden;
-    border-radius: 18px;
-    background: rgba(237, 226, 208, 0.55);
-  }
-
-  .profile-value-card__preview-media img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-  }
-
-  .profile-value-card__preview-body {
-    display: grid;
-    gap: 6px;
-  }
-
-  .profile-value-card__preview-label {
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: 1.05rem;
-    font-weight: 800;
-    line-height: 1.25;
-  }
-
-  .profile-value-card__preview-meta,
-  .profile-events__meta,
-  .profile-portfolio__meta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    width: fit-content;
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: rgba(135, 99, 45, 0.95);
-  }
-
-  .profile-value-card__cta::after,
-  .profile-value-card__preview-meta::after,
-  .profile-events__meta::after,
-  .profile-portfolio__meta::after,
-  .profile-contact__button:not(.profile-contact__button--image)::after {
-    content: '↗';
-    font-size: 0.95em;
-  }
-
-  .profile-events {
-    display: grid;
-    gap: 14px;
-  }
-
-  .profile-events__card {
-    display: grid;
-    grid-template-columns: minmax(112px, 132px) minmax(0, 1fr) auto;
-    gap: 14px 20px;
-    align-items: center;
-    padding: clamp(16px, 2.3vw, 22px);
-    color: inherit;
-    text-decoration: none;
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .profile-events__card:not([href]) {
-    cursor: default;
-  }
-
-  .profile-events__date-block {
-    display: grid;
-    gap: 8px;
     align-content: start;
-  }
-
-  .profile-events__date {
-    color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-size: clamp(1.12rem, 1.7vw, 1.38rem);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-  }
-
-  .profile-events__status {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-  }
-
-  .profile-events__status--accepting {
-    background: rgba(233, 247, 237, 0.96);
-    border: 1px solid rgba(72, 136, 92, 0.2);
-    color: rgba(44, 96, 60, 0.96);
-  }
-
-  .profile-events__status--upcoming {
-    background: rgba(255, 247, 228, 0.9);
-    border: 1px solid rgba(214, 151, 76, 0.18);
-    color: rgba(135, 99, 45, 0.95);
-  }
-
-  .profile-events__status--ended {
-    background: rgba(241, 240, 236, 0.96);
-    border: 1px solid rgba(142, 133, 118, 0.16);
-    color: rgba(109, 101, 90, 0.9);
-  }
-
-  .profile-events__body {
-    display: grid;
-    gap: 8px;
+    gap: 14px;
     min-width: 0;
   }
 
-  .profile-events__body h2 {
-    color: var(--color-ink);
-    font-size: clamp(1.16rem, 1.8vw, 1.48rem);
-    line-height: 1.2;
-    font-weight: 800;
+  .activity-heading {
+    display: grid;
+    gap: 8px;
   }
 
-  .profile-events__body p {
-    color: var(--color-ink-soft);
-    line-height: 1.68;
+  .value-grid,
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
   }
 
-  .profile-events__meta {
-    justify-self: end;
+  .value-card {
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    border-top: 2px solid var(--color-primary);
+    padding: 12px 4px 0;
+  }
+
+  .text-link {
+    width: fit-content;
+    color: #755124;
+    font-weight: 750;
+    text-decoration: underline;
+    text-underline-offset: 0.24em;
+  }
+
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    background: var(--color-surface);
+  }
+
+  .work-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--color-surface-soft);
+  }
+
+  .work-copy {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    flex: 1;
+    gap: 7px;
+    padding: 14px;
+  }
+
+  .work-copy p {
+    font-size: 0.92rem;
+  }
+
+  .work-copy span {
+    color: #755124;
+    font-size: 0.88rem;
+    font-weight: 750;
+  }
+
+  .profile-details {
+    border-block: 1px solid var(--color-line);
+  }
+
+  .profile-details summary {
+    padding: 12px 2px;
+    cursor: pointer;
+    font-weight: 750;
+  }
+
+  .details-body {
+    padding-bottom: 16px;
+  }
+
+  .ubm-section {
+    background: var(--color-surface-soft);
+  }
+
+  .ubm-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    gap: clamp(24px, 6vw, 80px);
+    align-items: center;
+  }
+
+  .ubm-copy {
+    display: grid;
+    gap: 12px;
+    max-width: 38rem;
+  }
+
+  .ubm-copy h2 {
+    text-wrap: balance;
+  }
+
+  .ubm-copy h2 span {
     white-space: nowrap;
   }
 
-  .profile-events__card:not([href]) .profile-events__meta::after {
-    content: none;
+  .ubm-action {
+    margin-block: 4px 10px;
   }
 
-  .profile-events__meta--internal::after {
-    content: '→';
-  }
-
-  .profile-events__card--ended {
-    color: inherit;
-    background: rgba(250, 248, 244, 0.94);
-  }
-
-  .profile-events__card:not([href]):hover,
-  .profile-events__card--ended:hover {
-    transform: none;
-    border-color: rgba(117, 92, 56, 0.12);
-    box-shadow: var(--shadow-card);
-  }
-
-  .profile-events__card--ended .profile-events__date,
-  .profile-events__card--ended .profile-events__body h2 {
-    color: rgba(89, 83, 75, 0.92);
-  }
-
-  .profile-events__card--ended .profile-events__body p,
-  .profile-events__meta--ended {
-    color: rgba(109, 101, 90, 0.88);
-  }
-
-  .profile-events__meta--ended::after {
-    content: none;
-  }
-
-  .profile-portfolio {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(18px, 2vw, 24px);
-  }
-
-  .profile-portfolio__card {
-    display: grid;
-    overflow: hidden;
-    min-height: 100%;
-    color: inherit;
-    text-decoration: none;
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .profile-portfolio__media {
-    overflow: hidden;
-    background: rgba(242, 235, 221, 0.68);
-  }
-
-  .profile-portfolio__media img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-  }
-
-  .profile-portfolio__body {
-    display: grid;
-    gap: 16px;
-    padding: clamp(16px, 2.4vw, 24px);
-  }
-
-  .profile-portfolio__copy {
-    display: grid;
-    gap: 10px;
-  }
-
-  .profile-portfolio__copy h2 {
-    font-size: clamp(1.35rem, 1.9vw, 1.72rem);
-    line-height: 1.2;
-    font-weight: 800;
+  .ubm-action :global(.action-button) {
     color: var(--color-ink);
   }
 
-  .profile-portfolio__copy p {
+  .ubm-note {
+    font-size: 0.92rem;
+  }
+
+  .ubm-photo {
+    margin: 0;
+  }
+
+  .ubm-photo img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center 90%;
+    border-radius: var(--radius-card);
+  }
+
+  .ubm-photo figcaption {
+    margin-top: 8px;
+    color: var(--color-ink-soft);
+    font-size: 0.84rem;
+    text-align: center;
+  }
+
+  .activity-grid,
+  .background-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(18px, 4vw, 52px);
+  }
+
+  .event-list,
+  .social-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .event-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: 5px 12px;
+    border-bottom: 1px solid var(--color-line);
+    padding-block: 8px;
+  }
+
+  .event-list li > div {
+    flex: 1 1 12rem;
+  }
+
+  .event-title,
+  .social-title {
+    font-weight: 750;
+  }
+
+  .event-list time,
+  .event-title + p {
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+  }
+
+  .event-status {
+    color: var(--color-ink-soft);
+    font-size: 0.83rem;
+  }
+
+  .event-status--accepting {
+    color: #53672e;
+    font-weight: 750;
+  }
+
+  .social-list a {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 1px 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .social-list a:hover .social-title {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .social-name {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+    align-self: start;
+    min-height: 1.65rem;
+    font-size: 0.81rem;
+    font-weight: 750;
+  }
+
+  .social-list .muted {
+    grid-column: 2;
+    font-size: 0.88rem;
+  }
+
+  .background-group {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+  }
+
+  .background-group ul {
+    margin: 4px 0 0;
+    padding-inline-start: 1.25rem;
     color: var(--color-ink-soft);
   }
 
-  .profile-stance {
-    background:
-      radial-gradient(circle at top right, rgba(246, 228, 180, 0.22) 0%, transparent 30%),
-      linear-gradient(180deg, rgba(255, 251, 244, 0.92) 0%, rgba(255, 254, 250, 1) 100%);
+  .contact-section {
+    background: var(--color-surface-soft);
   }
 
-  .profile-stance__panel {
-    display: grid;
-    gap: 18px;
-    max-width: 56rem;
-    padding-top: clamp(16px, 2vw, 22px);
-    border-top: 1px solid rgba(117, 92, 56, 0.16);
-  }
-
-  .profile-stance__lead {
-    max-width: 24ch;
-    font-size: clamp(1.4rem, 2vw, 1.95rem);
-    line-height: 1.22;
-    font-weight: 800;
-    color: var(--color-ink);
-  }
-
-  .profile-stance__list {
-    padding-left: 0;
-    list-style: none;
-    gap: 0;
-  }
-
-  .profile-stance__list li {
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(117, 92, 56, 0.14);
-  }
-
-  .profile-audience,
-  .profile-contact {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(16px, 2vw, 22px);
-  }
-
-  .profile-audience__card {
-    min-height: 100%;
-    padding: 0 0 18px;
-    border: 0;
-    border-bottom: 1px solid rgba(117, 92, 56, 0.16);
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .profile-audience__card {
-    display: block;
-  }
-
-  .profile-audience__card p {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--color-ink);
-  }
-
-  .profile-contact__card {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    display: grid;
-    gap: 16px;
-    min-height: 100%;
-    padding: clamp(16px, 2.4vw, 22px);
-    color: inherit;
-    text-decoration: none;
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .profile-contact__card--link:hover {
-    transform: translateY(-2px);
-    border-color: rgba(214, 151, 76, 0.42);
-    box-shadow: 0 26px 42px rgba(111, 83, 41, 0.16);
-  }
-
-  .profile-contact__card--link:focus-visible {
-    outline: 3px solid rgba(214, 151, 76, 0.42);
-    outline-offset: 4px;
-  }
-
-  .profile-contact__card-body {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: 8px;
-  }
-
-  .profile-contact__watermark {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    z-index: 0;
-    width: clamp(84px, 10vw, 128px);
-    height: clamp(84px, 10vw, 128px);
-    border-radius: 24px;
-    opacity: 0.1;
-    pointer-events: none;
-  }
-
-  .profile-contact__card .profile-contact__platform {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    width: fit-content;
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: rgba(255, 247, 228, 0.94);
-    border: 1px solid rgba(214, 151, 76, 0.22);
-    color: rgba(135, 99, 45, 0.98);
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    line-height: 1.2;
-  }
-
-  .profile-contact__platform-image {
-    width: 1.12rem;
-    height: 1.12rem;
-    flex: 0 0 auto;
-    border-radius: 4px;
-  }
-
-  .profile-contact__card-body p :global(strong) {
-    color: var(--color-ink);
-    font-weight: 800;
-  }
-
-  .profile-contact__card h2 {
-    font-size: clamp(1.35rem, 1.9vw, 1.7rem);
-    line-height: 1.2;
-    font-weight: 800;
-  }
-
-  .profile-contact__actions {
-    position: relative;
-    z-index: 1;
+  .contact-inner {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
-    gap: 10px 14px;
-    align-items: center;
-    padding-top: 12px;
-    border-top: 1px solid rgba(117, 92, 56, 0.14);
+    gap: 18px 30px;
+    padding-bottom: 8px;
   }
 
-  .profile-contact__button {
-    color: rgba(135, 99, 45, 0.95);
-    font-weight: 800;
-    text-decoration: none;
+  .contact-inner p {
+    margin-top: 7px;
+    color: var(--color-ink-soft);
   }
 
-  .profile-contact__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 42px;
-    padding: 10px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(214, 151, 76, 0.28);
-    background: rgba(255, 249, 236, 0.92);
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease,
-      border-color 0.2s ease;
-  }
-
-  .profile-contact__button:hover {
-    transform: translateY(-1px);
-    border-color: rgba(214, 151, 76, 0.42);
-    box-shadow: 0 18px 28px rgba(111, 83, 41, 0.1);
-  }
-
-  .profile-contact__button--image {
-    padding: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  .profile-contact__button--image:hover {
-    transform: none;
-    box-shadow: none;
-  }
-
-  .profile-contact__button--image img {
-    display: block;
-    height: 36px;
-    width: auto;
-  }
-
-  @media (max-width: 920px) {
-    .profile-hero__inner,
-    .profile-overview,
-    .profile-background,
-    .profile-portfolio,
-    .profile-audience,
-    .profile-contact {
-      grid-template-columns: 1fr;
+  @media (max-width: 730px) {
+    .profile-hero {
+      grid-template-columns: minmax(0, 1fr) minmax(88px, 0.4fr);
     }
 
-    .profile-hero__visual {
-      max-width: 560px;
-      margin-inline: auto;
-      width: 100%;
+    .profile-portrait {
+      align-self: start;
+      border-radius: 20px;
     }
 
-    .profile-overview__story {
-      padding: 0 0 22px;
-      border-right: 0;
-      border-bottom: 1px solid rgba(117, 92, 56, 0.14);
-    }
-
-    .profile-overview__focus {
-      padding: 18px 0 0 14px;
-    }
-
-    .profile-background__career {
-      padding: 0 0 22px;
-      border-right: 0;
-      border-bottom: 1px solid rgba(117, 92, 56, 0.14);
-    }
-
-    .profile-background__personal {
-      padding: 0;
-    }
-
-    .profile-events__card {
+    .value-grid,
+    .work-grid,
+    .ubm-panel,
+    .activity-grid,
+    .background-grid {
       grid-template-columns: minmax(0, 1fr);
-      align-items: start;
-    }
-
-    .profile-events__meta {
-      justify-self: start;
     }
   }
 
-  @media (max-width: 720px) {
-    .profile-page :global(.container) {
-      width: min(var(--container-width), calc(100% - 24px));
+  @media (max-width: 460px) {
+    .profile-hero {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
     }
 
-    .profile-hero__tagline {
-      max-width: 9ch;
-      font-size: clamp(1.9rem, 9.8vw, 2.7rem);
-      line-height: 1.14;
-    }
-
-    .profile-hero__specialties {
-      gap: 6px;
-    }
-
-    .profile-hero__specialties li {
-      padding: 5px 10px;
-      font-size: 0.82rem;
-    }
-
-    .profile-reading-heading :global(.section-heading) {
-      margin-bottom: 22px;
-    }
-
-    .profile-overview__story {
-      gap: 14px;
-      padding-bottom: 18px;
-    }
-
-    .profile-overview__focus {
-      gap: 12px;
-      padding-left: 12px;
-    }
-
-    .profile-background__timeline,
-    .profile-background__groups {
-      gap: 14px;
-    }
-
-    .profile-career-item {
-      padding-left: 14px;
-      padding-bottom: 16px;
-    }
-
-    .profile-value-card {
-      padding: 16px;
-    }
-
-    .profile-events {
-      gap: 12px;
-    }
-
-    .profile-events__card {
-      gap: 12px;
-      padding: 14px;
-    }
-
-    .profile-events__date-block {
-      gap: 6px;
-    }
-
-    .profile-value-card__preview {
-      grid-template-columns: 1fr;
-      gap: 12px;
-      padding: 12px;
-    }
-
-    .profile-portfolio__body {
-      padding: 16px;
-    }
-
-    .profile-hero__highlights {
-      display: grid;
-      grid-template-columns: 1fr;
+    .profile-portrait {
+      grid-row: 1;
+      width: 112px;
+      justify-self: start;
     }
   }
 </style>

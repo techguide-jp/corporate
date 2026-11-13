@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
   import { resolve } from '$app/paths';
   import { page } from '$app/state';
   import { trackEvent } from '$lib/analytics';
-  import { chigasakiHubLink, chigasakiServiceLinks } from '$lib/local-seo/chigasaki/shared';
+  import { chigasakiHubLink } from '$lib/local-seo/chigasaki/shared';
   import type { NavItem } from '$lib/types/content';
   import { getResolveArgs, isNavigationItemActive } from '$lib/utils/paths';
 
@@ -13,9 +12,21 @@
   }
 
   let { companyName, items }: Props = $props();
-  let showFloatingTop = $state(false);
-
   const currentYear = new Date().getFullYear();
+  const linkGroups = [
+    { title: 'サービス・実績', paths: ['/services/', '/#works', chigasakiHubLink.href] },
+    { title: '会社情報', paths: ['/#company', '/profile/', '/recruit/', '/contact/'] },
+  ];
+  const footerItems = $derived([
+    ...items,
+    { label: '茅ヶ崎での支援', href: chigasakiHubLink.href },
+  ]);
+  const footerGroups = $derived(
+    linkGroups.map(({ title, paths }) => ({
+      title,
+      links: footerItems.filter((item) => paths.includes(item.href)),
+    })),
+  );
 
   function isActive(href: string) {
     return isNavigationItemActive({
@@ -31,210 +42,134 @@
       window.history.replaceState(window.history.state, '', cleanUrl);
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0 });
   }
 
-  function updateFloatingTopVisibility() {
-    showFloatingTop = window.scrollY > 0;
-  }
-
-  $effect(() => {
-    if (!browser) {
-      return;
+  function trackRegionalLink(href: string) {
+    if (href === chigasakiHubLink.href) {
+      trackEvent('regional_link_click', { placement: 'footer', destination_page: href });
     }
-
-    updateFloatingTopVisibility();
-
-    const handleScroll = () => {
-      updateFloatingTopVisibility();
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  });
+  }
 </script>
 
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <a class="footer__brand-link" href={resolve('/')} aria-label="TechGuide ホームへ移動">
-        <span>{companyName}</span>
-      </a>
-      <p class="footer__summary">IT導入、LP制作、AI活用まで、現場に合わせて伴走します。</p>
+      <a class="footer__brand-link" href={resolve('/')} aria-label="TechGuide ホームへ移動"
+        >{companyName}</a
+      >
     </div>
 
     <div class="footer__links">
-      <p class="footer__label">サイトマップ</p>
-      <nav aria-label="フッターリンク">
-        {#each items as item (item.href)}
-          <a
-            class:footer__link--active={isActive(item.href)}
-            href={resolve(...getResolveArgs(item.href))}
-          >
-            {item.label}
-          </a>
-        {/each}
-      </nav>
-      <p class="footer__label">茅ヶ崎での支援</p>
-      <nav aria-label="茅ヶ崎の支援ページ">
-        {#each [chigasakiHubLink, ...chigasakiServiceLinks] as item (item.href)}
-          <a
-            class:footer__link--active={isActive(item.href)}
-            href={resolve(...getResolveArgs(item.href))}
-            onclick={() =>
-              trackEvent('regional_link_click', {
-                placement: 'footer',
-                destination_page: item.href,
-              })}>{item.ctaLabel}</a
-          >
-        {/each}
-      </nav>
+      {#each footerGroups as group (group.title)}
+        <div class="footer__group">
+          <p class="footer__label">{group.title}</p>
+          <nav aria-label={'フッターの' + group.title}>
+            {#each group.links as item (item.href)}
+              <a
+                class:footer__link--active={isActive(item.href)}
+                href={resolve(...getResolveArgs(item.href))}
+                onclick={() => trackRegionalLink(item.href)}
+                >{item.href === '/#company' ? '会社概要' : item.label}</a
+              >
+            {/each}
+          </nav>
+        </div>
+      {/each}
     </div>
 
     <div class="footer__meta">
       <p>© {currentYear} {companyName}</p>
+      <button class="footer__top" type="button" onclick={scrollToTop}>ページ上部へ戻る</button>
     </div>
   </div>
 </footer>
 
-{#if showFloatingTop}
-  <button class="floating-top" type="button" aria-label="ページ最上部へ戻る" onclick={scrollToTop}>
-    TOPへ
-  </button>
-{/if}
-
 <style>
   .footer {
-    padding-block: 34px 36px;
-    background: linear-gradient(180deg, rgba(255, 248, 231, 0.92) 0%, rgba(255, 253, 248, 1) 100%);
-    border-top: 1px solid rgba(117, 92, 56, 0.12);
+    padding-block: clamp(26px, 4vw, 42px) 18px;
+    border-top: 1px solid var(--color-line);
+    background: var(--color-surface-soft);
+    color: var(--color-ink);
   }
 
   .footer__inner {
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr) auto;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
     align-items: start;
-    gap: 28px;
-    color: rgba(76, 62, 43, 0.88);
-    font-size: 0.95rem;
-  }
-
-  .footer__brand {
-    display: grid;
-    gap: 12px;
+    gap: 20px clamp(16px, 4vw, 48px);
   }
 
   .footer__brand-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
+    display: inline-block;
+    padding-block: 6px;
     font-family: var(--font-heading);
-    font-size: 1.18rem;
+    font-size: 1.12rem;
     font-weight: 800;
-  }
-
-  .footer__summary {
-    max-width: 28rem;
-    color: var(--color-ink-soft);
-  }
-
-  nav a,
-  .floating-top {
-    transition: color 0.2s ease;
   }
 
   .footer__links {
     display: grid;
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
   }
 
   .footer__label {
-    font-family: var(--font-heading);
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(135, 99, 45, 0.88);
+    margin-bottom: 3px;
+    color: var(--color-ink-soft);
+    font-size: 0.83rem;
+    font-weight: 750;
   }
 
   nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 18px;
-  }
-
-  nav a {
-    color: rgba(76, 62, 43, 0.88);
-    font-weight: 700;
-  }
-
-  .footer__link--active {
-    color: var(--color-primary-deep);
-    text-decoration: underline;
-    text-underline-offset: 6px;
-  }
-
-  .footer__meta {
     display: grid;
-    justify-items: end;
-    gap: 0;
-    text-align: right;
-    color: var(--color-ink-soft);
+    justify-items: start;
+  }
+
+  nav a,
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    font-size: 0.92rem;
+    font-weight: 650;
   }
 
   nav a:hover,
-  .floating-top:hover {
-    color: var(--color-primary-deep);
+  .footer__top:hover,
+  .footer__link--active {
+    text-decoration: underline;
+    text-underline-offset: 0.24em;
   }
 
-  .floating-top {
-    position: fixed;
-    right: max(18px, calc(18px + env(safe-area-inset-right)));
-    bottom: calc(18px + env(safe-area-inset-bottom));
-    z-index: 20;
-    display: inline-flex;
+  .footer__meta {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 0 18px;
-    border-radius: var(--radius-pill);
-    background: rgba(255, 252, 246, 0.94);
-    box-shadow: 0 12px 28px rgba(111, 83, 41, 0.18);
-    border: 1px solid rgba(117, 92, 56, 0.14);
-    color: rgba(76, 62, 43, 0.88);
-    font-family: var(--font-heading);
-    font-size: 0.88rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    backdrop-filter: blur(12px);
+    gap: 0 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-line);
+    color: var(--color-ink-soft);
+    font-size: 0.8rem;
   }
 
-  @media (max-width: 720px) {
+  .footer__top {
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  @media (max-width: 620px) {
     .footer__inner {
-      grid-template-columns: 1fr;
-      gap: 24px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
     }
 
-    nav {
-      justify-content: center;
-    }
-
-    .footer__brand,
-    .footer__links,
-    .footer__meta {
-      justify-items: center;
-      text-align: center;
-    }
-
-    .floating-top {
-      right: max(14px, calc(14px + env(safe-area-inset-right)));
-      bottom: calc(14px + env(safe-area-inset-bottom));
-      min-height: 42px;
-      padding-inline: 16px;
-      font-size: 0.82rem;
+    nav a,
+    .footer__top {
+      min-height: 44px;
     }
   }
 </style>

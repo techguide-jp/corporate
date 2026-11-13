@@ -152,55 +152,32 @@ export interface ContactPageContent {
   formDescription: string;
 }
 
-export interface ProfileLink {
-  label: string;
-  href: string;
-  image?: string;
-  imageAlt?: string;
-}
-
 export interface ProfileHeroContent {
-  eyebrow: string;
   name: string;
   role: string;
-  tagline: string;
-  specialties: string[];
   lead: string;
+  experience: string;
   image: string;
   imageAlt: string;
-  highlights: string[];
 }
 
 export interface ProfileValueItem {
-  id: string;
   title: string;
   description: string;
-  points: string[];
-  closing: string;
-  cta?: ProfileLink;
+  cta: { label: string; href: string };
 }
 
 export interface ProfileEventItem {
-  date: string;
   dateIso: string;
-  status: string;
-  isAccepting: boolean;
   title: string;
-  description: string;
-  href: string;
-  ctaLabel: string;
-}
-
-export interface ProfileEventsSection {
-  title: string;
-  subtitle: string;
-  items: ProfileEventItem[];
+  description?: string;
+  href?: string;
+  status?: '受付開始前' | '申込受付中' | '受付終了' | '満席';
 }
 
 export interface ProfileCareerItem {
   title: string;
-  description: string;
-  meta?: string;
+  description?: string;
 }
 
 export interface ProfileInfoGroup {
@@ -210,48 +187,25 @@ export interface ProfileInfoGroup {
 
 export interface ProfileBackgroundSection {
   title: string;
-  subtitle: string;
   careerItems: ProfileCareerItem[];
   personalGroups: ProfileInfoGroup[];
 }
 
 export interface ProfileContactItem {
-  platformLabel?: string;
+  platformLabel: string;
   platformImage?: string;
-  platformImageAlt?: string;
   title: string;
   description: string;
-  descriptionSegments?: Array<{
-    text: string;
-    strong?: boolean;
-  }>;
-  href?: string;
-  ctaLabel?: string;
-  buttonImage?: string;
-  buttonImageAlt?: string;
+  href: string;
 }
 
 export interface ProfilePageContent {
   hero: ProfileHeroContent;
-  overviewTitle: string;
-  overviewSubtitle: string;
-  overviewParagraphs: string[];
-  overviewFocusTitle: string;
-  overviewFocusItems: string[];
   background: ProfileBackgroundSection;
   valuesTitle: string;
-  valuesSubtitle: string;
   values: ProfileValueItem[];
-  events: ProfileEventsSection;
+  pastEvents: ProfileEventItem[];
   portfolioTitle: string;
-  portfolioSubtitle: string;
   portfolioItems: ShowcaseItem[];
-  stanceTitle: string;
-  stanceLead: string;
-  stanceItems: string[];
-  audienceTitle: string;
-  audienceItems: string[];
-  contactTitle: string;
-  contactLead: string;
   contactItems: ProfileContactItem[];
 }
