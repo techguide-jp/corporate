@@ -3,6 +3,7 @@ import { normalizeAttributionPage, type ContactAttribution } from '../analytics/
 export const RECRUIT_CATEGORY_ID = 'recruit';
 export const MACCLIPY_CATEGORY_ID = 'macclipy';
 export const SHUSEI_CATEGORY_ID = 'shusei';
+export const UBM_CATEGORY_ID = 'ubm';
 export const PORTFOLIO_URL_LABEL = 'ポートフォリオ・経歴書などあなたがわかるもの（URL）';
 
 export const CONTACT_CATEGORIES = [
@@ -16,6 +17,7 @@ export const CONTACT_CATEGORIES = [
   { id: 'media', label: '取材・登壇の相談' },
   { id: MACCLIPY_CATEGORY_ID, label: 'MacClipyについて' },
   { id: SHUSEI_CATEGORY_ID, label: '守成クラブについて' },
+  { id: UBM_CATEGORY_ID, label: 'UBMについて' },
   { id: 'sales', label: '営業・ご提案' },
   { id: 'other', label: 'その他・まだ整理できていない相談' },
 ] as const;

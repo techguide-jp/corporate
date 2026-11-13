@@ -6,7 +6,9 @@
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import ContactCta from '$lib/components/sections/ContactCta.svelte';
+  import ActionButton from '$lib/components/ui/ActionButton.svelte';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
+  import { getContactCategoryLabel, UBM_CATEGORY_ID } from '$lib/contact/form';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import {
     companyProfile,
@@ -112,6 +114,14 @@
   ].map((item) => serializeJsonLd(item));
 
   const heroTaglineLines = profilePageContent.hero.tagline.split('\n');
+
+  const ubmUrl = 'https://m.ubm.school/l/c/pu1ifRjY/XT9b8czm';
+  const ubmLinkLabel = 'UBMの内容・入会案内を見る';
+  const ubmContactSearch = new URLSearchParams({
+    category: UBM_CATEGORY_ID,
+    subject: getContactCategoryLabel(UBM_CATEGORY_ID),
+  });
+  const ubmContactHref = resolve(`/contact/?${ubmContactSearch}#contact-form`);
 
   function getInitialTodayTokyoIso() {
     if (!browser) {
@@ -575,6 +585,31 @@
               </article>
             {/each}
           </div>
+
+          <section id="ubm" class="profile-ubm" aria-labelledby="profile-ubm-heading">
+            <h4 id="profile-ubm-heading">UBMで、一緒に事業づくりを学びませんか？</h4>
+            <p>
+              僕は今、ビジネス行動管理大学（UBM）で、事業の育て方や、学んだことを日々の行動に移す方法を学んでいます。お互いの事業で試したことや、そこから得た気づきを話せる仲間が増えたらうれしいです。
+            </p>
+            <div>
+              <ActionButton
+                href={ubmUrl}
+                label={ubmLinkLabel}
+                analytics={{
+                  eventName: 'outbound_link_click',
+                  params: {
+                    section: 'profile_ubm',
+                    link_label: ubmLinkLabel,
+                    destination_host: new URL(ubmUrl).hostname,
+                  },
+                }}
+              />
+            </div>
+            <p>
+              僕が実際にどんなことを学んでいるか、一緒に学ぶとしたらどんな感じか。気になったら、気軽に聞いてください。オンラインで少し話してみたい方は、その旨も添えてもらえれば日程を調整します。
+            </p>
+            <a href={ubmContactHref}>UBMについて問い合わせる</a>
+          </section>
         </section>
       </div>
     </div>
@@ -902,6 +937,35 @@
   .profile-info-group:last-child {
     padding-bottom: 0;
     border-bottom: 0;
+  }
+
+  .profile-ubm {
+    display: grid;
+    gap: 14px;
+    padding: clamp(16px, 2.5vw, 24px);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-soft);
+  }
+
+  .profile-ubm h4 {
+    font-size: 1.15rem;
+    line-height: 1.4;
+  }
+
+  .profile-ubm p {
+    color: var(--color-ink-soft);
+  }
+
+  .profile-ubm div {
+    margin-bottom: 8px;
+  }
+
+  .profile-ubm > a {
+    justify-self: start;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
   }
 
   .profile-values {

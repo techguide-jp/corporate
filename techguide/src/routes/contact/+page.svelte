@@ -23,6 +23,7 @@
     PORTFOLIO_URL_LABEL,
     RECRUIT_CATEGORY_ID,
     SHUSEI_CATEGORY_ID,
+    UBM_CATEGORY_ID,
     type ContactFieldErrors,
     type ContactCategoryId,
     type ContactFormValues,
@@ -74,6 +75,7 @@
   const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
   const isMacClipy = $derived(selectedCategory === MACCLIPY_CATEGORY_ID);
   const isShusei = $derived(selectedCategory === SHUSEI_CATEGORY_ID);
+  const isUbm = $derived(selectedCategory === UBM_CATEGORY_ID);
   const hasTurnstile = $derived(data.turnstileSiteKey.length > 0);
   const isBusy = $derived(isAuthenticating || isSubmitting);
   const showSuccessPanel = $derived(!isSubmitting && form?.ok === true);
@@ -411,6 +413,13 @@
                 <li>品川グループ公式サイトについて問い合わせたい</li>
               </ul>
             </section>
+          {:else if isUbm}
+            <section class="contact-page__panel">
+              <h2>ビジネス行動管理大学（UBM）について</h2>
+              <p>
+                UBMで学んでいるTechGuide代表の高橋雄太が、参加者としての経験や活動の雰囲気についてお答えします。
+              </p>
+            </section>
           {:else}
             <section class="contact-page__panel">
               <h2>このようなご相談に対応しています</h2>
@@ -603,7 +612,9 @@
                   ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
                   : isShusei
                     ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
-                    : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
+                    : isUbm
+                      ? 'UBMについて聞いてみたいことをご記入ください。オンラインで話したい場合は、その旨もお知らせください。'
+                      : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
               </em>
               {#if fieldErrors.message}
                 <small>{fieldErrors.message}</small>
