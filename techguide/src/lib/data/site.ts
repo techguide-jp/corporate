@@ -295,7 +295,7 @@ export const productItems: ShowcaseItem[] = [
   {
     title: 'Koi-Tre（コイトレ）',
     description: '初対面やデートの会話をAI相手に練習し、返し方のヒントを得られます。',
-    image: '/images/showcase/koi-tre.webp',
+    image: '/images/showcase/koi-tre-hero.webp',
     href: 'https://app.koi-tre.com/',
     ctaLabel: 'コイトレを見る',
   },
