@@ -288,7 +288,7 @@ export const productItems: ShowcaseItem[] = [
   {
     title: 'AudioScript',
     description: '音声や動画を文字起こしし、聞き返したい発言をすぐに探せます。',
-    image: '/images/showcase/audioscript.webp',
+    image: '/images/showcase/audioscript-hero.webp',
     href: 'https://audioscript.work/',
     ctaLabel: '文字起こしツールを見る',
   },
@@ -296,8 +296,8 @@ export const productItems: ShowcaseItem[] = [
     title: 'Koi-Tre（コイトレ）',
     description: '初対面やデートの会話をAI相手に練習し、返し方のヒントを得られます。',
     image: '/images/showcase/koi-tre.webp',
-    href: 'https://app.koi-tre.com/try',
-    ctaLabel: '登録なしで30秒試す',
+    href: 'https://app.koi-tre.com/',
+    ctaLabel: 'コイトレを見る',
   },
 ];
 
