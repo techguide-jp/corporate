@@ -534,6 +534,7 @@ export const profilePageContent: ProfilePageContent = {
     },
     {
       platformLabel: 'YouTube',
+      platformImage: '/images/social/youtube.svg',
       links: [
         {
           label: '企業向け',
