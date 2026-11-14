@@ -6,7 +6,6 @@
   import Footer from '$lib/components/layout/Footer.svelte';
   import Header from '$lib/components/layout/Header.svelte';
   import ContactCta from '$lib/components/sections/ContactCta.svelte';
-  import RegionalSupportSection from '$lib/components/local-seo/RegionalSupportSection.svelte';
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactInfo, navItems, pageSeo, serviceDetails } from '$lib/data/site';
@@ -206,8 +205,6 @@
       </div>
     </div>
   </section>
-
-  <RegionalSupportSection placement="services" />
 
   <ContactCta contact={contactInfo} />
 </main>
