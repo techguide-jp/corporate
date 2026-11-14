@@ -185,6 +185,16 @@
                 </div>
               </div>
             {/if}
+            {#if detail.videoLink}
+              {@const { href, label } = detail.videoLink}
+              <a
+                class="service-detail__video-link"
+                {href}
+                target="_blank"
+                rel="external noreferrer"
+                onclick={() => handleOutboundClick(detail.id, label, href)}>{label}</a
+              >
+            {/if}
           </article>
         {/each}
       </div>
@@ -419,12 +429,17 @@
     color: var(--color-ink-soft);
   }
 
-  .service-detail__related-card span {
+  .service-detail__related-card span,
+  .service-detail__video-link {
     width: fit-content;
     color: rgba(135, 99, 45, 0.95);
     font-weight: 800;
     text-decoration: underline;
     text-underline-offset: 6px;
+  }
+
+  .service-detail__video-link {
+    justify-self: start;
   }
 
   @media (max-width: 900px) {

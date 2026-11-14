@@ -30,6 +30,8 @@ export const siteMetadata: SiteMetadata = {
 };
 
 export const instagramProfileUrl = 'https://www.instagram.com/yuchan_314/';
+const businessYouTubeUrl = 'https://www.youtube.com/@techguide_jp';
+const engineerYouTubeUrl = 'https://www.youtube.com/@mote-engi';
 
 export const pageSeo: Record<
   | 'home'
@@ -536,12 +538,12 @@ export const profilePageContent: ProfilePageContent = {
         {
           label: '企業向け',
           title: 'ゆーちゃんと考える運営の仕組み',
-          href: 'https://www.youtube.com/@techguide_jp',
+          href: businessYouTubeUrl,
         },
         {
           label: 'エンジニア向け',
           title: 'モテンジ!',
-          href: 'https://www.youtube.com/@mote-engi',
+          href: engineerYouTubeUrl,
         },
       ],
     },
@@ -579,6 +581,7 @@ export const serviceDetails: ServiceDetail[] = [
       description:
         'うまく説明できなくても大丈夫です。状況を伺いながら、今の体制でできることを一緒に探します。',
     },
+    videoLink: { label: '業務の仕組み化を動画で見る', href: businessYouTubeUrl },
   },
   {
     id: 'development',
@@ -661,5 +664,6 @@ export const serviceDetails: ServiceDetail[] = [
         ctaLabel: 'ブログを見る',
       },
     ],
+    videoLink: { label: '受託案件の獲得を動画で学ぶ（モテンジ!）', href: engineerYouTubeUrl },
   },
 ];

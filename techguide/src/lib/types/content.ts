@@ -117,6 +117,7 @@ export interface ServiceDetail {
   process: string[];
   visual: ServiceVisual;
   relatedItems?: ShowcaseItem[];
+  videoLink?: Pick<ActionLink, 'label' | 'href'>;
 }
 
 export interface SiteMetadata {
