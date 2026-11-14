@@ -192,8 +192,14 @@
                 {href}
                 target="_blank"
                 rel="external noreferrer"
-                onclick={() => handleOutboundClick(detail.id, label, href)}>{label}</a
+                onclick={() => handleOutboundClick(detail.id, label, href)}
               >
+                <span class="service-detail__play-icon" aria-hidden="true"></span>
+                <span class="service-detail__video-copy">
+                  <span class="service-detail__video-platform">YouTube</span>
+                  <span class="service-detail__video-title">{label}</span>
+                </span>
+              </a>
             {/if}
           </article>
         {/each}
@@ -429,8 +435,7 @@
     color: var(--color-ink-soft);
   }
 
-  .service-detail__related-card span,
-  .service-detail__video-link {
+  .service-detail__related-card span {
     width: fit-content;
     color: rgba(135, 99, 45, 0.95);
     font-weight: 800;
@@ -440,6 +445,48 @@
 
   .service-detail__video-link {
     justify-self: start;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    background: var(--color-surface);
+  }
+
+  .service-detail__play-icon {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 20px;
+    border-radius: 5px;
+    background: #c90000;
+  }
+
+  .service-detail__play-icon::before {
+    content: '';
+    border-block: 4px solid transparent;
+    border-left: 7px solid white;
+  }
+
+  .service-detail__video-copy {
+    display: grid;
+    gap: 2px;
+  }
+
+  .service-detail__video-platform {
+    color: var(--color-ink-soft);
+    font-size: 0.78rem;
+    font-weight: 750;
+    line-height: 1.3;
+  }
+
+  .service-detail__video-title {
+    color: #755124;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
   }
 
   @media (max-width: 900px) {
