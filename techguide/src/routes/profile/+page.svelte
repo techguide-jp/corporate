@@ -320,23 +320,46 @@
         <div class="section-group">
           <h3>SNS・LINE</h3>
           <ul class="social-list">
-            {#each contactItems as item (item.href)}
+            {#each contactItems as item (item.platformLabel)}
+              {#snippet platformName()}
+                <span class="social-name">
+                  {#if item.platformImage}
+                    <img src={asset(item.platformImage)} alt="" width="16" height="16" />
+                  {/if}
+                  {item.platformLabel}
+                </span>
+              {/snippet}
               <li>
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="external noreferrer"
-                  onclick={() => trackOutbound('profile_contact', item.title, item.href)}
-                >
-                  <span class="social-name">
-                    {#if item.platformImage}
-                      <img src={asset(item.platformImage)} alt="" width="16" height="16" />
-                    {/if}
-                    {item.platformLabel}
-                  </span>
-                  <span class="social-title">{item.title}</span>
-                  <span class="muted">{item.description}</span>
-                </a>
+                {#if 'links' in item}
+                  <div class="social-row">
+                    {@render platformName()}
+                    <div class="social-links">
+                      {#each item.links as link (link.href)}
+                        <a
+                          class="text-link"
+                          href={link.href}
+                          target="_blank"
+                          rel="external noreferrer"
+                          aria-label={`${link.label}の${item.platformLabel}「${link.title}」`}
+                          onclick={() => trackOutbound('profile_contact', link.title, link.href)}
+                          >{link.label}</a
+                        >
+                      {/each}
+                    </div>
+                  </div>
+                {:else}
+                  <a
+                    class="social-row"
+                    href={item.href}
+                    target="_blank"
+                    rel="external noreferrer"
+                    onclick={() => trackOutbound('profile_contact', item.title, item.href)}
+                  >
+                    {@render platformName()}
+                    <span class="social-title">{item.title}</span>
+                    <span class="muted">{item.description}</span>
+                  </a>
+                {/if}
               </li>
             {/each}
           </ul>
@@ -702,7 +725,7 @@
     font-weight: 750;
   }
 
-  .social-list a {
+  .social-row {
     display: grid;
     grid-template-columns: max-content minmax(0, 1fr);
     gap: 1px 12px;
@@ -710,7 +733,7 @@
     border-bottom: 1px solid var(--color-line);
   }
 
-  .social-list a:hover .social-title {
+  a.social-row:hover .social-title {
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
@@ -723,6 +746,18 @@
     min-height: 1.65rem;
     font-size: 0.81rem;
     font-weight: 750;
+  }
+
+  .social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }
+
+  .social-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.65rem;
   }
 
   .social-list .muted {

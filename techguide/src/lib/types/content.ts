@@ -191,13 +191,21 @@ export interface ProfileBackgroundSection {
   personalGroups: ProfileInfoGroup[];
 }
 
-export interface ProfileContactItem {
+interface ProfileContactPlatform {
   platformLabel: string;
   platformImage?: string;
+}
+
+interface ProfileContactLink {
   title: string;
-  description: string;
   href: string;
 }
+
+export type ProfileContactItem = ProfileContactPlatform &
+  (
+    | (ProfileContactLink & { description: string })
+    | { links: (ProfileContactLink & { label: string })[] }
+  );
 
 export interface ProfilePageContent {
   hero: ProfileHeroContent;

@@ -531,16 +531,19 @@ export const profilePageContent: ProfilePageContent = {
       href: instagramProfileUrl,
     },
     {
-      platformLabel: 'YouTube（企業向け）',
-      title: 'ゆーちゃんと考える運営の仕組み',
-      description: '事業やイベントの運営を仕組み化するヒントを動画で紹介しています。',
-      href: 'https://www.youtube.com/@techguide_jp',
-    },
-    {
-      platformLabel: 'YouTube（エンジニア向け）',
-      title: 'モテンジ!',
-      description: 'エンジニアが受託案件を獲得するためのヒントを動画で紹介しています。',
-      href: 'https://www.youtube.com/@mote-engi',
+      platformLabel: 'YouTube',
+      links: [
+        {
+          label: '企業向け',
+          title: 'ゆーちゃんと考える運営の仕組み',
+          href: 'https://www.youtube.com/@techguide_jp',
+        },
+        {
+          label: 'エンジニア向け',
+          title: 'モテンジ!',
+          href: 'https://www.youtube.com/@mote-engi',
+        },
+      ],
     },
     {
       title: '起業家向けサポート用LINE',
