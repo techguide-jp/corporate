@@ -8,6 +8,54 @@ const shuseiContactSearch = new URLSearchParams({
 
 export const newsItems: readonly NewsItem[] = [
   {
+    slug: 'audioscript-release',
+    title: '文字起こしツール「AudioScript」をリリースしました',
+    description:
+      '「あの話、どこだったっけ？」と思ったときに。音声や動画を文字起こしし、聞きたい発言を探せるツールです。',
+    category: 'product',
+    status: 'published',
+    publishedAt: '2026-11-16',
+    lead: '会議や取材の録音を聞き返していると、探していたひと言がなかなか見つからないことがあります。「あの話を、もう一度聞きたい」と思ったときにすぐ戻れるように、AudioScriptを作りました。',
+    image: {
+      src: '/images/showcase/audioscript-hero.webp',
+      alt: 'AudioScriptのサービス画面',
+    },
+    sections: [
+      {
+        title: '聞きたいひと言に、すぐ戻れる',
+        paragraphs: [
+          '音声や動画のファイルをアップロードすると、発言が文字になります。覚えている言葉で検索し、見つけた発言のところから音声を聞き返せます。',
+          '議事録をまとめるときや、インタビューで心に残ったひと言を確かめたいときに、ぜひ使ってみてください。',
+        ],
+      },
+    ],
+    links: [{ label: 'AudioScriptを見る', href: 'https://audioscript.work/', tone: 'warm' }],
+  },
+  {
+    slug: 'koi-tre-release',
+    title: 'AI会話練習サービス「Koi-Tre（コイトレ）」をリリースしました',
+    description:
+      '「次はこう話してみよう」と思えるように。初対面やデートの会話をAI相手に練習し、返し方を振り返れるサービスです。',
+    category: 'product',
+    status: 'published',
+    publishedAt: '2026-11-16',
+    lead: '初対面で緊張して言葉が出てこなかったり、帰り道で「もっと聞いてみればよかった」と思ったり。そんな場面を思い出したとき、自分のペースで会話を練習できる場所を作りました。',
+    image: {
+      src: '/images/showcase/koi-tre-hero.webp',
+      alt: 'Koi-Tre（コイトレ）のサービス画面',
+    },
+    sections: [
+      {
+        title: '次の会話で試したいひと言',
+        paragraphs: [
+          '初対面やデートなど、練習したい場面を選んでAIとやり取りします。最初の声のかけ方や、相手の話を広げる質問など、気になることから試してみてください。',
+          '練習後は、返答のよかった点や別の言い方の例を確認できます。「次はこのひと言を添えてみよう」と思えるきっかけになれたらうれしいです。',
+        ],
+      },
+    ],
+    links: [{ label: 'コイトレを見る', href: 'https://app.koi-tre.com/', tone: 'warm' }],
+  },
+  {
     slug: 'shusei-shinagawa-website',
     title: '守成クラブ 品川グループ公式サイトを制作しました',
     description:
