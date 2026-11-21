@@ -136,6 +136,7 @@ legacy の [../events/index.html](../events/index.html) は rollback や参照�
 - `PUBLIC_*` は SvelteKit の build 時に公開bundleへ埋め込むため、Amplifyで値を変えたら再デプロイが必要
 - `RESEND_FROM_NAME`、`RESEND_FROM_EMAIL`、`CONTACT_TO_EMAIL` はAmplifyの「環境設定」に置き、サーバーbundleへbuild時に埋め込んでSSR actionから参照する。変更時は再デプロイが必要
 - `MACCLIPY_GA_API_SECRET`、`RESEND_API_KEY`、`TURNSTILE_SECRET_KEY` は公開bundleへ入れず、AmplifyのシークレットまたはSSR runtime環境変数からサーバー側だけで読む
+- `/partner-intake/` は面談事前フォーム。Apps Scriptへの連携には、サーバー専用の `PARTNER_INTAKE_BRIDGE_SECRET` と、SSR Compute roleによる同名のSSMパラメータの読み取り権限が必要。確認リンクのトークンはURLのフラグメントで受け取り、本人確認操作の際に送る
 - Amplifyの「シークレット」に置く場合は、SSR Compute role にSSM Parameter Storeの `ssm:GetParameter` 権限を付ける。現在の共有シークレットは `/amplify/shared/d1ei4wu36fr0u9/MACCLIPY_GA_API_SECRET`、`/amplify/shared/d1ei4wu36fr0u9/RESEND_API_KEY`、`/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY` を読む想定
 - `pnpm dev` では `CONTACT_DEV_MOCK_SUBMISSION` が未設定または `true` の場合、送信完了UIを確認しやすいようにTurnstile/Resendを呼ばず成功扱いにする。ローカルで実連携を検証する場合は `CONTACT_DEV_MOCK_SUBMISSION=false` にする
 - AWS は SvelteKit 用 adapter を自社保守していないため、Amplify のSSR対応はコミュニティ adapter の `amplify-adapter` に依存しています
