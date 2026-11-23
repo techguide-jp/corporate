@@ -37,6 +37,7 @@ export const CONTACT_CATEGORY_GROUPS = [
     id: 'communities',
     label: 'コミュニティ・交流会',
     categories: [
+      { id: 'engineer-meetup', label: 'エンジニア交流会について' },
       { id: SHUSEI_CATEGORY_ID, label: '守成クラブについて' },
       { id: UBM_CATEGORY_ID, label: 'UBMについて' },
     ],
