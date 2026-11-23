@@ -1,0 +1,1411 @@
+<script lang="ts">
+  import { browser } from '$app/environment';
+  import { enhance } from '$app/forms';
+  import { beforeNavigate } from '$app/navigation';
+  import { trackEvent } from '$lib/analytics';
+  import { getBrowserAttribution } from '$lib/analytics/visit';
+  import { createLeadEventTracker } from '$lib/contact/lead';
+  import {
+    normalizeTurnstileServerReason,
+    turnstileClientErrorParams,
+    type TurnstileClientErrorSource,
+    type TurnstileClientReason,
+  } from '$lib/contact/turnstile';
+  import {
+    createTurnstileChallenge,
+    type TurnstileChallengeResult,
+    type TurnstileClient,
+  } from '$lib/contact/turnstileChallenge';
+  import {
+    CONTACT_CATEGORIES,
+    getContactCategoryLabel,
+    MACCLIPY_CATEGORY_ID,
+    PORTFOLIO_URL_LABEL,
+    RECRUIT_CATEGORY_ID,
+    SHUSEI_CATEGORY_ID,
+    UBM_CATEGORY_ID,
+    type ContactFieldErrors,
+    type ContactCategoryId,
+    type ContactFormValues,
+  } from '$lib/contact/form';
+  import SeoHead from '$lib/components/seo/SeoHead.svelte';
+  import Footer from '$lib/components/layout/Footer.svelte';
+  import Header from '$lib/components/layout/Header.svelte';
+  import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
+  import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
+  import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
+  import { tick } from 'svelte';
+  import type { SubmitFunction } from '@sveltejs/kit';
+  import { findMotenjiTopic, MOTENJI_CONTACT_PATH, MOTENJI_TOPICS } from '$lib/contact/motenji';
+  import type { loadContactPage } from '$lib/server/contact/page';
+  import type { submitContactForm } from '$lib/server/contact/submit';
+
+  interface Props {
+    data: Awaited<ReturnType<typeof loadContactPage>>;
+    form?: Awaited<ReturnType<typeof submitContactForm>>['data'] | null;
+    motenji?: boolean;
+  }
+
+  const TURNSTILE_SCRIPT_ID = 'cloudflare-turnstile-script';
+  const MIN_SUBMITTING_MS = 1000;
+  const UNKNOWN_SUBMISSION_MESSAGE =
+    '送信結果を確認できませんでした。入力内容は保持しています。受付メールを確認し、届いていない場合は時間をおいて再度お試しください。';
+  const leadEvent = createLeadEventTracker();
+  let attribution = $state({ landingPage: '', sourcePage: '' });
+
+  let { data, form, motenji = false }: Props = $props();
+  const initialSelectedCategory = () => form?.values?.category ?? data.selectedCategory;
+  let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
+  let isAuthenticating = $state(false);
+  let isSubmitting = $state(false);
+  let submissionError = $state('');
+  let formElement = $state<HTMLFormElement>();
+  let formStarted = false;
+  let formViewed = false;
+  let submissionStatusPanel = $state<HTMLElement>();
+  let turnstileContainer = $state<HTMLDivElement>();
+  let turnstileToken = $state('');
+  let turnstileClientError = $state('');
+  let turnstileClientErrorKind = $state('turnstile_client_pending');
+  let turnstileServerErrorDismissed = $state(false);
+  let turnstileLoadPromise: Promise<TurnstileClient> | undefined;
+  let activeSubmission: AbortController | undefined;
+  let submissionGeneration = 0;
+  let disposed = false;
+  const turnstileChallenge = createTurnstileChallenge(loadTurnstileScript);
+
+  const initialFormValues = (): ContactFormValues => ({
+    ...data.initialValues,
+    ...form?.values,
+  });
+  let values = $state<ContactFormValues>(initialFormValues());
+  const fieldErrors = $derived<ContactFieldErrors>(form?.ok === false ? form.fieldErrors : {});
+  const motenjiTopic = $derived(findMotenjiTopic(values.motenjiTopic));
+  const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
+  const isMacClipy = $derived(selectedCategory === MACCLIPY_CATEGORY_ID);
+  const isShusei = $derived(selectedCategory === SHUSEI_CATEGORY_ID);
+  const isUbm = $derived(selectedCategory === UBM_CATEGORY_ID);
+  const hasTurnstile = $derived(data.turnstileSiteKey.length > 0);
+  const isBusy = $derived(isAuthenticating || isSubmitting);
+  const showSuccessPanel = $derived(!isSubmitting && form?.ok === true);
+  const hideContactForm = $derived(isSubmitting || showSuccessPanel);
+  const title = $derived(motenji ? 'モテンジ！受託相談 | TechGuide' : pageSeo.contact.title);
+  const description = $derived(
+    motenji
+      ? 'エンジニアの受託相談。始め方、案件探し、商談、見積もりなど、相談したいことを選んで送れます。'
+      : pageSeo.contact.description,
+  );
+  const path = $derived(motenji ? MOTENJI_CONTACT_PATH : pageSeo.contact.path);
+  const contactStructuredData = $derived(
+    [
+      buildWebPageJsonLd({
+        name: title,
+        description,
+        path,
+        type: 'ContactPage',
+      }),
+      buildBreadcrumbJsonLd([
+        { name: 'ホーム', path: '/' },
+        { name: motenji ? 'モテンジ！受託相談' : 'お問い合わせ', path },
+      ]),
+    ].map((item) => serializeJsonLd(item)),
+  );
+
+  $effect(() => {
+    if (!browser) return;
+    const visit = getBrowserAttribution();
+    attribution = visit;
+    trackEvent('contact_page_view', {
+      source_page: data.initialValues.sourcePage || visit.sourcePage,
+    });
+  });
+
+  $effect(() => {
+    if (!browser || !form?.ok) return;
+    const params = leadEvent(form.receipt);
+    if (params) trackEvent('generate_lead', params);
+  });
+
+  function formEvent(
+    eventName: 'form_view' | 'form_start' | 'form_submit_attempt' | 'form_submit_error',
+    errorKind?: string,
+  ) {
+    trackEvent(eventName, {
+      form_name: 'contact',
+      inquiry_type: selectedCategory || 'unknown',
+      error_kind: errorKind,
+    });
+  }
+
+  function startForm() {
+    if (formStarted) return;
+    formStarted = true;
+    formEvent('form_start');
+  }
+
+  $effect(() => {
+    if (!formElement) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!formViewed && entries.some((entry) => entry.isIntersecting)) {
+        formViewed = true;
+        formEvent('form_view');
+        observer.disconnect();
+      }
+    });
+    observer.observe(formElement);
+    let invalidInProgress = false;
+    const invalid = () => {
+      if (invalidInProgress) return;
+      invalidInProgress = true;
+      formEvent('form_submit_attempt');
+      formEvent('form_submit_error', 'validation');
+      queueMicrotask(() => {
+        invalidInProgress = false;
+      });
+    };
+    formElement.addEventListener('invalid', invalid, true);
+    const element = formElement;
+    return () => {
+      observer.disconnect();
+      element.removeEventListener('invalid', invalid, true);
+    };
+  });
+
+  $effect(() => {
+    return () => {
+      disposed = true;
+      turnstileChallenge.cancel();
+      activeSubmission?.abort();
+    };
+  });
+
+  beforeNavigate(() => {
+    // 遷移先の読み込み中はまだ画面が残るため、破棄時より先に待機を無効化する。
+    submissionGeneration += 1;
+    turnstileChallenge.cancel();
+    activeSubmission?.abort();
+    activeSubmission = undefined;
+    turnstileToken = '';
+    isAuthenticating = false;
+    if (isSubmitting) {
+      isSubmitting = false;
+      submissionError = UNKNOWN_SUBMISSION_MESSAGE;
+    }
+  });
+
+  $effect(() => {
+    // 認証中の再描画で入力を初期値に戻さず、サーバー応答時だけ同期する。
+    values = { ...data.initialValues, ...form?.values };
+    if (form?.values?.category !== undefined) {
+      selectedCategory = form.values.category;
+    }
+  });
+
+  function updateCategory(event: Event) {
+    selectedCategory = (event.currentTarget as HTMLSelectElement).value as ContactCategoryId | '';
+  }
+
+  function updateMotenjiTopic(topic: string) {
+    values.motenjiTopic = topic;
+    values.motenjiDetail = '';
+  }
+
+  const handleSubmit: SubmitFunction = async ({ cancel, formData, controller }) => {
+    if (isBusy || disposed) {
+      cancel();
+      return;
+    }
+    formEvent('form_submit_attempt');
+    const generation = ++submissionGeneration;
+    submissionError = '';
+    activeSubmission = controller;
+
+    if (hasTurnstile) {
+      isAuthenticating = true;
+      turnstileToken = '';
+      turnstileClientError = '';
+      turnstileServerErrorDismissed = true;
+      await tick();
+      if (disposed || generation !== submissionGeneration) {
+        cancel();
+        return;
+      }
+      turnstileContainer?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const result: TurnstileChallengeResult = turnstileContainer
+        ? await turnstileChallenge.run(turnstileContainer, data.turnstileSiteKey)
+        : ({ status: 'failure', reason: 'client_load', source: 'initialization' } as const);
+      if (disposed || generation !== submissionGeneration || result.status === 'cancelled') {
+        cancel();
+        return;
+      }
+      isAuthenticating = false;
+      if (result.status === 'failure') {
+        cancel();
+        activeSubmission = undefined;
+        setTurnstileError(result.reason, result.source, result.code);
+        formEvent('form_submit_error', turnstileClientErrorKind);
+        return;
+      }
+      turnstileToken = result.token;
+      // enhanceは認証前にFormDataを作るため、取得直後のトークンを明示的に渡す。
+      formData.set('cf-turnstile-response', result.token);
+    }
+
+    const startedAt = Date.now();
+    isSubmitting = true;
+    scrollSubmissionStatusIntoView();
+
+    return async ({ result, update }) => {
+      if (disposed || generation !== submissionGeneration) return;
+      let shouldScrollResult = false;
+
+      try {
+        if (result.type === 'error') {
+          // 送信結果が不明な通信エラーは自動再送せず、入力を保持して利用者に返す。
+          submissionError = UNKNOWN_SUBMISSION_MESSAGE;
+          formEvent('form_submit_error', 'request');
+        } else {
+          await update();
+        }
+        if (disposed || generation !== submissionGeneration) return;
+        if (result.type === 'failure') {
+          const kind = result.data?.analyticsError;
+          turnstileServerErrorDismissed = false;
+          formEvent(
+            'form_submit_error',
+            kind === 'turnstile'
+              ? `turnstile_${normalizeTurnstileServerReason(result.data?.analyticsErrorReason)}`
+              : kind === 'validation'
+                ? kind
+                : 'server',
+          );
+        }
+        shouldScrollResult = result.type === 'success';
+
+        const remainingDelay = MIN_SUBMITTING_MS - (Date.now() - startedAt);
+        if (remainingDelay > 0) {
+          await wait(remainingDelay);
+        }
+      } finally {
+        if (!disposed && generation === submissionGeneration) {
+          turnstileToken = '';
+          activeSubmission = undefined;
+          isSubmitting = false;
+          if (shouldScrollResult) {
+            scrollSubmissionStatusIntoView();
+          }
+        }
+      }
+    };
+  };
+
+  function wait(ms: number) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+  }
+
+  function scrollSubmissionStatusIntoView() {
+    if (!browser) {
+      return;
+    }
+
+    void tick().then(() => {
+      submissionStatusPanel?.focus({ preventScroll: true });
+      submissionStatusPanel?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
+  function setTurnstileError(
+    reason: TurnstileClientReason,
+    source: TurnstileClientErrorSource,
+    code?: unknown,
+  ) {
+    const params = turnstileClientErrorParams(reason, source, code);
+    turnstileToken = '';
+    turnstileClientErrorKind = params.error_kind;
+    turnstileClientError =
+      reason === 'client_load'
+        ? '迷惑投稿対策を読み込めませんでした。入力内容は保持しています。再度お試しください。'
+        : reason === 'client_timeout' || reason === 'client_expired'
+          ? '迷惑投稿対策の確認が時間切れになりました。入力内容は保持しています。再度お試しください。'
+          : '迷惑投稿対策の確認に失敗しました。入力内容は保持しています。再度お試しください。';
+    // 1回の認証結果につき1件だけ記録し、通常のトークン期限切れは診断に含めない。
+    if (source !== 'expired_callback') {
+      trackEvent('turnstile_error', {
+        form_name: 'contact',
+        inquiry_type: selectedCategory || 'unknown',
+        ...params,
+      });
+    }
+  }
+
+  function loadTurnstileScript() {
+    if (window.turnstile) {
+      return Promise.resolve(window.turnstile);
+    }
+
+    if (turnstileLoadPromise) {
+      return turnstileLoadPromise;
+    }
+
+    turnstileLoadPromise = new Promise<TurnstileClient>((resolve, reject) => {
+      const existingScript = document.getElementById(
+        TURNSTILE_SCRIPT_ID,
+      ) as HTMLScriptElement | null;
+
+      const script = existingScript ?? document.createElement('script');
+      script.id = TURNSTILE_SCRIPT_ID;
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      const cleanup = () => {
+        window.clearTimeout(timeout);
+        script.removeEventListener('load', loaded);
+        script.removeEventListener('error', failed);
+      };
+      const loaded = () => {
+        cleanup();
+        if (window.turnstile) resolve(window.turnstile);
+        else failed();
+      };
+      const failed = () => {
+        cleanup();
+        script.remove();
+        reject(new Error('Turnstile load failed.'));
+      };
+      const timeout = window.setTimeout(failed, 15_000);
+      script.addEventListener('load', loaded, { once: true });
+      script.addEventListener('error', failed, { once: true });
+      if (!existingScript) document.head.append(script);
+    }).catch((error: unknown) => {
+      turnstileLoadPromise = undefined;
+      throw error;
+    });
+
+    return turnstileLoadPromise;
+  }
+</script>
+
+<SeoHead {title} {description} {path} jsonLd={contactStructuredData} />
+
+<Header items={navItems} />
+
+<main>
+  <section class:motenji class="contact-page section--tight">
+    <div class="container contact-page__inner">
+      {#if motenji}
+        <div class="motenji__intro">
+          <p>モテンジ！</p>
+          <h1>エンジニアの受託相談</h1>
+          <span
+            >今困っていることに近い項目を選んでください。相談がまとまっていなくても大丈夫です。</span
+          >
+        </div>
+      {:else}
+        <SectionHeading
+          title={contactPageContent.title}
+          subtitle={contactPageContent.subtitle}
+          level={1}
+        />
+
+        <p class="contact-page__lead">{contactPageContent.lead}</p>
+        {#if !hideContactForm}
+          <a class="contact-page__form-link" href="#contact-form">相談内容を入力する</a>
+        {/if}
+      {/if}
+
+      <div class:contact-page__content--feedback={hideContactForm} class="contact-page__content">
+        {#if !motenji}
+          <div class="contact-page__details" hidden={hideContactForm}>
+            {#if isMacClipy}
+              <section class="contact-page__panel">
+                <h2>MacClipyについてお問い合わせいただけます</h2>
+                <p>
+                  不具合、使い方、機能へのご要望を受け付けています。不具合の場合は、分かる範囲で次の情報もお知らせください。
+                </p>
+                <ul class="contact-page__support-list">
+                  <li>お使いのmacOSとMacClipyのバージョン</li>
+                  <li>問題が発生するまでの操作手順</li>
+                  <li>表示されたメッセージや発生頻度</li>
+                </ul>
+              </section>
+            {:else if isShusei}
+              <section class="contact-page__panel">
+                <h2>守成クラブについてお問い合わせいただけます</h2>
+                <p>
+                  守成クラブやヒルノ品川会場、品川グループ公式サイトについてのご質問・ご相談を受け付けています。内容に応じて確認のうえご案内します。
+                </p>
+                <ul class="contact-page__support-list">
+                  <li>守成クラブや例会参加について聞いてみたい</li>
+                  <li>ヒルノ品川会場の活動について知りたい</li>
+                  <li>品川グループ公式サイトについて問い合わせたい</li>
+                </ul>
+              </section>
+            {:else if isUbm}
+              <section class="contact-page__panel">
+                <h2>ビジネス行動管理大学（UBM）について</h2>
+                <p>
+                  UBMで学んでいるTechGuide代表の高橋雄太が、参加者としての経験や活動の雰囲気についてお答えします。
+                </p>
+              </section>
+            {:else}
+              <section class="contact-page__panel">
+                <h2>このようなご相談に対応しています</h2>
+                <ul class="contact-page__support-list">
+                  {#each contactPageContent.inquiryExamples as item (item)}
+                    <li>{item}</li>
+                  {/each}
+                </ul>
+              </section>
+
+              <section class="contact-page__panel">
+                <h2>{contactPageContent.processTitle}</h2>
+                <ol class="contact-page__process-list">
+                  {#each contactPageContent.processSteps as step (step)}
+                    <li>{step}</li>
+                  {/each}
+                </ol>
+              </section>
+            {/if}
+
+            <section class="contact-page__panel contact-page__panel--compact">
+              <h2>返信について</h2>
+              <p>{contactPageContent.responseNote}</p>
+            </section>
+          </div>
+        {/if}
+
+        {#if isSubmitting || showSuccessPanel}
+          <section
+            class:contact-form__feedback--success={showSuccessPanel}
+            class:contact-form__feedback--submitting={isSubmitting}
+            class="contact-form__feedback"
+            bind:this={submissionStatusPanel}
+            tabindex="-1"
+            role="status"
+            aria-live="polite"
+          >
+            <span class="contact-form__feedback-mark" aria-hidden="true"></span>
+            <div class="contact-form__feedback-body">
+              <p>{isSubmitting ? '送信中' : '送信完了'}</p>
+              <h2>{isSubmitting ? 'お問い合わせを送信しています' : '送信が完了しました'}</h2>
+              <span>
+                {isSubmitting
+                  ? '完了までこのままお待ちください。'
+                  : (form?.message ??
+                    'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。')}
+              </span>
+            </div>
+          </section>
+        {/if}
+
+        <form
+          id="contact-form"
+          tabindex="-1"
+          bind:this={formElement}
+          oninput={startForm}
+          onchange={startForm}
+          method="POST"
+          action="?/submit"
+          class="contact-form"
+          hidden={hideContactForm}
+          aria-hidden={hideContactForm ? 'true' : undefined}
+          aria-busy={isBusy}
+          use:enhance={handleSubmit}
+        >
+          <input
+            type="hidden"
+            name="landingPage"
+            value={values.landingPage || attribution.landingPage}
+          />
+          <input
+            type="hidden"
+            name="sourcePage"
+            value={values.sourcePage || attribution.sourcePage}
+          />
+          <div class="contact-form__header">
+            <h2>{motenji ? '相談内容を選ぶ' : contactPageContent.formTitle}</h2>
+            {#if !motenji}
+              <p>{contactPageContent.formDescription}</p>
+            {/if}
+          </div>
+
+          {#if submissionError || form?.message}
+            <p
+              class:contact-form__status--success={!submissionError && form?.ok}
+              class:contact-form__status--error={submissionError || !form?.ok}
+              class="contact-form__status"
+              role={!submissionError && form?.ok ? 'status' : 'alert'}
+            >
+              {submissionError || form?.message}
+            </p>
+          {/if}
+
+          <fieldset class="contact-form__fields" disabled={isBusy}>
+            <div class="contact-form__field contact-form__field--trap" aria-hidden="true">
+              <label for="website">Webサイト</label>
+              <input id="website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            {#if motenji}
+              <fieldset
+                class="motenji__topics"
+                aria-describedby={fieldErrors.motenjiTopic ? 'topic-error' : undefined}
+              >
+                <legend>相談カテゴリ <strong>必須</strong></legend>
+                <div class="motenji__options">
+                  {#each MOTENJI_TOPICS as topic (topic.id)}
+                    <label>
+                      <input
+                        type="radio"
+                        name="motenjiTopic"
+                        value={topic.id}
+                        checked={values.motenjiTopic === topic.id}
+                        onchange={() => updateMotenjiTopic(topic.id)}
+                        required
+                      />
+                      <span>{topic.label}</span>
+                    </label>
+                  {/each}
+                </div>
+                {#if fieldErrors.motenjiTopic}
+                  <small id="topic-error">{fieldErrors.motenjiTopic}</small>
+                {/if}
+              </fieldset>
+              {#if motenjiTopic}
+                <label class="contact-form__field" for="motenjiDetail">
+                  <span>{motenjiTopic.question} <strong>必須</strong></span>
+                  <select
+                    id="motenjiDetail"
+                    name="motenjiDetail"
+                    bind:value={values.motenjiDetail}
+                    required
+                    aria-invalid={fieldErrors.motenjiDetail ? 'true' : undefined}
+                    aria-describedby={fieldErrors.motenjiDetail ? 'detail-error' : undefined}
+                  >
+                    <option value="">近いものを選ぶ</option>
+                    {#each Object.entries(motenjiTopic.options) as [id, label] (id)}
+                      <option value={id}>{label}</option>
+                    {/each}
+                    <option value="unsure">まだ整理できていない</option>
+                  </select>
+                  {#if fieldErrors.motenjiDetail}
+                    <small id="detail-error">{fieldErrors.motenjiDetail}</small>
+                  {/if}
+                </label>
+              {/if}
+            {:else}
+              <label class="contact-form__field" for="category">
+                <span>お問い合わせカテゴリ <strong>必須</strong></span>
+                <select
+                  id="category"
+                  name="category"
+                  required
+                  value={selectedCategory}
+                  onchange={updateCategory}
+                  aria-invalid={fieldErrors.category ? 'true' : undefined}
+                  aria-describedby={fieldErrors.category ? 'category-error' : undefined}
+                >
+                  <option value="">下から選んでください</option>
+                  {#each CONTACT_CATEGORIES as category (category.id)}
+                    <option value={category.id}>{category.label}</option>
+                  {/each}
+                </select>
+                {#if fieldErrors.category}
+                  <small id="category-error">{fieldErrors.category}</small>
+                {/if}
+              </label>
+            {/if}
+
+            <div class="contact-form__grid">
+              <label class="contact-form__field" for="name">
+                <span>お名前 <strong>必須</strong></span>
+                <input
+                  id="name"
+                  name="name"
+                  required
+                  bind:value={values.name}
+                  autocomplete="name"
+                  aria-invalid={fieldErrors.name ? 'true' : undefined}
+                  aria-describedby={fieldErrors.name ? 'name-error' : undefined}
+                />
+                {#if fieldErrors.name}
+                  <small id="name-error">{fieldErrors.name}</small>
+                {/if}
+              </label>
+
+              <label class="contact-form__field" for="email">
+                <span>メールアドレス <strong>必須</strong></span>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  bind:value={values.email}
+                  autocomplete="email"
+                  aria-invalid={fieldErrors.email ? 'true' : undefined}
+                  aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+                />
+                {#if fieldErrors.email}
+                  <small id="email-error">{fieldErrors.email}</small>
+                {/if}
+              </label>
+            </div>
+
+            {#if motenji}
+              <label class="contact-form__field" for="message">
+                <span>補足（任意）</span>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="3"
+                  maxlength="500"
+                  bind:value={values.message}
+                  aria-invalid={fieldErrors.message ? 'true' : undefined}
+                  aria-describedby={fieldErrors.message ? 'message-error' : undefined}
+                ></textarea>
+                {#if fieldErrors.message}
+                  <small id="message-error">{fieldErrors.message}</small>
+                {/if}
+              </label>
+              <p class="motenji__reply">入力したメールアドレスに、受付の控えをお送りします。</p>
+            {:else}
+              <label class="contact-form__field" for="company">
+                <span>会社名・屋号</span>
+                <input
+                  id="company"
+                  name="company"
+                  bind:value={values.company}
+                  autocomplete="organization"
+                />
+              </label>
+
+              <label class="contact-form__field" for="subject">
+                <span>件名（任意）</span>
+                <input
+                  id="subject"
+                  name="subject"
+                  bind:value={values.subject}
+                  aria-invalid={fieldErrors.subject ? 'true' : undefined}
+                  aria-describedby={fieldErrors.subject ? 'subject-error' : undefined}
+                />
+                {#if fieldErrors.subject}
+                  <small id="subject-error">{fieldErrors.subject}</small>
+                {/if}
+              </label>
+
+              <label class="contact-form__field" for="message">
+                <span>お問い合わせ内容 <strong>必須</strong></span>
+                <textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows="8"
+                  bind:value={values.message}
+                  aria-invalid={fieldErrors.message ? 'true' : undefined}
+                  aria-describedby="message-help"
+                ></textarea>
+                <em id="message-help">
+                  {isMacClipy
+                    ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
+                    : isShusei
+                      ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
+                      : isUbm
+                        ? 'UBMについて聞いてみたいことをご記入ください。オンラインで話したい場合は、その旨もお知らせください。'
+                        : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
+                </em>
+                {#if fieldErrors.message}
+                  <small>{fieldErrors.message}</small>
+                {/if}
+              </label>
+            {/if}
+
+            {#if isRecruit}
+              <fieldset class="contact-form__recruit">
+                <legend>{getContactCategoryLabel(RECRUIT_CATEGORY_ID)}の追加情報</legend>
+
+                <div class="contact-form__grid">
+                  <label class="contact-form__field" for="role">
+                    <span>職種・主な役割 <strong>必須</strong></span>
+                    <input
+                      id="role"
+                      name="role"
+                      required
+                      bind:value={values.role}
+                      placeholder="例: フロントエンドエンジニア"
+                      aria-invalid={fieldErrors.role ? 'true' : undefined}
+                    />
+                    {#if fieldErrors.role}
+                      <small>{fieldErrors.role}</small>
+                    {/if}
+                  </label>
+
+                  <label class="contact-form__field" for="experienceYears">
+                    <span>経験年数 <strong>必須</strong></span>
+                    <input
+                      id="experienceYears"
+                      name="experienceYears"
+                      required
+                      bind:value={values.experienceYears}
+                      placeholder="例: Web開発5年"
+                      aria-invalid={fieldErrors.experienceYears ? 'true' : undefined}
+                      aria-describedby={fieldErrors.experienceYears
+                        ? 'experienceYears-error'
+                        : undefined}
+                    />
+                    {#if fieldErrors.experienceYears}
+                      <small id="experienceYears-error">{fieldErrors.experienceYears}</small>
+                    {/if}
+                  </label>
+                </div>
+
+                <div class="contact-form__grid">
+                  <label class="contact-form__field" for="workStyle">
+                    <span>現在の働き方 <strong>必須</strong></span>
+                    <input
+                      id="workStyle"
+                      name="workStyle"
+                      required
+                      bind:value={values.workStyle}
+                      placeholder="例: 副業 / フリーランス / 正社員"
+                      aria-invalid={fieldErrors.workStyle ? 'true' : undefined}
+                    />
+                    {#if fieldErrors.workStyle}
+                      <small>{fieldErrors.workStyle}</small>
+                    {/if}
+                  </label>
+
+                  <label class="contact-form__field" for="availability">
+                    <span>週の稼働可能時間（任意）</span>
+                    <input
+                      id="availability"
+                      name="availability"
+                      bind:value={values.availability}
+                      placeholder="例: 週5〜10時間"
+                      aria-invalid={fieldErrors.availability ? 'true' : undefined}
+                    />
+                    {#if fieldErrors.availability}
+                      <small>{fieldErrors.availability}</small>
+                    {/if}
+                  </label>
+                </div>
+
+                <label class="contact-form__field" for="nearestStation">
+                  <span>最寄駅 <strong>必須</strong></span>
+                  <input
+                    id="nearestStation"
+                    name="nearestStation"
+                    required
+                    bind:value={values.nearestStation}
+                    placeholder="例: 品川駅"
+                    aria-invalid={fieldErrors.nearestStation ? 'true' : undefined}
+                    aria-describedby={fieldErrors.nearestStation
+                      ? 'nearestStation-error'
+                      : undefined}
+                  />
+                  {#if fieldErrors.nearestStation}
+                    <small id="nearestStation-error">{fieldErrors.nearestStation}</small>
+                  {/if}
+                </label>
+
+                <label class="contact-form__field" for="aiTools">
+                  <span>使用しているAIツール <strong>必須</strong></span>
+                  <input
+                    id="aiTools"
+                    name="aiTools"
+                    required
+                    bind:value={values.aiTools}
+                    placeholder="例: ChatGPT / Codex / Claude / Cursor"
+                    aria-invalid={fieldErrors.aiTools ? 'true' : undefined}
+                  />
+                  {#if fieldErrors.aiTools}
+                    <small>{fieldErrors.aiTools}</small>
+                  {/if}
+                </label>
+
+                <label class="contact-form__field" for="portfolioUrl">
+                  <span>{PORTFOLIO_URL_LABEL} <strong>必須</strong></span>
+                  <textarea
+                    id="portfolioUrl"
+                    name="portfolioUrl"
+                    required
+                    rows="4"
+                    bind:value={values.portfolioUrl}
+                    placeholder="https://example.com/portfolio"
+                    aria-invalid={fieldErrors.portfolioUrl ? 'true' : undefined}
+                    aria-describedby={fieldErrors.portfolioUrl
+                      ? 'portfolioUrl-help portfolioUrl-error'
+                      : 'portfolioUrl-help'}
+                  ></textarea>
+                  <em id="portfolioUrl-help"
+                    >URLは1行に1つずつ入力してください。複数入力できます。</em
+                  >
+                  {#if fieldErrors.portfolioUrl}
+                    <small id="portfolioUrl-error">{fieldErrors.portfolioUrl}</small>
+                  {/if}
+                </label>
+
+                <label class="contact-form__field" for="aiUsagePractices">
+                  <span>AI利用時に工夫していること（任意）</span>
+                  <textarea
+                    id="aiUsagePractices"
+                    name="aiUsagePractices"
+                    rows="4"
+                    bind:value={values.aiUsagePractices}
+                  ></textarea>
+                </label>
+
+                <label class="contact-form__field" for="strengths">
+                  <span>あなたの強み（任意）</span>
+                  <textarea id="strengths" name="strengths" rows="4" bind:value={values.strengths}
+                  ></textarea>
+                </label>
+
+                <label class="contact-form__field" for="discoverySource">
+                  <span>TechGuideを知ったきっかけ（任意）</span>
+                  <input
+                    id="discoverySource"
+                    name="discoverySource"
+                    bind:value={values.discoverySource}
+                    aria-describedby="discoverySource-help"
+                  />
+                  <em id="discoverySource-help">例: Google検索、SNS、知人の紹介、募集サイトなど</em>
+                </label>
+              </fieldset>
+            {/if}
+          </fieldset>
+
+          <div class="contact-form__turnstile">
+            {#if hasTurnstile}
+              <input type="hidden" name="cf-turnstile-response" value={turnstileToken} />
+              <div
+                class="contact-form__turnstile-widget"
+                bind:this={turnstileContainer}
+                aria-live="polite"
+                hidden={!isAuthenticating}
+              ></div>
+              <p id="turnstile-status" role="status" aria-live="polite">
+                {turnstileClientError ||
+                  (turnstileToken
+                    ? '迷惑投稿対策の確認が完了しました。'
+                    : isAuthenticating
+                      ? '迷惑投稿対策を確認しています。完了後に送信します。'
+                      : '送信時に迷惑投稿対策の確認を行います。')}
+              </p>
+              {#if turnstileClientError || (fieldErrors.turnstile && !turnstileServerErrorDismissed)}
+                <button
+                  class="contact-form__turnstile-retry"
+                  type="submit"
+                  disabled={isBusy}
+                  aria-busy={isAuthenticating}
+                >
+                  確認して再送信
+                </button>
+              {/if}
+            {:else if !motenji}
+              <p>迷惑投稿対策は本番環境で有効になります。</p>
+            {/if}
+            {#if fieldErrors.turnstile && !turnstileToken && !turnstileServerErrorDismissed}
+              <small>{fieldErrors.turnstile}</small>
+            {/if}
+          </div>
+
+          <button
+            class="contact-form__submit"
+            type="submit"
+            disabled={isBusy}
+            aria-busy={isBusy}
+            aria-describedby={hasTurnstile ? 'turnstile-status' : undefined}
+          >
+            {isAuthenticating
+              ? '認証中...'
+              : isSubmitting
+                ? '送信中...'
+                : motenji
+                  ? '相談内容を送信'
+                  : '内容を送信'}
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<Footer companyName={companyProfile.name} items={navItems} />
+
+<style>
+  .motenji {
+    --color-primary-deep: #264c3e;
+    --color-primary: #376b55;
+    background: #f7f4ea;
+    padding-block: clamp(36px, 7vw, 80px);
+  }
+
+  .motenji .contact-page__inner {
+    width: min(100% - 32px, 728px);
+    gap: clamp(18px, 4vw, 30px);
+  }
+
+  .motenji .contact-page__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .motenji__intro {
+    display: grid;
+    gap: 10px;
+    color: #243f33;
+  }
+
+  .motenji__intro p {
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .motenji__intro h1 {
+    margin: 0;
+    font-size: clamp(1.7rem, 5vw, 2.7rem);
+    line-height: 1.2;
+  }
+
+  .motenji__intro span,
+  .motenji__reply {
+    color: #4c5c52;
+  }
+
+  .motenji__reply {
+    margin: 0;
+    font-size: 0.88rem;
+  }
+
+  .motenji .contact-form {
+    gap: 14px;
+  }
+
+  .motenji .contact-form__turnstile {
+    min-height: 0;
+  }
+
+  .motenji .contact-form__turnstile:empty {
+    display: none;
+  }
+
+  .motenji .contact-form__field textarea {
+    min-height: 5.5rem;
+  }
+
+  .motenji__topics {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .motenji__topics legend {
+    padding: 0;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .motenji__topics strong {
+    margin-inline-start: 4px;
+    border-radius: var(--radius-pill);
+    padding: 2px 7px;
+    color: #fff;
+    background: var(--color-primary-deep);
+    font-size: 0.72rem;
+  }
+
+  .motenji__topics small {
+    color: #9a4033;
+    font-weight: 700;
+  }
+
+  .motenji__options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .motenji__options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 9px 11px;
+    border: 1px solid #cbd6ca;
+    border-radius: 11px;
+    background: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .motenji__options label:has(input:checked) {
+    border-color: #376b55;
+    background: #ebf4ea;
+  }
+
+  .motenji__options input {
+    flex: 0 0 auto;
+    inline-size: 1rem;
+    block-size: 1rem;
+    accent-color: var(--color-primary-deep);
+  }
+
+  @media (max-width: 550px) {
+    .motenji__options {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-page__form-link {
+    display: inline-block;
+    margin-block: 0.5rem 1.5rem;
+    text-decoration-line: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  #contact-form {
+    scroll-margin-top: 6rem;
+  }
+
+  .contact-page {
+    padding-block: clamp(72px, 8vw, 110px);
+  }
+
+  .contact-page__inner {
+    display: grid;
+    gap: 28px;
+  }
+
+  .contact-page__lead {
+    max-width: 52rem;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--color-ink-soft);
+    font-size: 1.02rem;
+  }
+
+  .contact-page__content {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .contact-page__content--feedback {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contact-page__details {
+    display: grid;
+    gap: 18px;
+  }
+
+  .contact-page__details[hidden],
+  .contact-form[hidden] {
+    display: none;
+  }
+
+  .contact-page__panel,
+  .contact-form,
+  .contact-form__feedback {
+    display: grid;
+    gap: 18px;
+    padding: clamp(22px, 3vw, 30px);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(117, 92, 56, 0.12);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .contact-form__feedback {
+    min-height: min(460px, 70vh);
+    place-items: center;
+    text-align: center;
+    outline: none;
+  }
+
+  .contact-form__feedback-body {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    max-width: 32rem;
+  }
+
+  .contact-form__feedback-body p {
+    width: fit-content;
+    margin: 0;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    color: var(--color-primary-deep);
+    background: rgba(255, 246, 214, 0.86);
+    font-size: 0.84rem;
+    font-weight: 800;
+  }
+
+  .contact-form__feedback-body span {
+    color: var(--color-ink-soft);
+    line-height: 1.8;
+  }
+
+  .contact-form__feedback-mark {
+    position: relative;
+    width: 68px;
+    height: 68px;
+    border-radius: 999px;
+    background: rgba(255, 246, 214, 0.86);
+  }
+
+  .contact-form__feedback--submitting .contact-form__feedback-mark {
+    border: 4px solid rgba(214, 151, 76, 0.24);
+    border-top-color: var(--color-primary-deep);
+    animation: contact-feedback-spin 0.9s linear infinite;
+  }
+
+  .contact-form__feedback--success .contact-form__feedback-mark {
+    background: rgba(220, 245, 229, 0.94);
+    border: 1px solid rgba(50, 130, 79, 0.22);
+  }
+
+  .contact-form__feedback--success .contact-form__feedback-mark::after {
+    position: absolute;
+    left: 26px;
+    top: 18px;
+    width: 16px;
+    height: 28px;
+    border: solid #23543a;
+    border-width: 0 5px 5px 0;
+    content: '';
+    transform: rotate(45deg);
+  }
+
+  @keyframes contact-feedback-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .contact-page__panel--compact {
+    gap: 12px;
+  }
+
+  .contact-page__panel h2,
+  .contact-form h2,
+  .contact-form__feedback h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.22rem, 1.8vw, 1.5rem);
+    line-height: 1.3;
+    letter-spacing: 0;
+    font-weight: 800;
+  }
+
+  .contact-page__panel p,
+  .contact-page__support-list,
+  .contact-page__process-list,
+  .contact-form__header p,
+  .contact-form__field em,
+  .contact-form__turnstile p {
+    color: var(--color-ink-soft);
+  }
+
+  .contact-page__support-list,
+  .contact-page__process-list {
+    display: grid;
+    gap: 12px;
+    padding-left: 1.3rem;
+  }
+
+  .contact-page__support-list li,
+  .contact-page__process-list li {
+    line-height: 1.7;
+  }
+
+  .contact-form__header {
+    display: grid;
+    gap: 8px;
+  }
+
+  .contact-form__fields {
+    display: grid;
+    gap: 18px;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .contact-form__status {
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-weight: 700;
+  }
+
+  .contact-form__status--success {
+    color: #23543a;
+    background: rgba(220, 245, 229, 0.9);
+    border: 1px solid rgba(50, 130, 79, 0.22);
+  }
+
+  .contact-form__status--error {
+    color: #8a3b2f;
+    background: rgba(255, 237, 232, 0.94);
+    border: 1px solid rgba(190, 84, 60, 0.24);
+  }
+
+  .contact-form__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .contact-form__field {
+    display: grid;
+    gap: 8px;
+    font-weight: 700;
+  }
+
+  .contact-form__field span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .contact-form__field strong {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    color: #fff;
+    background: var(--color-primary-deep);
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  .contact-form__field input,
+  .contact-form__field textarea,
+  .contact-form__field select {
+    width: 100%;
+    border: 1px solid rgba(117, 92, 56, 0.18);
+    border-radius: 14px;
+    background: rgba(255, 253, 248, 0.92);
+    color: var(--color-ink);
+    padding: 12px 14px;
+    outline: none;
+  }
+
+  .contact-form__field textarea {
+    resize: vertical;
+    min-height: 180px;
+  }
+
+  .contact-form__field input:focus,
+  .contact-form__field textarea:focus,
+  .contact-form__field select:focus {
+    border-color: rgba(214, 151, 76, 0.78);
+    box-shadow: 0 0 0 3px rgba(230, 184, 92, 0.2);
+  }
+
+  .contact-form__field [aria-invalid='true'] {
+    border-color: rgba(190, 84, 60, 0.62);
+    background: rgba(255, 248, 246, 0.96);
+  }
+
+  .contact-form__field small,
+  .contact-form__turnstile small {
+    color: #9a4033;
+    font-weight: 700;
+  }
+
+  .contact-form__field em {
+    font-style: normal;
+    font-size: 0.88rem;
+    font-weight: 400;
+  }
+
+  .contact-form__field--trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .contact-form__recruit {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 18px;
+    border: 1px solid rgba(214, 151, 76, 0.24);
+    border-radius: 20px;
+    background: rgba(255, 246, 214, 0.38);
+  }
+
+  .contact-form__recruit legend {
+    padding-inline: 8px;
+    font-family: var(--font-heading);
+    font-weight: 800;
+  }
+
+  .contact-form__turnstile {
+    display: grid;
+    gap: 8px;
+    min-height: 68px;
+    align-items: center;
+  }
+
+  .contact-form__turnstile-widget {
+    min-height: 65px;
+  }
+
+  .contact-form__turnstile-retry {
+    justify-self: start;
+    min-width: 220px;
+    min-height: 44px;
+    padding: 8px 16px;
+    border: 1px solid var(--color-ink-soft);
+    border-radius: 8px;
+    color: var(--color-ink);
+    background: #fff;
+    font-weight: 700;
+  }
+
+  .contact-form__turnstile-retry:disabled {
+    cursor: progress;
+    opacity: 0.68;
+  }
+
+  .contact-form__submit {
+    justify-self: start;
+    min-width: 180px;
+    min-height: 52px;
+    padding-inline: 28px;
+    border-radius: var(--radius-pill);
+    color: #fff;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-deep));
+    box-shadow: var(--shadow-button);
+  }
+
+  .contact-form__submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.68;
+  }
+
+  @media (max-width: 960px) {
+    .contact-page__content {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .contact-form__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-form__submit {
+      justify-self: stretch;
+      width: 100%;
+    }
+  }
+</style>

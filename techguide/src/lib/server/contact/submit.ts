@@ -13,8 +13,12 @@ interface SubmitDependencies {
 
 const SUCCESS_MESSAGE = 'お問い合わせを受け付けました。内容を確認し、営業日に順次ご連絡します。';
 
-export async function submitContactForm(formData: FormData, dependencies: SubmitDependencies) {
-  const validation = parseContactFormData(formData);
+export async function submitContactForm(
+  formData: FormData,
+  dependencies: SubmitDependencies,
+  motenji = false,
+) {
+  const validation = parseContactFormData(formData, motenji);
   if (!validation.ok)
     return { status: 400 as const, data: { ...validation, analyticsError: 'validation' as const } };
 

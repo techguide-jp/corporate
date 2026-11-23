@@ -8,6 +8,11 @@ import {
   type ContactFieldErrors,
   type ContactFormValues,
 } from '../../contact/form.ts';
+import {
+  findMotenjiTopic,
+  getMotenjiDetailLabel,
+  MOTENJI_CATEGORY_ID,
+} from '../../contact/motenji.ts';
 import { normalizeAttributionPage } from '../../analytics/attribution.ts';
 
 export interface ContactSubmission extends ContactFormValues {
@@ -41,16 +46,18 @@ function isHttpUrl(value: string) {
   }
 }
 
-export function parseContactFormData(formData: FormData): ContactValidationResult {
+export function parseContactFormData(formData: FormData, motenji = false): ContactValidationResult {
   const values: ContactFormValues = {
-    category: getInitialCategory(readText(formData, 'category')),
+    category: motenji ? MOTENJI_CATEGORY_ID : getInitialCategory(readText(formData, 'category')),
     landingPage: normalizeAttributionPage(readText(formData, 'landingPage')),
     sourcePage: normalizeAttributionPage(readText(formData, 'sourcePage')),
     name: readText(formData, 'name'),
     email: readText(formData, 'email'),
-    company: readText(formData, 'company'),
-    subject: readText(formData, 'subject'),
+    company: motenji ? '' : readText(formData, 'company'),
+    subject: motenji ? '' : readText(formData, 'subject'),
     message: readText(formData, 'message'),
+    motenjiTopic: motenji ? readText(formData, 'motenjiTopic').slice(0, 40) : '',
+    motenjiDetail: motenji ? readText(formData, 'motenjiDetail').slice(0, 40) : '',
     role: readText(formData, 'role'),
     experienceYears: readText(formData, 'experienceYears'),
     workStyle: readText(formData, 'workStyle'),
@@ -79,7 +86,17 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     fieldErrors.email = 'メールアドレスの形式を確認してください。';
   }
 
-  if (!hasValue(values.message)) {
+  const motenjiTopic = findMotenjiTopic(values.motenjiTopic);
+  if (motenji) {
+    if (!motenjiTopic) {
+      fieldErrors.motenjiTopic = '相談カテゴリを選択してください。';
+    } else if (!getMotenjiDetailLabel(motenjiTopic, values.motenjiDetail)) {
+      fieldErrors.motenjiDetail = '相談内容に近いものを選択してください。';
+    }
+    if (values.message.length > 500) {
+      fieldErrors.message = '補足は500文字以内で入力してください。';
+    }
+  } else if (!hasValue(values.message)) {
     fieldErrors.message = 'お問い合わせ内容を入力してください。';
   }
 
@@ -106,7 +123,7 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     }
   }
 
-  if (portfolioUrls.some((url) => !isHttpUrl(url))) {
+  if (!motenji && portfolioUrls.some((url) => !isHttpUrl(url))) {
     fieldErrors.portfolioUrl =
       'http:// または https:// から始まる有効なURLを、1行に1つずつ入力してください。';
   }
@@ -128,7 +145,7 @@ export function parseContactFormData(formData: FormData): ContactValidationResul
     isBot,
     submission: {
       ...values,
-      subject: values.subject || getContactCategoryLabel(category),
+      subject: motenjiTopic?.label || values.subject || getContactCategoryLabel(category),
       category,
       categoryLabel: getContactCategoryLabel(category),
       isRecruit,

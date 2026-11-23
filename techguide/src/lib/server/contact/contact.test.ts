@@ -384,3 +384,92 @@ await test('verification failures expose only a safe reason, preserve input and 
     assert.ok(!('receipt' in result.data));
   }
 });
+
+await test('Motenji accepts selected answers with no free-text message and includes the choices in both emails', async () => {
+  const form = makeForm();
+  form.set('category', 'recruit');
+  form.delete('message');
+  form.set('motenjiTopic', 'sales');
+  form.set('motenjiDetail', 'outreach');
+
+  const result = await submitContactForm(
+    form,
+    {
+      shouldMock: () => Promise.resolve(false),
+      verify: () => Promise.resolve({ ok: true as const }),
+      send: (submission) => {
+        assert.equal(submission.category, 'motenji');
+        assert.equal(submission.subject, '案件探し・営業・商談');
+        assert.equal(submission.message, '');
+        for (const email of [buildAdminEmail(submission), buildAutoReplyEmail(submission)]) {
+          assert.match(email.text, /相談カテゴリ: 案件探し・営業・商談/);
+          assert.match(email.text, /選んだ相談内容: 声のかけ方や紹介の頼み方を考えたい/);
+        }
+        return Promise.resolve({ ok: true as const });
+      },
+    },
+    true,
+  );
+
+  assert.equal(result.status, 200);
+  assert.ok(result.data.ok && result.data.receipt?.category === 'motenji');
+});
+
+await test('Motenji validates the topic and rejects answers for a different topic', () => {
+  const form = makeForm();
+  assert.ok(!parseContactFormData(form, true).ok);
+
+  form.set('motenjiTopic', 'event');
+  form.set('motenjiDetail', 'outreach');
+  const result = parseContactFormData(form, true);
+  assert.ok(!result.ok && result.fieldErrors.motenjiDetail);
+  assert.equal(result.values.motenjiTopic, 'event');
+  assert.equal(result.values.motenjiDetail, 'outreach');
+  assert.equal(result.values.name, 'フォーム検証');
+
+  form.set('motenjiDetail', 'unsure');
+  assert.ok(parseContactFormData(form, true).ok);
+
+  form.set('category', 'motenji');
+  assert.ok(!parseContactFormData(form).ok);
+});
+
+await test('Motenji sends separate operator and applicant emails using reciprocal reply-to addresses', async () => {
+  const { deliverContactEmails } = await import('./deliverContactEmails.ts');
+  const form = makeForm();
+  form.set('motenjiTopic', 'sales');
+  form.set('motenjiDetail', 'meeting');
+  const result = parseContactFormData(form, true);
+  if (!result.ok) throw new Error('Expected a valid Motenji inquiry');
+
+  const sent: { to: unknown; replyTo?: unknown; subject: string }[] = [];
+  const send = await deliverContactEmails(
+    result.submission,
+    'TechGuide <sender@example.com>',
+    'operator@example.com',
+    (email) => {
+      sent.push({ to: email.to, replyTo: email.replyTo, subject: email.subject ?? '' });
+      return Promise.resolve(true);
+    },
+  );
+  assert.deepEqual(send, { ok: true });
+  assert.deepEqual(
+    sent.map(({ to, replyTo }) => ({ to, replyTo })),
+    [
+      { to: ['operator@example.com'], replyTo: 'test@example.com' },
+      { to: ['test@example.com'], replyTo: 'operator@example.com' },
+    ],
+  );
+  assert.match(sent[0].subject, /モテンジ！受託相談/);
+  assert.match(sent[1].subject, /ご相談を受け付けました/);
+
+  let calls = 0;
+  const receiptFailure = await deliverContactEmails(
+    result.submission,
+    'TechGuide <sender@example.com>',
+    'operator@example.com',
+    () => Promise.resolve(++calls === 1),
+  );
+  assert.ok(receiptFailure.ok && receiptFailure.message?.includes('内容は届いています'));
+  assert.equal(calls, 2);
+});

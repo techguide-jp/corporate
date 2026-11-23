@@ -1,3 +1,8 @@
+import {
+  findMotenjiTopic,
+  getMotenjiDetailLabel,
+  MOTENJI_CATEGORY_ID,
+} from '../../contact/motenji.ts';
 import type { ContactSubmission } from './validation';
 import { parsePortfolioUrls, PORTFOLIO_URL_LABEL } from '../../contact/form.ts';
 
@@ -15,6 +20,17 @@ function formatOptional(label: string, value: string) {
 }
 
 function formatSubmissionLines(submission: ContactSubmission) {
+  if (submission.category === MOTENJI_CATEGORY_ID) {
+    const topic = findMotenjiTopic(submission.motenjiTopic);
+    return [
+      `相談カテゴリ: ${topic?.label ?? submission.categoryLabel}`,
+      `選んだ相談内容: ${getMotenjiDetailLabel(topic, submission.motenjiDetail)}`,
+      `お名前: ${submission.name}`,
+      `メールアドレス: ${submission.email}`,
+      ...(submission.message ? ['', '補足:', submission.message] : []),
+    ];
+  }
+
   const lines = [
     `カテゴリ: ${submission.categoryLabel}`,
     `お名前: ${submission.name}`,
@@ -78,7 +94,9 @@ export function buildAutoReplyEmail(submission: ContactSubmission) {
   const lines = [
     `${submission.name} 様`,
     '',
-    'TechGuideへお問い合わせいただきありがとうございます。',
+    submission.category === MOTENJI_CATEGORY_ID
+      ? 'モテンジ！へご相談いただきありがとうございます。'
+      : 'TechGuideへお問い合わせいただきありがとうございます。',
     '内容を確認し、営業日に順次ご連絡します。',
     ...recruitNote,
     '',
@@ -89,7 +107,10 @@ export function buildAutoReplyEmail(submission: ContactSubmission) {
   ];
 
   return {
-    subject: 'お問い合わせありがとうございます | TechGuide',
+    subject:
+      submission.category === MOTENJI_CATEGORY_ID
+        ? 'ご相談を受け付けました | モテンジ！'
+        : 'お問い合わせありがとうございます | TechGuide',
     text: lines.join('\n'),
     html: toHtml(lines),
   };
