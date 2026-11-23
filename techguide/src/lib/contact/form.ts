@@ -1,3 +1,4 @@
+import { MOTENJI_CATEGORY_ID, MOTENJI_CATEGORY_LABEL } from './motenji.ts';
 import { normalizeAttributionPage, type ContactAttribution } from '../analytics/attribution.ts';
 
 export const RECRUIT_CATEGORY_ID = 'recruit';
@@ -22,7 +23,9 @@ export const CONTACT_CATEGORIES = [
   { id: 'other', label: 'その他・まだ整理できていない相談' },
 ] as const;
 
-export type ContactCategoryId = (typeof CONTACT_CATEGORIES)[number]['id'];
+export type ContactCategoryId =
+  | (typeof CONTACT_CATEGORIES)[number]['id']
+  | typeof MOTENJI_CATEGORY_ID;
 
 export interface ContactFormValues extends ContactAttribution {
   category: ContactCategoryId | '';
@@ -31,6 +34,8 @@ export interface ContactFormValues extends ContactAttribution {
   company: string;
   subject: string;
   message: string;
+  motenjiTopic: string;
+  motenjiDetail: string;
   role: string;
   experienceYears: string;
   workStyle: string;
@@ -53,10 +58,13 @@ export function parsePortfolioUrls(value: string): string[] {
 }
 
 export function isContactCategoryId(value: string): value is ContactCategoryId {
-  return CONTACT_CATEGORIES.some((category) => category.id === value);
+  return (
+    value === MOTENJI_CATEGORY_ID || CONTACT_CATEGORIES.some((category) => category.id === value)
+  );
 }
 
 export function getContactCategoryLabel(categoryId: ContactCategoryId) {
+  if (categoryId === MOTENJI_CATEGORY_ID) return MOTENJI_CATEGORY_LABEL;
   return CONTACT_CATEGORIES.find((category) => category.id === categoryId)?.label ?? categoryId;
 }
 
@@ -70,7 +78,7 @@ export function getInitialCategory(value: string | null): ContactCategoryId | ''
     return '';
   }
 
-  return isContactCategoryId(value) ? value : '';
+  return value !== MOTENJI_CATEGORY_ID && isContactCategoryId(value) ? value : '';
 }
 
 export function createEmptyContactFormValues(
@@ -85,6 +93,8 @@ export function createEmptyContactFormValues(
     company: '',
     subject: '',
     message: '',
+    motenjiTopic: '',
+    motenjiDetail: '',
     role: '',
     experienceYears: '',
     workStyle: '',

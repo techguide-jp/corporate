@@ -384,3 +384,52 @@ await test('verification failures expose only a safe reason, preserve input and 
     assert.ok(!('receipt' in result.data));
   }
 });
+
+await test('Motenji accepts selected answers with no free-text message and includes the choices in both emails', async () => {
+  const form = makeForm();
+  form.set('category', 'recruit');
+  form.delete('message');
+  form.set('motenjiTopic', 'sales');
+  form.set('motenjiDetail', 'outreach');
+
+  const result = await submitContactForm(
+    form,
+    {
+      shouldMock: () => Promise.resolve(false),
+      verify: () => Promise.resolve({ ok: true as const }),
+      send: (submission) => {
+        assert.equal(submission.category, 'motenji');
+        assert.equal(submission.subject, '案件探し・営業・商談');
+        assert.equal(submission.message, '');
+        for (const email of [buildAdminEmail(submission), buildAutoReplyEmail(submission)]) {
+          assert.match(email.text, /相談カテゴリ: 案件探し・営業・商談/);
+          assert.match(email.text, /選んだ相談内容: 声のかけ方や紹介の頼み方を考えたい/);
+        }
+        return Promise.resolve({ ok: true as const });
+      },
+    },
+    true,
+  );
+
+  assert.equal(result.status, 200);
+  assert.ok(result.data.ok && result.data.receipt?.category === 'motenji');
+});
+
+await test('Motenji validates the topic and rejects answers for a different topic', () => {
+  const form = makeForm();
+  assert.ok(!parseContactFormData(form, true).ok);
+
+  form.set('motenjiTopic', 'event');
+  form.set('motenjiDetail', 'outreach');
+  const result = parseContactFormData(form, true);
+  assert.ok(!result.ok && result.fieldErrors.motenjiDetail);
+  assert.equal(result.values.motenjiTopic, 'event');
+  assert.equal(result.values.motenjiDetail, 'outreach');
+  assert.equal(result.values.name, 'フォーム検証');
+
+  form.set('motenjiDetail', 'unsure');
+  assert.ok(parseContactFormData(form, true).ok);
+
+  form.set('category', 'motenji');
+  assert.ok(!parseContactFormData(form).ok);
+});

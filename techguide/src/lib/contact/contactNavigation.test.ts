@@ -22,7 +22,7 @@ function flushMicrotasks() {
 
 function harness() {
   const source = readFileSync(
-    new URL('../../routes/contact/+page.svelte', import.meta.url),
+    new URL('../components/contact/ContactPage.svelte', import.meta.url),
     'utf8',
   );
   const instance = parse(source, { modern: true }).instance;
