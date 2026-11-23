@@ -7,25 +7,67 @@ export const SHUSEI_CATEGORY_ID = 'shusei';
 export const UBM_CATEGORY_ID = 'ubm';
 export const PORTFOLIO_URL_LABEL = 'ポートフォリオ・経歴書などあなたがわかるもの（URL）';
 
-export const CONTACT_CATEGORIES = [
-  { id: 'discovery', label: '課題整理・導入前の相談' },
-  { id: 'lp', label: 'LP・Webサイト制作の相談' },
-  { id: 'improvement', label: '既存サイト・LP改善の相談' },
-  { id: 'development', label: '受託開発・システム開発の相談' },
-  { id: 'ai', label: 'AI活用・業務改善の相談' },
-  { id: 'education', label: '技術教育・伴走支援の相談' },
-  { id: RECRUIT_CATEGORY_ID, label: '採用・協業・パートナー応募' },
-  { id: 'media', label: '取材・登壇の相談' },
-  { id: MACCLIPY_CATEGORY_ID, label: 'MacClipyについて' },
-  { id: SHUSEI_CATEGORY_ID, label: '守成クラブについて' },
-  { id: UBM_CATEGORY_ID, label: 'UBMについて' },
-  { id: 'sales', label: '営業・ご提案' },
-  { id: 'other', label: 'その他・まだ整理できていない相談' },
+export const CONTACT_CATEGORY_GROUPS = [
+  {
+    id: 'business-support',
+    label: '制作・開発・業務支援',
+    categories: [
+      { id: 'discovery', label: '課題整理・導入前の相談' },
+      { id: 'lp', label: 'LP・Webサイト制作の相談' },
+      { id: 'improvement', label: '既存サイト・LP改善の相談' },
+      { id: 'development', label: '受託開発・システム開発の相談' },
+      { id: 'ai', label: 'AI活用・業務改善の相談' },
+      { id: 'education', label: '技術教育・伴走支援の相談' },
+    ],
+  },
+  {
+    id: 'products',
+    label: 'サービス・API',
+    categories: [
+      { id: 'email-verification-api', label: 'メールアドレス検証APIの導入相談' },
+      { id: MACCLIPY_CATEGORY_ID, label: 'MacClipyについて' },
+    ],
+  },
+  {
+    id: 'applications',
+    label: '採用・協業',
+    categories: [{ id: RECRUIT_CATEGORY_ID, label: '採用・協業・パートナー応募' }],
+  },
+  {
+    id: 'communities',
+    label: 'コミュニティ・交流会',
+    categories: [
+      { id: SHUSEI_CATEGORY_ID, label: '守成クラブについて' },
+      { id: UBM_CATEGORY_ID, label: 'UBMについて' },
+    ],
+  },
+  {
+    id: 'general',
+    label: '取材・営業・その他',
+    categories: [
+      { id: 'media', label: '取材・登壇の相談' },
+      { id: 'sales', label: '営業・ご提案' },
+      { id: 'other', label: 'その他・まだ整理できていない相談' },
+    ],
+  },
 ] as const;
 
-export type ContactCategoryId =
-  | (typeof CONTACT_CATEGORIES)[number]['id']
-  | typeof MOTENJI_CATEGORY_ID;
+type ContactCategoryGroup = (typeof CONTACT_CATEGORY_GROUPS)[number];
+type ContactCategory = ContactCategoryGroup['categories'][number];
+export type ContactCategoryGroupId = ContactCategoryGroup['id'];
+export type ContactCategoryId = ContactCategory['id'] | typeof MOTENJI_CATEGORY_ID;
+
+export const CONTACT_CATEGORIES = CONTACT_CATEGORY_GROUPS.flatMap<ContactCategory>(
+  (group) => group.categories,
+);
+
+export function getContactCategoryGroupId(categoryId: ContactCategoryId | '') {
+  return (
+    CONTACT_CATEGORY_GROUPS.find((group) =>
+      group.categories.some((category) => category.id === categoryId),
+    )?.id ?? ''
+  );
+}
 
 export interface ContactFormValues extends ContactAttribution {
   category: ContactCategoryId | '';
