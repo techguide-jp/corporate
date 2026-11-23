@@ -433,3 +433,43 @@ await test('Motenji validates the topic and rejects answers for a different topi
   form.set('category', 'motenji');
   assert.ok(!parseContactFormData(form).ok);
 });
+
+await test('Motenji sends separate operator and applicant emails using reciprocal reply-to addresses', async () => {
+  const { deliverContactEmails } = await import('./deliverContactEmails.ts');
+  const form = makeForm();
+  form.set('motenjiTopic', 'sales');
+  form.set('motenjiDetail', 'meeting');
+  const result = parseContactFormData(form, true);
+  if (!result.ok) throw new Error('Expected a valid Motenji inquiry');
+
+  const sent: { to: unknown; replyTo?: unknown; subject: string }[] = [];
+  const send = await deliverContactEmails(
+    result.submission,
+    'TechGuide <sender@example.com>',
+    'operator@example.com',
+    (email) => {
+      sent.push(email);
+      return Promise.resolve(true);
+    },
+  );
+  assert.deepEqual(send, { ok: true });
+  assert.deepEqual(
+    sent.map(({ to, replyTo }) => ({ to, replyTo })),
+    [
+      { to: ['operator@example.com'], replyTo: 'test@example.com' },
+      { to: ['test@example.com'], replyTo: 'operator@example.com' },
+    ],
+  );
+  assert.match(sent[0].subject, /モテンジ！受託相談/);
+  assert.match(sent[1].subject, /ご相談を受け付けました/);
+
+  let calls = 0;
+  const receiptFailure = await deliverContactEmails(
+    result.submission,
+    'TechGuide <sender@example.com>',
+    'operator@example.com',
+    () => Promise.resolve(++calls === 1),
+  );
+  assert.ok(receiptFailure.ok && receiptFailure.message?.includes('内容は届いています'));
+  assert.equal(calls, 2);
+});
