@@ -448,7 +448,7 @@ await test('Motenji sends separate operator and applicant emails using reciproca
     'TechGuide <sender@example.com>',
     'operator@example.com',
     (email) => {
-      sent.push(email);
+      sent.push({ to: email.to, replyTo: email.replyTo, subject: email.subject ?? '' });
       return Promise.resolve(true);
     },
   );
