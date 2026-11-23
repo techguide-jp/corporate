@@ -17,7 +17,8 @@
     type TurnstileClient,
   } from '$lib/contact/turnstileChallenge';
   import {
-    CONTACT_CATEGORIES,
+    CONTACT_CATEGORY_GROUPS,
+    getContactCategoryGroupId,
     getContactCategoryLabel,
     MACCLIPY_CATEGORY_ID,
     PORTFOLIO_URL_LABEL,
@@ -25,6 +26,7 @@
     SHUSEI_CATEGORY_ID,
     UBM_CATEGORY_ID,
     type ContactFieldErrors,
+    type ContactCategoryGroupId,
     type ContactCategoryId,
     type ContactFormValues,
   } from '$lib/contact/form';
@@ -34,7 +36,7 @@
   import SectionHeading from '$lib/components/ui/SectionHeading.svelte';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import { companyProfile, contactPageContent, navItems, pageSeo } from '$lib/data/site';
-  import { tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import type { SubmitFunction } from '@sveltejs/kit';
   import { findMotenjiTopic, MOTENJI_CONTACT_PATH, MOTENJI_TOPICS } from '$lib/contact/motenji';
   import type { loadContactPage } from '$lib/server/contact/page';
@@ -56,6 +58,13 @@
   let { data, form, motenji = false }: Props = $props();
   const initialSelectedCategory = () => form?.values?.category ?? data.selectedCategory;
   let selectedCategory = $state<ContactCategoryId | ''>(initialSelectedCategory());
+  let selectedGroupId = $state<ContactCategoryGroupId | ''>(
+    getContactCategoryGroupId(initialSelectedCategory()),
+  );
+  let categoryFiltersReady = $state(false);
+  const selectedGroup = $derived(
+    CONTACT_CATEGORY_GROUPS.find((group) => group.id === selectedGroupId),
+  );
   let isAuthenticating = $state(false);
   let isSubmitting = $state(false);
   let submissionError = $state('');
@@ -194,12 +203,24 @@
   });
 
   $effect(() => {
-    // 認証中の再描画で入力を初期値に戻さず、サーバー応答時だけ同期する。
+    // 認証中の入力は保持し、ページデータや送信結果が変わったときに同期する。
     values = { ...data.initialValues, ...form?.values };
-    if (form?.values?.category !== undefined) {
-      selectedCategory = form.values.category;
-    }
+    const category = initialSelectedCategory();
+    selectedCategory = category;
+    selectedGroupId = getContactCategoryGroupId(category);
   });
+
+  onMount(() => {
+    // JavaScriptの準備前でも、グループ化された選択欄から問い合わせ内容を選べる。
+    categoryFiltersReady = true;
+  });
+
+  function updateCategoryGroup(event: Event) {
+    selectedGroupId = (event.currentTarget as HTMLSelectElement).value as
+      | ContactCategoryGroupId
+      | '';
+    selectedCategory = '';
+  }
 
   function updateCategory(event: Event) {
     selectedCategory = (event.currentTarget as HTMLSelectElement).value as ContactCategoryId | '';
@@ -596,21 +617,55 @@
                 </label>
               {/if}
             {:else}
+              {#if categoryFiltersReady}
+                <label class="contact-form__field" for="category-group">
+                  <span>お問い合わせカテゴリ <strong>必須</strong></span>
+                  <select
+                    id="category-group"
+                    required
+                    value={selectedGroupId}
+                    onchange={updateCategoryGroup}
+                  >
+                    <option value="">カテゴリを選んでください</option>
+                    {#each CONTACT_CATEGORY_GROUPS as group (group.id)}
+                      <option value={group.id}>{group.label}</option>
+                    {/each}
+                  </select>
+                </label>
+              {/if}
               <label class="contact-form__field" for="category">
-                <span>お問い合わせカテゴリ <strong>必須</strong></span>
+                <span>
+                  {categoryFiltersReady ? 'お問い合わせの種類' : 'お問い合わせカテゴリ'}
+                  <strong>必須</strong>
+                </span>
                 <select
                   id="category"
                   name="category"
                   required
+                  disabled={categoryFiltersReady && !selectedGroup}
                   value={selectedCategory}
                   onchange={updateCategory}
                   aria-invalid={fieldErrors.category ? 'true' : undefined}
                   aria-describedby={fieldErrors.category ? 'category-error' : undefined}
                 >
-                  <option value="">下から選んでください</option>
-                  {#each CONTACT_CATEGORIES as category (category.id)}
-                    <option value={category.id}>{category.label}</option>
-                  {/each}
+                  <option value="">
+                    {categoryFiltersReady && !selectedGroup
+                      ? '先にカテゴリを選んでください'
+                      : 'お問い合わせの種類を選んでください'}
+                  </option>
+                  {#if categoryFiltersReady}
+                    {#each selectedGroup?.categories ?? [] as category (category.id)}
+                      <option value={category.id}>{category.label}</option>
+                    {/each}
+                  {:else}
+                    {#each CONTACT_CATEGORY_GROUPS as group (group.id)}
+                      <optgroup label={group.label}>
+                        {#each group.categories as category (category.id)}
+                          <option value={category.id}>{category.label}</option>
+                        {/each}
+                      </optgroup>
+                    {/each}
+                  {/if}
                 </select>
                 {#if fieldErrors.category}
                   <small id="category-error">{fieldErrors.category}</small>

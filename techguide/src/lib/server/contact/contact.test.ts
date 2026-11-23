@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { CONTACT_CATEGORIES, createContactFormValuesFromSearchParams } from '../../contact/form.ts';
+import {
+  CONTACT_CATEGORIES,
+  createContactFormValuesFromSearchParams,
+  getContactCategoryGroupId,
+} from '../../contact/form.ts';
 import { createLeadEventTracker } from '../../contact/lead.ts';
 import { parseContactFormData } from './validation.ts';
 import { buildAdminEmail, buildAutoReplyEmail } from './emailTemplates.ts';
@@ -115,9 +119,36 @@ await test('recruit and legacy partnership links select the same application cat
       new URLSearchParams({ category, subject: '協業の応募', message: '応募内容' }),
     );
     assert.equal(values.category, 'recruit');
+    assert.equal(getContactCategoryGroupId(values.category), 'applications');
     assert.equal(values.subject, '協業の応募');
     assert.equal(values.message, '応募内容');
   }
+});
+
+await test('email verification API links and submissions use the dedicated product category', () => {
+  const category = 'email-verification-api';
+  const label = 'メールアドレス検証APIの導入相談';
+  const values = createContactFormValuesFromSearchParams(new URLSearchParams({ category }));
+  assert.equal(values.category, category);
+  assert.equal(getContactCategoryGroupId(values.category), 'products');
+
+  const form = makeForm();
+  form.set('category', category);
+  form.delete('subject');
+  const result = parseContactFormData(form);
+  if (!result.ok) throw new Error('Expected a valid API inquiry');
+  assert.equal(result.submission.subject, label);
+  assert.equal(result.submission.categoryLabel, label);
+  for (const email of [
+    buildAdminEmail(result.submission),
+    buildAutoReplyEmail(result.submission),
+  ]) {
+    assert.ok(email.text.includes(label));
+  }
+
+  form.set('category', 'products');
+  const groupOnly = parseContactFormData(form);
+  assert.ok(!groupOnly.ok && groupOnly.fieldErrors.category);
 });
 
 await test('legacy partnership submissions require application fields and preserve input for retry', () => {
