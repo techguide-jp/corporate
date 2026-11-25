@@ -7,12 +7,14 @@ const shuseiContactSearch = new URLSearchParams({
   message: '守成クラブについて、次の内容を相談したいです。\n\n',
 }).toString();
 
+const academyInterviewIntro =
+  '僕がどうして今の仕事をしているのか。独立してから迷ったことや、仕事の向き合い方が変わったきっかけをお話ししました。';
+
 export const newsItems: readonly NewsItem[] = [
   {
     slug: 'academy-meikan-interview',
     title: '「北原孝彦アカデミー名鑑」に掲載されました',
-    description:
-      'ネットゲームに夢中だった高校時代、独立後に挑戦した恋愛コーチング。北原孝彦さんや仲間との出会いを通じて、仕事で大切にすることがどう変わったのかをお話ししました。',
+    description: academyInterviewIntro,
     category: 'company',
     status: 'published',
     publishedAt: '2026-11-25',
@@ -26,10 +28,7 @@ export const newsItems: readonly NewsItem[] = [
     sections: [
       {
         title: '仕事で大切にしたいこと',
-        paragraphs: [
-          '高校時代、親が寝たあとにこっそり遊んでいたネットゲームをきっかけに、僕はITの世界に進みました。エンジニアとして独立したあとに挑戦したのは、恋愛コーチングでした。北原孝彦さんの率直な助言を受けて、自分の強みをどんな仕事に生かせるかを考え直し、事業の軸をITに戻しました。',
-          '月報を書くようになって、自分の行動や事業の方向を振り返る習慣がつきました。仲間が抱えるさまざまな課題に触れて、自分の常識を見直すことも増えました。売上の伸ばし方を知りたくて参加した僕が、人としてどうありたいか、技術を使ってどんな悩みを解決したいかまで考えるようになった経緯をお話ししています。',
-        ],
+        paragraphs: [academyInterviewIntro],
       },
     ],
     links: [{ label: 'インタビューを読む', href: academyInterviewUrl, tone: 'warm' }],
