@@ -6,7 +6,13 @@
   import SeoHead from '$lib/components/seo/SeoHead.svelte';
   import ActionButton from '$lib/components/ui/ActionButton.svelte';
   import { getContactCategoryLabel, UBM_CATEGORY_ID } from '$lib/contact/form';
-  import { companyProfile, navItems, pageSeo, profilePageContent } from '$lib/data/site';
+  import {
+    academyInterviewUrl,
+    companyProfile,
+    navItems,
+    pageSeo,
+    profilePageContent,
+  } from '$lib/data/site';
   import { buildBreadcrumbJsonLd, buildWebPageJsonLd, serializeJsonLd } from '$lib/seo';
   import type { ProfileEventItem, ShowcaseItem } from '$lib/types/content';
   import { getResolveArgs, isInternalHref } from '$lib/utils/paths';
@@ -27,6 +33,7 @@
   const otherWorks = portfolioItems.slice(3);
   const portfolioUrl = 'https://portfolio-site-sage-seven.vercel.app/';
   const eventListUrl = 'https://ticketcraft.jp/organizers/techguide';
+  const academyInterviewLabel = '北原孝彦アカデミー名鑑';
 
   const ubmUrl = 'https://m.ubm.school/l/c/pu1ifRjY/XT9b8czm';
   const ubmContactSearch = new URLSearchParams({
@@ -289,6 +296,18 @@
       <div class="activity-heading">
         <h2 id="profile-activity-heading">活動・発信</h2>
         <p class="muted">習慣づくりや対話に関心があります。好きな作品の一つは『宇宙兄弟』です。</p>
+        <p class="muted">
+          インタビュー掲載
+          <a
+            class="text-link"
+            href={academyInterviewUrl}
+            target="_blank"
+            rel="external noreferrer"
+            onclick={() =>
+              trackOutbound('profile_activity', academyInterviewLabel, academyInterviewUrl)}
+            >{academyInterviewLabel}</a
+          >
+        </p>
       </div>
       <div class="activity-grid">
         <div class="section-group">

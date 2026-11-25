@@ -30,6 +30,8 @@ export const siteMetadata: SiteMetadata = {
 };
 
 export const instagramProfileUrl = 'https://www.instagram.com/yuchan_314/';
+export const academyInterviewUrl =
+  'https://academy-meikan.kitaharatakahiko-academy.com/2026/07/19/takahashiyuta/';
 const businessYouTubeUrl = 'https://www.youtube.com/@techguide_jp';
 const engineerYouTubeUrl = 'https://www.youtube.com/@mote-engi';
 
