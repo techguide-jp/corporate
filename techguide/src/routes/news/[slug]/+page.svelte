@@ -19,6 +19,10 @@
   const item = $derived(data.item);
   const itemPath = $derived(`/news/${item.slug}/`);
   const categoryLabel = $derived(getNewsCategoryLabel(item.category));
+  const image = $derived(item.detailImage ?? item.image);
+  const imageAspectRatio = $derived(
+    item.detailImage && `${item.detailImage.width} / ${item.detailImage.height}`,
+  );
   const newsStructuredData = $derived(
     [
       buildWebPageJsonLd({
@@ -68,12 +72,16 @@
         <p>{item.lead}</p>
       </header>
 
-      {#if item.image}
-        <figure class="news-detail__image">
+      {#if image}
+        <figure
+          class="news-detail__image"
+          class:news-detail__image--full-width={item.detailImage}
+          style:aspect-ratio={imageAspectRatio}
+        >
           <img
-            src={asset(item.image.src)}
-            alt={item.image.alt}
-            style:object-position={item.image.position ?? 'center'}
+            src={asset(image.src)}
+            alt={image.alt}
+            style:object-position={image.position ?? 'center'}
             fetchpriority="high"
             decoding="async"
           />
@@ -177,6 +185,10 @@
     border-radius: var(--radius-card);
     background: rgba(250, 246, 236, 0.94);
     box-shadow: var(--shadow-soft);
+  }
+
+  .news-detail__image--full-width {
+    margin-inline: 0;
   }
 
   .news-detail__image img {

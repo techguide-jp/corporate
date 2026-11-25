@@ -30,6 +30,10 @@ export interface NewsItem {
   updatedAt?: string;
   lead: string;
   image?: NewsImage;
+  detailImage?: NewsImage & {
+    width: number;
+    height: number;
+  };
   sections: NewsSection[];
   links?: NewsLink[];
 }

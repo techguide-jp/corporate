@@ -17,6 +17,12 @@ export const newsItems: readonly NewsItem[] = [
     status: 'published',
     publishedAt: '2026-11-25',
     lead: '2026年7月19日公開の「北原孝彦アカデミー名鑑」に、TechGuide合同会社 代表・高橋雄太のインタビューが掲載されました。',
+    detailImage: {
+      src: '/images/news/academy-meikan-interview.webp',
+      alt: '北原孝彦アカデミー名鑑のインタビュー記事の冒頭。高橋雄太の写真と記事の見出しが並ぶ画面',
+      width: 1200,
+      height: 900,
+    },
     sections: [
       {
         title: 'インタビューの内容',
