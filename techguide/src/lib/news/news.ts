@@ -1,3 +1,4 @@
+import { academyInterviewUrl } from '$lib/data/site';
 import type { NewsItem } from './types';
 
 const shuseiContactSearch = new URLSearchParams({
@@ -7,6 +8,25 @@ const shuseiContactSearch = new URLSearchParams({
 }).toString();
 
 export const newsItems: readonly NewsItem[] = [
+  {
+    slug: 'academy-meikan-interview',
+    title: '代表・高橋雄太のインタビューが「北原孝彦アカデミー名鑑」に掲載されました',
+    description:
+      'システム開発や業務改善の取り組み、独立までの経緯、アカデミーでの学びについてお話ししました。',
+    category: 'company',
+    status: 'published',
+    publishedAt: '2026-11-25',
+    lead: '2026年7月19日公開の「北原孝彦アカデミー名鑑」に、TechGuide合同会社 代表・高橋雄太のインタビューが掲載されました。',
+    sections: [
+      {
+        title: 'インタビューの内容',
+        paragraphs: [
+          '守成クラブの会員管理やイベント運営を支えるシステム開発の事例、エンジニアのキャリア支援、独立までの経緯やアカデミーでの学びについてお話ししています。',
+        ],
+      },
+    ],
+    links: [{ label: 'インタビューを読む', href: academyInterviewUrl, tone: 'warm' }],
+  },
   {
     slug: 'audioscript-release',
     title: '文字起こしツール「AudioScript」をリリースしました',
