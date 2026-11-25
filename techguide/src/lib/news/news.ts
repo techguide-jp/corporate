@@ -10,7 +10,7 @@ const shuseiContactSearch = new URLSearchParams({
 export const newsItems: readonly NewsItem[] = [
   {
     slug: 'academy-meikan-interview',
-    title: '代表・高橋雄太のインタビューが「北原孝彦アカデミー名鑑」に掲載されました',
+    title: '「北原孝彦アカデミー名鑑」に掲載されました',
     description:
       'システム開発や業務改善の取り組み、独立までの経緯、アカデミーでの学びについてお話ししました。',
     category: 'company',
