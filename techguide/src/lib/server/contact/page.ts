@@ -8,8 +8,10 @@ import { submitContactForm } from './submit';
 import { verifyTurnstile } from './turnstile';
 
 export async function loadContactPage(url: URL, motenji = false) {
-  const initialValues = createContactFormValuesFromSearchParams(url.searchParams);
-  if (motenji) initialValues.category = MOTENJI_CATEGORY_ID;
+  const initialValues = createContactFormValuesFromSearchParams(
+    url.searchParams,
+    motenji ? MOTENJI_CATEGORY_ID : undefined,
+  );
 
   const mockSubmission = await shouldMockContactSubmission();
   return {

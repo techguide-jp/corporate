@@ -18,6 +18,8 @@
   } from '$lib/contact/turnstileChallenge';
   import {
     CONTACT_CATEGORY_GROUPS,
+    EMAIL_VERIFICATION_API_CATEGORY_ID,
+    EMAIL_VERIFICATION_API_PRESET,
     getContactCategoryGroupId,
     getContactCategoryLabel,
     MACCLIPY_CATEGORY_ID,
@@ -91,6 +93,7 @@
   const fieldErrors = $derived<ContactFieldErrors>(form?.ok === false ? form.fieldErrors : {});
   const motenjiTopic = $derived(findMotenjiTopic(values.motenjiTopic));
   const isRecruit = $derived(selectedCategory === RECRUIT_CATEGORY_ID);
+  const isEmailVerificationApi = $derived(selectedCategory === EMAIL_VERIFICATION_API_CATEGORY_ID);
   const isMacClipy = $derived(selectedCategory === MACCLIPY_CATEGORY_ID);
   const isShusei = $derived(selectedCategory === SHUSEI_CATEGORY_ID);
   const isUbm = $derived(selectedCategory === UBM_CATEGORY_ID);
@@ -219,11 +222,24 @@
     selectedGroupId = (event.currentTarget as HTMLSelectElement).value as
       | ContactCategoryGroupId
       | '';
-    selectedCategory = '';
+    selectCategory('');
   }
 
   function updateCategory(event: Event) {
-    selectedCategory = (event.currentTarget as HTMLSelectElement).value as ContactCategoryId | '';
+    selectCategory((event.currentTarget as HTMLSelectElement).value as ContactCategoryId | '');
+  }
+
+  function selectCategory(category: ContactCategoryId | '') {
+    if (category === selectedCategory) return;
+    for (const field of ['subject', 'message'] as const) {
+      const preset = EMAIL_VERIFICATION_API_PRESET[field];
+      if (category === EMAIL_VERIFICATION_API_CATEGORY_ID && !values[field].trim()) {
+        values[field] = preset;
+      } else if (isEmailVerificationApi && values[field] === preset) {
+        values[field] = '';
+      }
+    }
+    selectedCategory = category;
   }
 
   function updateMotenjiTopic(topic: string) {
@@ -762,13 +778,15 @@
                   aria-describedby="message-help"
                 ></textarea>
                 <em id="message-help">
-                  {isMacClipy
-                    ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
-                    : isShusei
-                      ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
-                      : isUbm
-                        ? 'UBMについて聞いてみたいことをご記入ください。オンラインで話したい場合は、その旨もお知らせください。'
-                        : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
+                  {isEmailVerificationApi
+                    ? '分かる範囲でご記入ください。項目は自由に編集できます。'
+                    : isMacClipy
+                      ? '不具合の場合は、macOS・MacClipyのバージョンと再現手順を分かる範囲でご記入ください。'
+                      : isShusei
+                        ? '守成クラブについて聞いてみたいことや、参加を検討している例会などを分かる範囲でご記入ください。'
+                        : isUbm
+                          ? 'UBMについて聞いてみたいことをご記入ください。オンラインで話したい場合は、その旨もお知らせください。'
+                          : '現在の状況、相談したいこと、希望時期、参考URLなどを分かる範囲でご記入ください。'}
                 </em>
                 {#if fieldErrors.message}
                   <small>{fieldErrors.message}</small>

@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   CONTACT_CATEGORIES,
   createContactFormValuesFromSearchParams,
+  EMAIL_VERIFICATION_API_PRESET,
   getContactCategoryGroupId,
 } from '../../contact/form.ts';
 import { createLeadEventTracker } from '../../contact/lead.ts';
@@ -127,10 +128,22 @@ await test('recruit and legacy partnership links select the same application cat
 
 await test('email verification API links and submissions use the dedicated product category', () => {
   const category = 'email-verification-api';
-  const label = 'メールアドレス検証APIの導入相談';
+  const label = 'メールアドレス検証API';
   const values = createContactFormValuesFromSearchParams(new URLSearchParams({ category }));
   assert.equal(values.category, category);
   assert.equal(getContactCategoryGroupId(values.category), 'products');
+  assert.equal(values.subject, '導入相談');
+  assert.equal(values.message, EMAIL_VERIFICATION_API_PRESET.message);
+  assert.match(values.message, /利用予定のサービス・用途：[\s\S]+導入希望時期：/);
+  const custom = createContactFormValuesFromSearchParams(
+    new URLSearchParams({
+      category,
+      subject: '一括APIの質問',
+      message: '申込フォームで使用します。',
+    }),
+  );
+  assert.equal(custom.subject, '一括APIの質問');
+  assert.equal(custom.message, '申込フォームで使用します。');
 
   const form = makeForm();
   form.set('category', category);
@@ -149,6 +162,21 @@ await test('email verification API links and submissions use the dedicated produ
   form.set('category', 'products');
   const groupOnly = parseContactFormData(form);
   assert.ok(!groupOnly.ok && groupOnly.fieldErrors.category);
+});
+
+await test('an API inquiry requires a message beyond the preset and keeps the edited subject', () => {
+  const form = makeForm();
+  form.set('category', 'email-verification-api');
+  form.set('subject', '利用件数についての質問');
+  form.set('message', EMAIL_VERIFICATION_API_PRESET.message.replaceAll('\n', '\r\n'));
+  const unchanged = parseContactFormData(form);
+  assert.ok(!unchanged.ok && unchanged.fieldErrors.message);
+
+  form.set('message', '利用予定のサービス・用途：申込フォーム');
+  const result = parseContactFormData(form);
+  if (!result.ok) throw new Error('Expected a valid API inquiry');
+  assert.equal(result.submission.subject, '利用件数についての質問');
+  assert.equal(result.submission.message, '利用予定のサービス・用途：申込フォーム');
 });
 
 await test('legacy partnership submissions require application fields and preserve input for retry', () => {

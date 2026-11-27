@@ -1,4 +1,6 @@
 import {
+  EMAIL_VERIFICATION_API_CATEGORY_ID,
+  EMAIL_VERIFICATION_API_PRESET,
   getContactCategoryLabel,
   getInitialCategory,
   parsePortfolioUrls,
@@ -96,7 +98,11 @@ export function parseContactFormData(formData: FormData, motenji = false): Conta
     if (values.message.length > 500) {
       fieldErrors.message = '補足は500文字以内で入力してください。';
     }
-  } else if (!hasValue(values.message)) {
+  } else if (
+    !hasValue(values.message) ||
+    (values.category === EMAIL_VERIFICATION_API_CATEGORY_ID &&
+      values.message.replace(/\r\n?/g, '\n') === EMAIL_VERIFICATION_API_PRESET.message)
+  ) {
     fieldErrors.message = 'お問い合わせ内容を入力してください。';
   }
 
