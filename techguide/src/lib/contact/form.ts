@@ -2,10 +2,22 @@ import { MOTENJI_CATEGORY_ID, MOTENJI_CATEGORY_LABEL } from './motenji.ts';
 import { normalizeAttributionPage, type ContactAttribution } from '../analytics/attribution.ts';
 
 export const RECRUIT_CATEGORY_ID = 'recruit';
+export const EMAIL_VERIFICATION_API_CATEGORY_ID = 'email-verification-api';
 export const MACCLIPY_CATEGORY_ID = 'macclipy';
 export const SHUSEI_CATEGORY_ID = 'shusei';
 export const UBM_CATEGORY_ID = 'ubm';
 export const PORTFOLIO_URL_LABEL = 'ポートフォリオ・経歴書などあなたがわかるもの（URL）';
+
+export const EMAIL_VERIFICATION_API_PRESET = {
+  subject: '導入相談',
+  message: [
+    '利用予定のサービス・用途：',
+    '想定する検証件数（1日あたりの目安）：',
+    '利用したい機能（単件・一括・未定）：',
+    '導入希望時期：',
+    'ご質問・補足：',
+  ].join('\n'),
+};
 
 export const CONTACT_CATEGORY_GROUPS = [
   {
@@ -24,7 +36,7 @@ export const CONTACT_CATEGORY_GROUPS = [
     id: 'products',
     label: 'サービス・API',
     categories: [
-      { id: 'email-verification-api', label: 'メールアドレス検証APIの導入相談' },
+      { id: EMAIL_VERIFICATION_API_CATEGORY_ID, label: 'メールアドレス検証API' },
       { id: MACCLIPY_CATEGORY_ID, label: 'MacClipyについて' },
     ],
   },
@@ -161,13 +173,19 @@ function getInitialTextValue(value: string | null, maxLength: number) {
 
 export function createContactFormValuesFromSearchParams(
   searchParams: URLSearchParams,
+  category = getInitialCategory(searchParams.get('category')),
 ): ContactFormValues {
-  const category = getInitialCategory(searchParams.get('category'));
+  const preset =
+    category === EMAIL_VERIFICATION_API_CATEGORY_ID ? EMAIL_VERIFICATION_API_PRESET : undefined;
 
   return {
     ...createEmptyContactFormValues(category),
-    subject: getInitialTextValue(searchParams.get('subject'), 120),
-    message: getInitialTextValue(searchParams.get('message'), 2000),
+    subject: searchParams.has('subject')
+      ? getInitialTextValue(searchParams.get('subject'), 120)
+      : (preset?.subject ?? ''),
+    message: searchParams.has('message')
+      ? getInitialTextValue(searchParams.get('message'), 2000)
+      : (preset?.message ?? ''),
     sourcePage: normalizeAttributionPage(searchParams.get('source_page')),
   };
 }
