@@ -136,6 +136,7 @@ legacy の [../events/index.html](../events/index.html) は rollback や参照�
 - `PUBLIC_*` は SvelteKit の build 時に公開bundleへ埋め込むため、Amplifyで値を変えたら再デプロイが必要
 - `RESEND_FROM_NAME`、`RESEND_FROM_EMAIL`、`CONTACT_TO_EMAIL` はAmplifyの「環境設定」に置き、サーバーbundleへbuild時に埋め込んでSSR actionから参照する。変更時は再デプロイが必要
 - `MACCLIPY_GA_API_SECRET`、`RESEND_API_KEY`、`TURNSTILE_SECRET_KEY` は公開bundleへ入れず、AmplifyのシークレットまたはSSR runtime環境変数からサーバー側だけで読む
+- `/contact/` のメール検証には、専用の `EMAIL_VERIFIER_API_KEY` を Amplify のシークレットまたは SSR runtime 環境変数に設定する。Turnstile 認証後、検証APIが宛先なしまたは Null MX と判定した場合は入力の修正を案内する。判定保留・API障害・キー未設定時は受付を続ける
 - `/partner-intake/` は面談事前フォーム。Apps Scriptへの連携には、サーバー専用の `PARTNER_INTAKE_BRIDGE_SECRET` と、SSR Compute roleによる同名のSSMパラメータの読み取り権限が必要。確認リンクのトークンはURLのフラグメントで受け取り、本人確認操作の際に送る
 - Amplifyの「シークレット」に置く場合は、SSR Compute role にSSM Parameter Storeの `ssm:GetParameter` 権限を付ける。現在の共有シークレットは `/amplify/shared/d1ei4wu36fr0u9/MACCLIPY_GA_API_SECRET`、`/amplify/shared/d1ei4wu36fr0u9/RESEND_API_KEY`、`/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY` を読む想定
 - `pnpm dev` では `CONTACT_DEV_MOCK_SUBMISSION` が未設定または `true` の場合、送信完了UIを確認しやすいようにTurnstile/Resendを呼ばず成功扱いにする。ローカルで実連携を検証する場合は `CONTACT_DEV_MOCK_SUBMISSION=false` にする
@@ -158,7 +159,8 @@ SSR Compute role に付ける最小権限の例:
       "Resource": [
         "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/MACCLIPY_GA_API_SECRET",
         "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/RESEND_API_KEY",
-        "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY"
+        "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/TURNSTILE_SECRET_KEY",
+        "arn:aws:ssm:ap-northeast-1:953573378652:parameter/amplify/shared/d1ei4wu36fr0u9/EMAIL_VERIFIER_API_KEY"
       ]
     }
   ]

@@ -9,6 +9,7 @@ import {
 import { createLeadEventTracker } from '../../contact/lead.ts';
 import { parseContactFormData } from './validation.ts';
 import { buildAdminEmail, buildAutoReplyEmail } from './emailTemplates.ts';
+import { isContactEmailRejected } from './emailVerification.ts';
 import { submitContactForm } from './submit.ts';
 
 function makeForm() {
@@ -403,9 +404,96 @@ await test('issues a lead receipt only after admin delivery and excludes all fai
   assert.ok(replyFailed.data.ok && replyFailed.data.receipt?.id);
 });
 
+await test('checks the contact email after Turnstile and preserves the form when the address is rejected', async () => {
+  const form = makeForm();
+  const calls: string[] = [];
+  const dependencies = {
+    shouldMock: () => Promise.resolve(false),
+    verify: () => {
+      calls.push('turnstile');
+      return Promise.resolve({ ok: true as const });
+    },
+    isEmailRejected: (email: string) => {
+      calls.push('email');
+      assert.equal(email, 'test@example.com');
+      return Promise.resolve(true);
+    },
+    send: () => {
+      calls.push('send');
+      return Promise.resolve({ ok: true as const });
+    },
+  };
+
+  const result = await submitContactForm(form, dependencies);
+  assert.deepEqual(calls, ['turnstile', 'email']);
+  assert.equal(result.status, 400);
+  if (result.data.ok) throw new Error('Expected an email field error');
+  assert.ok('email' in result.data.fieldErrors && result.data.fieldErrors.email);
+  assert.equal(result.data.values.message, '検証用の相談内容');
+  assert.equal(result.data.analyticsError, 'validation');
+  assert.ok(!('receipt' in result.data));
+
+  calls.length = 0;
+  form.set('website', 'spam');
+  assert.equal((await submitContactForm(form, dependencies)).status, 200);
+  assert.deepEqual(calls, ['turnstile']);
+
+  form.delete('website');
+  const retry = await submitContactForm(form, {
+    ...dependencies,
+    isEmailRejected: () => Promise.resolve(false),
+  });
+  assert.ok(retry.data.ok && retry.data.receipt?.id);
+  assert.deepEqual(calls, ['turnstile', 'turnstile', 'send']);
+});
+
+await test('only a supported negative verification result blocks a contact submission', async () => {
+  const key = 'a'.repeat(64);
+  const email = 'test@example.com';
+  const responses = [
+    [Response.json({ status: 'likely_invalid', reason: 'null_mx', cached: false }), true],
+    [
+      Response.json({ status: 'likely_invalid', reason: 'recipient_not_found', cached: true }),
+      true,
+    ],
+    [Response.json({ status: 'likely_invalid', reason: 'unexpected', cached: false }), false],
+    [Response.json({ status: 'likely_invalid' }), false],
+    [Response.json({ status: 'accepted', reason: 'rcpt_accepted', cached: false }), false],
+    [Response.json({ status: 'unknown', reason: 'timeout', cached: false }), false],
+    [Response.json({ error: 'rate_limited' }, { status: 429 }), false],
+    [Response.json({ error: 'unavailable' }, { status: 503 }), false],
+    [new Response('not json'), false],
+  ] as const;
+
+  for (const [response, rejected] of responses) {
+    const fetchVerification = test.mock.fn<typeof fetch>(() => Promise.resolve(response));
+    assert.equal(await isContactEmailRejected(email, key, fetchVerification), rejected);
+    assert.equal(fetchVerification.mock.callCount(), 1);
+    const [url, request] = fetchVerification.mock.calls[0].arguments;
+    assert.equal(url, 'https://email-check.techguide.jp/api/v1/email/verify');
+    assert.equal(request?.method, 'POST');
+    assert.equal(new Headers(request?.headers).get('Authorization'), `Bearer ${key}`);
+    assert.equal(request?.body, JSON.stringify({ email }));
+    assert.equal(request?.redirect, 'error');
+    assert.ok(request?.signal);
+  }
+
+  const timeout = () => Promise.reject(new DOMException('Timed out', 'TimeoutError'));
+  assert.equal(await isContactEmailRejected(email, key, timeout), false);
+
+  const fetchWithoutKey = test.mock.fn<typeof fetch>(() => Promise.resolve(Response.json({})));
+  assert.equal(await isContactEmailRejected(email, undefined, fetchWithoutKey), false);
+  assert.equal(fetchWithoutKey.mock.callCount(), 0);
+});
+
 await test('development mock sends no external requests and gives bots no lead receipt', async () => {
   const never = (): Promise<never> => Promise.reject(new Error('External request must not happen'));
-  const dependencies = { shouldMock: () => Promise.resolve(true), verify: never, send: never };
+  const dependencies = {
+    shouldMock: () => Promise.resolve(true),
+    verify: never,
+    isEmailRejected: never,
+    send: never,
+  };
   const result = await submitContactForm(makeForm(), dependencies);
   assert.ok(result.data.ok && result.data.receipt?.id);
   const bot = makeForm();
