@@ -8,6 +8,7 @@ type ServiceResult = { ok: true; message?: string } | { ok: false; message: stri
 interface SubmitDependencies {
   shouldMock: () => Promise<boolean>;
   verify: () => Promise<ServiceResult & { reason?: string }>;
+  isEmailRejected?: (email: string) => Promise<boolean>;
   send: (submission: ContactSubmission) => Promise<ServiceResult>;
 }
 
@@ -52,6 +53,19 @@ export async function submitContactForm(
   }
 
   if (isBot) return success();
+
+  if (await dependencies.isEmailRejected?.(submission.email)) {
+    return {
+      status: 400 as const,
+      data: {
+        ok: false as const,
+        values: submission,
+        fieldErrors: { email: 'メールを受信できるアドレスか確認してください。' },
+        message: '入力内容を確認してください。',
+        analyticsError: 'validation' as const,
+      },
+    };
+  }
 
   const result = await dependencies.send(submission);
   if (!result.ok) {
