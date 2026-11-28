@@ -544,6 +544,10 @@ await test('Motenji accepts selected answers with no free-text message and inclu
     {
       shouldMock: () => Promise.resolve(false),
       verify: () => Promise.resolve({ ok: true as const }),
+      isEmailRejected: (email) => {
+        assert.equal(email, 'test@example.com');
+        return Promise.resolve(false);
+      },
       send: (submission) => {
         assert.equal(submission.category, 'motenji');
         assert.equal(submission.subject, '案件探し・営業・商談');

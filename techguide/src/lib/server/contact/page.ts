@@ -33,10 +33,8 @@ export async function submitContactPage(
     {
       shouldMock: shouldMockContactSubmission,
       verify: () => verifyTurnstile(formData, event.getClientAddress()),
-      isEmailRejected: motenji
-        ? undefined
-        : async (email) =>
-            isContactEmailRejected(email, await getServerEnv('EMAIL_VERIFIER_API_KEY')),
+      isEmailRejected: async (email) =>
+        isContactEmailRejected(email, await getServerEnv('EMAIL_VERIFIER_API_KEY')),
       send: sendContactEmails,
     },
     motenji,
